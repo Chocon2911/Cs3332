@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Biểu đồ doanh thu</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 30px;
+        }
+        canvas {
+            max-width: 800px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Biểu đồ doanh thu sản phẩm</h2>
+    <canvas id="SaleChart" width="800" height="400"></canvas>
+
+    <script>
+        // ==== Tiện ích thời gian ====
+        class DateTime {
+            constructor(y, m, d, h = 0, min = 0, s = 0) {
+                this.y = y;
+                this.m = m;
+                this.d = d;
+                this.h = h;
+                this.min = min;
+                this.s = s;
+            }
+
+            getTotalSecond() {
+                return Math.floor(new Date(this.y, this.m - 1, this.d, this.h, this.min, this.s).getTime() / 1000);
+            }
+        }
+
+        function getDateTime(ms) {
+            const d = new Date(ms);
+            return new DateTime(d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds());
+        }
+
+        // ==== Dữ liệu sản phẩm ====
+        class ProductData {
+            constructor(time, revenue) {
+                this.time = time;
+                this.revenue = revenue;
+            }
+        }
+
+        class Product {
+            constructor(productName, productDatas) {
+                this.productName = productName;
+                this.productDatas = productDatas;
+            }
+        }
+
+        class DataSet {
+            constructor(label, data, bg, border, fill = false, tension = 0.4) {
+                this.label = label;
+                this.data = data;
+                this.backgroundColor = bg;
+                this.borderColor = border;
+                this.fill = fill;
+                this.tension = tension;
+            }
+        }
+
+        function randomRgb() {
+            return [Math.floor(Math.random() * 200), Math.floor(Math.random() * 200), Math.floor(Math.random() * 200)];
+        }
+
+        function randomColor(rgb) {
+            return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.2)`;
+        }
+
+        function randomBorderColor(rgb) {
+            return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 1)`;
+        }
+
+        // ==== Vẽ biểu đồ ====
+        function createChart(fromDate, toDate, products, timeUnit = 'day') {
+            const labelCount = 25; // 25 mốc từ 00h đến 24h
+            const fromSec = fromDate.getTotalSecond();
+            const toSec = toDate.getTotalSecond();
+            const xLabels = [];
+
+            // Tạo nhãn trục X từ 00h đến 24h
+            for (let i = 0; i < labelCount; i++) {
+                const hour = i;
+                const minute = 0;  // Giả sử mỗi mốc giờ là 00 phút
+                const timeString = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+                xLabels.push(timeString);
+            }
+
+            const revenueDatas = [];
+
+            // Tạo dữ liệu cho biểu đồ
+            for (let i = 0; i < products.length; i++) {
+                const revenues = Array(labelCount).fill(0);
+                for (let j = 0; j < products[i].productDatas.length; j++) {
+                    const prodData = products[i].productDatas[j];
+                    const t = prodData.time.getTotalSecond();
+                    const percent = (t - fromSec) / (toSec - fromSec);
+                    const idx = Math.floor(percent * labelCount);
+                    if (idx >= 0 && idx < labelCount) {
+                        revenues[idx] += prodData.revenue;
+                    }
+                }
+
+                const rgb = randomRgb();
+                const dataset = new DataSet(
+                    products[i].productName,
+                    revenues,
+                    randomColor(rgb),
+                    randomBorderColor(rgb),
+                    true,
+                    0
+                );
+
+                revenueDatas.push(dataset);
+            }
+
+            const ctx = document.getElementById('SaleChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: xLabels,
+                    datasets: revenueDatas
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Thời gian'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Doanh thu ($)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `$${ctx.parsed.y.toFixed(2)}`
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ==== Dữ liệu giả định ====
+        const products = [
+            new Product("Coffee", [
+                new ProductData(new DateTime(2025, 4, 9, 1, 0, 0), 120),
+                new ProductData(new DateTime(2025, 4, 9, 11, 30, 0), 180),
+                new ProductData(new DateTime(2025, 4, 9, 12, 45, 0), 200)
+            ]),
+            new Product("Juice", [
+                new ProductData(new DateTime(2025, 4, 9, 10, 15, 0), 90),
+                new ProductData(new DateTime(2025, 4, 9, 12, 0, 0), 150),
+                new ProductData(new DateTime(2025, 4, 9, 14, 0, 0), 130)
+            ]),
+            new Product("Tea", [
+                new ProductData(new DateTime(2025, 4, 9, 11, 0, 0), 100),
+                new ProductData(new DateTime(2025, 4, 9, 13, 0, 0), 160),
+                new ProductData(new DateTime(2025, 4, 9, 15, 0, 0), 190)
+            ])
+        ];
+
+        const fromDate = new DateTime(2025, 4, 9, 0, 0, 0);  // 00h hôm trước
+        const toDate = new DateTime(2025, 4, 10, 0, 0, 0);   // 24h hôm sau
+
+        // Gọi hàm với khung giờ là 'hour'
+        createChart(fromDate, toDate, products, 'hour');
+    </script>
+</body>
+</html>

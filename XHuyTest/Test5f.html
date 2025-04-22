@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Biểu đồ Giá Cổ Phiếu (Dữ liệu giả)</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            text-align: center;
+        }
+
+        canvas {
+            max-width: 800px;
+            margin: auto;
+            background: #f0f0f0;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>📈 Biểu đồ Giá Cổ Phiếu (Dữ liệu mô phỏng từ Twelve Data)</h2>
+    <canvas id="stockChart" width="800" height="400"></canvas>
+
+    <script>
+        const fakeData = [
+            { datetime: "2025-04-09 10:00:00", close: 142.5 },
+            { datetime: "2025-04-09 10:15:00", close: 143.1 },
+            { datetime: "2025-04-09 10:30:00", close: 144.3 },
+            { datetime: "2025-04-09 10:45:00", close: 143.8 },
+            { datetime: "2025-04-09 11:00:00", close: 145.0 },
+            { datetime: "2025-04-09 11:15:00", close: 144.6 },
+            { datetime: "2025-04-09 11:30:00", close: 146.2 },
+            { datetime: "2025-04-09 11:45:00", close: 147.0 },
+            { datetime: "2025-04-09 12:00:00", close: 146.5 },
+            { datetime: "2025-04-09 12:15:00", close: 147.3 },
+            { datetime: "2025-04-09 12:30:00", close: 148.0 },
+            { datetime: "2025-04-09 12:45:00", close: 147.8 },
+            { datetime: "2025-04-09 13:00:00", close: 148.5 },
+            { datetime: "2025-04-09 13:15:00", close: 149.0 },
+            { datetime: "2025-04-09 13:30:00", close: 149.3 },
+            { datetime: "2025-04-09 13:45:00", close: 149.7 },
+            { datetime: "2025-04-09 14:00:00", close: 150.1 },
+            { datetime: "2025-04-09 14:15:00", close: 150.0 },
+            { datetime: "2025-04-09 14:30:00", close: 149.5 },
+            { datetime: "2025-04-09 14:45:00", close: 149.0 },
+            { datetime: "2025-04-09 15:00:00", close: 148.8 },
+            { datetime: "2025-04-09 15:15:00", close: 149.2 },
+            { datetime: "2025-04-09 15:30:00", close: 149.6 },
+            { datetime: "2025-04-09 15:45:00", close: 200 },
+            { datetime: "2025-04-09 16:00:00", close: 50 },
+            { datetime: "2025-04-09 16:15:00", close: 55 },
+            { datetime: "2025-04-09 16:30:00", close: 100 },
+            { datetime: "2025-04-09 16:45:00", close: 159 },
+            { datetime: "2025-04-09 17:00:00", close: 151.5 },
+            { datetime: "2025-04-09 17:15:00", close: 152.0 },
+            { datetime: "2025-04-09 17:30:00", close: 152.4 },
+            { datetime: "2025-04-09 17:45:00", close: 152.1 },
+            { datetime: "2025-04-09 18:00:00", close: 151.8 },
+            { datetime: "2025-04-09 18:15:00", close: 151.2 },
+            { datetime: "2025-04-09 18:30:00", close: 150.9 },
+            { datetime: "2025-04-09 18:45:00", close: 150.2 },
+            { datetime: "2025-04-09 19:00:00", close: 149.8 }
+        ];
+
+        const fakeData1 = [
+            { datetime: "2025-04-09 10:00:00", close: 142.5 },
+            { datetime: "2025-04-09 10:15:00", close: 143.1 },
+            { datetime: "2025-04-09 10:30:00", close: 144.3 },
+            { datetime: "2025-04-09 10:45:00", close: 143.8 },
+            { datetime: "2025-04-09 11:00:00", close: 145.0 },
+            { datetime: "2025-04-09 11:15:00", close: 144.6 },
+            { datetime: "2025-04-09 11:30:00", close: 146.2 },
+            { datetime: "2025-04-09 11:45:00", close: 147.0 },
+            { datetime: "2025-04-09 12:00:00", close: 146.5 },
+            { datetime: "2025-04-09 12:15:00", close: 147.3 },
+            { datetime: "2025-04-09 13:15:00", close: 149.0 },
+            { datetime: "2025-04-09 13:30:00", close: 149.3 },
+            { datetime: "2025-04-09 13:45:00", close: 149.7 },
+            { datetime: "2025-04-09 14:00:00", close: 150.1 },
+            { datetime: "2025-04-09 14:15:00", close: 150.0 },
+            { datetime: "2025-04-09 14:30:00", close: 149.5 },
+            { datetime: "2025-04-09 14:45:00", close: 149.0 },
+            { datetime: "2025-04-09 15:00:00", close: 148.8 },
+            { datetime: "2025-04-09 15:15:00", close: 149.2 },
+            { datetime: "2025-04-09 15:30:00", close: 149.6 },
+            { datetime: "2025-04-09 15:45:00", close: 200 },
+            { datetime: "2025-04-09 16:00:00", close: 50 },
+            { datetime: "2025-04-09 16:15:00", close: 55 },
+            { datetime: "2025-04-09 16:30:00", close: 100 },
+            { datetime: "2025-04-09 16:45:00", close: 159 },
+            { datetime: "2025-04-09 17:00:00", close: 151.5 },
+            { datetime: "2025-04-09 17:15:00", close: 152.0 },
+            { datetime: "2025-04-09 17:30:00", close: 152.4 },
+            { datetime: "2025-04-09 17:45:00", close: 152.1 },
+            { datetime: "2025-04-09 18:00:00", close: 151.8 },
+            { datetime: "2025-04-09 18:15:00", close: 151.2 },
+            { datetime: "2025-04-09 18:30:00", close: 150.9 },
+            { datetime: "2025-04-09 18:45:00", close: 150.2 },
+            { datetime: "2025-04-09 19:00:00", close: 149.8 }
+        ];
+
+        // 🔹 Dữ liệu giả 2 (có xu hướng khác)
+        const fakeData2 = [
+            { datetime: "2025-04-09 10:00:00", close: 140.0 },
+            { datetime: "2025-04-09 10:15:00", close: 140.5 },
+            { datetime: "2025-04-09 10:30:00", close: 141.0 },
+            { datetime: "2025-04-09 10:45:00", close: 142.0 },
+            { datetime: "2025-04-09 11:00:00", close: 143.5 },
+            { datetime: "2025-04-09 11:15:00", close: 144.0 },
+            { datetime: "2025-04-09 11:30:00", close: 144.5 },
+            { datetime: "2025-04-09 11:45:00", close: 145.0 },
+            { datetime: "2025-04-09 12:00:00", close: 145.3 },
+            { datetime: "2025-04-09 12:15:00", close: 145.7 },
+            { datetime: "2025-04-09 10:00:00", close: 142.5 },
+            { datetime: "2025-04-09 10:15:00", close: 143.1 },
+            { datetime: "2025-04-09 10:30:00", close: 144.3 },
+            { datetime: "2025-04-09 10:45:00", close: 143.8 },
+            { datetime: "2025-04-09 11:00:00", close: 145.0 },
+            { datetime: "2025-04-09 11:15:00", close: 144.6 },
+            { datetime: "2025-04-09 11:30:00", close: 146.2 },
+            { datetime: "2025-04-09 11:45:00", close: 147.0 },
+            { datetime: "2025-04-09 12:00:00", close: 146.5 },
+            { datetime: "2025-04-09 12:15:00", close: 147.3 },
+            { datetime: "2025-04-09 12:30:00", close: 148.0 },
+            { datetime: "2025-04-09 12:45:00", close: 147.8 },
+            { datetime: "2025-04-09 13:00:00", close: 148.5 },
+            { datetime: "2025-04-09 13:15:00", close: 149.0 },
+            { datetime: "2025-04-09 13:30:00", close: 149.3 },
+            { datetime: "2025-04-09 13:45:00", close: 149.7 },
+            { datetime: "2025-04-09 14:00:00", close: 150.1 },
+            { datetime: "2025-04-09 14:15:00", close: 150.0 },
+            { datetime: "2025-04-09 14:30:00", close: 149.5 },
+            { datetime: "2025-04-09 14:45:00", close: 149.0 },
+            { datetime: "2025-04-09 15:00:00", close: 148.8 },
+            { datetime: "2025-04-09 15:15:00", close: 149.2 },
+            { datetime: "2025-04-09 15:30:00", close: 149.6 },
+            
+        ];
+    
+        const labels = fakeData.map(d => d.datetime.slice(11, 16));
+        const prices = fakeData.map(d => d.close);
+    
+        // 🔹 Sinh thêm dữ liệu cho cổ phiếu B và C
+        const pricesB = fakeData1.map(d => d.close);
+        const pricesC = fakeData2.map(d => d.close);
+    
+        const ctx = document.getElementById('stockChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Cổ phiếu A',
+                        data: prices,
+                        borderColor: 'green',
+                        backgroundColor: 'rgba(0, 128, 0, 0.1)',
+                        fill: true,
+                        tension: 0,
+                        pointRadius: 2,
+                    },
+                    {
+                        label: 'Cổ phiếu B',
+                        data: pricesB,
+                        borderColor: 'blue',
+                        backgroundColor: 'rgba(0, 0, 255, 0.1)',
+                        fill: true,
+                        tension: 0,
+                        pointRadius: 2,
+                    },
+                    {
+                        label: 'Cổ phiếu C',
+                        data: pricesC,
+                        borderColor: 'orange',
+                        backgroundColor: 'rgba(255, 165, 0, 0.1)',
+                        fill: true,
+                        tension: 0,
+                        pointRadius: 2,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Thời gian'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Giá ($)'
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => `${ctx.dataset.label}: $${ctx.parsed.y.toFixed(2)}`
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    
+</body>
+
+</html>

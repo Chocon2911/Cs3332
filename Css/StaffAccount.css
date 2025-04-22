@@ -1,0 +1,32 @@
+/*=======================================Create Button========================================*/
+.CreateButton
+{
+    width: 300px;
+    height: 60px;
+    border-radius: 50px;
+    border: none;
+    background: linear-gradient(#f8dd8c, #dab019);
+    transition: all 0.2s ease-in-out;
+    font-weight: 700;
+}
+
+.CreateButton:hover
+{
+    box-shadow: 0px 0px 20px rgb(255, 196, 0);
+    transform: scale(1.1);
+}
+
+.CreateButton:active
+{
+    box-shadow: none;
+    transform: scale(0.9);
+}
+
+@media screen and (max-width: 768px)
+{
+    .CreateButton
+    {
+        width: 200px;
+        height: 40px;
+    }
+}

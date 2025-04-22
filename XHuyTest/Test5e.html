@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Biểu đồ giá cổ phiếu (AAPL)</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin: 30px; }
+    canvas { max-width: 800px; margin: 0 auto; background: #f9f9f9; border-radius: 10px; }
+    #loading { margin: 20px; font-weight: bold; color: green; }
+  </style>
+</head>
+<body>
+
+<h2>Biểu đồ Giá Cổ Phiếu: <span id="symbol">AAPL</span></h2>
+<p id="loading">⏳ Đang tải dữ liệu...</p>
+<canvas id="stockChart" width="800" height="400"></canvas>
+
+<script>
+  const API_KEY = 'V1BMTX7X7JH0OBQ8'; // 🔑 Thay API key tại đây!
+  const SYMBOL = 'AAPL'; // Bạn có thể thay bằng cổ phiếu khác như MSFT, TSLA...
+  const INTERVAL = '15min';
+
+  const ctx = document.getElementById('stockChart').getContext('2d');
+  let chart;
+
+  async function fetchStockData() {
+    const url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${SYMBOL}&interval=${INTERVAL}&apikey=${API_KEY}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    
+    if (!data["Time Series (15min)"]) {
+      document.getElementById("loading").innerText = "❌ Lỗi tải dữ liệu. Kiểm tra API key hoặc giới hạn.";
+      return;
+    }
+
+    const raw = data["Time Series (15min)"];
+    const labels = Object.keys(raw).reverse(); // thời gian tăng dần
+    const prices = labels.map(key => parseFloat(raw[key]["4. close"]));
+
+    document.getElementById("loading").style.display = 'none';
+
+    chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: `Giá cổ phiếu ${SYMBOL} (${INTERVAL})`,
+          data: prices,
+          borderColor: 'blue',
+          fill: false,
+          tension: 0.3,
+          pointRadius: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: {
+            ticks: {
+              maxTicksLimit: 10,
+              callback: (val, index, ticks) => labels[val].slice(11, 16) // chỉ giờ:phút
+            },
+            title: {
+              display: true,
+              text: 'Thời gian'
+            }
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Giá ($)'
+            }
+          }
+        }
+      }
+    });
+  }
+
+  fetchStockData();
+</script>
+
+</body>
+</html>

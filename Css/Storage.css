@@ -1,0 +1,59 @@
+/*====================================Ingredient Container====================================*/
+.IngredientContainer 
+{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+}
+
+/*=======================================Ingredient Box=======================================*/
+.IngredientBox 
+{
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    list-style: none;
+    width: 250px;
+    height: 300px;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.IngredientBox:hover
+{
+    background-color: #89cfdf75;
+    transform: scale(1.1);
+}
+
+/*======================================Ingredient Image======================================*/
+.IngredientImage 
+{
+    width: 220px;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+}
+
+.IngredientImage img 
+{
+    max-width: 100%;
+    max-height: 100%;
+}
+
+
+/*======================================Ingredient Name=======================================*/
+.IngredientName
+{
+    font-weight: 700;
+    color: black
+}
+
+.IngredientValue
+{
+    font-weight: 400;
+    color: black
+}

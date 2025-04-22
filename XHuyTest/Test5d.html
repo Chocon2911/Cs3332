@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Biểu đồ chứng khoán đơn giản</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    #container { max-width: 800px; margin: 30px auto; }
+    canvas { background: #f9f9f9; border-radius: 10px; }
+    .buttons { text-align: center; margin-bottom: 20px; }
+    button { margin: 0 10px; padding: 8px 20px; }
+  </style>
+</head>
+<body>
+<div id="container">
+  <div class="buttons">
+    <button onclick="loadChart('1D')">1D</button>
+    <button onclick="loadChart('1W')">1W</button>
+    <button onclick="loadChart('1M')">1M</button>
+  </div>
+  <canvas id="stockChart"></canvas>
+</div>
+
+<script>
+  const ctx = document.getElementById('stockChart').getContext('2d');
+
+  let chart;
+
+  const chartData = {
+    '1D': {
+      labels: ['9:00', '10:00', '11:00', '12:00', '13:00', '14:00'],
+      data: [100, 105, 102, 108, 107, 110],
+    },
+    '1W': {
+      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+      data: [98, 100, 103, 101, 106],
+    },
+    '1M': {
+      labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+      data: [95, 97, 99, 104],
+    }
+  };
+
+  function loadChart(timeframe) {
+    const selected = chartData[timeframe];
+
+    if (chart) chart.destroy();
+
+    chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: selected.labels,
+        datasets: [{
+          label: `Stock Price (${timeframe})`,
+          data: selected.data,
+          fill: false,
+          borderColor: 'blue',
+          tension: 0.3,
+          pointRadius: 5,
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            display: true
+          },
+          tooltip: {
+            mode: 'index'
+          }
+        },
+        scales: {
+          y: {
+            title: {
+              display: true,
+              text: 'Price ($)'
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: 'Time'
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // Mặc định load 1D
+  loadChart('1D');
+</script>
+</body>
+</html>

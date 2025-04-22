@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Popup với nền tối</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+
+    /* Overlay làm tối nền */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.5); /* làm tối nền */
+      z-index: 999;
+    }
+
+    /* Popup thông báo */
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 24px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      z-index: 1000;
+      min-width: 300px;
+      text-align: center;
+    }
+
+    /* Ẩn phần tử */
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <button onclick="showPopup()">Mở thông báo</button>
+
+  <div id="overlay" class="overlay hidden"></div>
+
+  <div id="popup" class="popup hidden">
+    <p><strong>Thông báo:</strong> Đây là nội dung popup.</p>
+    <button onclick="hidePopup()">Đóng</button>
+  </div>
+
+  <script>
+    function showPopup() {
+      document.getElementById("overlay").classList.remove("hidden");
+      document.getElementById("popup").classList.remove("hidden");
+    }
+
+    function hidePopup() {
+      document.getElementById("overlay").classList.add("hidden");
+      document.getElementById("popup").classList.add("hidden");
+    }
+
+    // Bonus: Đóng popup bằng phím ESC
+    document.addEventListener("keydown", function(event) {
+      if (event.key === "Escape") {
+        hidePopup();
+      }
+    });
+
+    // Bonus: Click ngoài popup cũng đóng
+    document.getElementById("overlay").addEventListener("click", hidePopup);
+  </script>
+
+</body>
+</html>

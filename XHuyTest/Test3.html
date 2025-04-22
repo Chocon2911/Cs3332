@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Password Toggle Animation</title>
+    <style>
+        .input-container {
+            position: relative;
+            display: inline-block;
+            margin: 50px;
+        }
+
+        .input-container input {
+            padding: 10px 40px 10px 10px;
+            font-size: 16px;
+        }
+
+        .toggle-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .eye-icon {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: #000;
+            stroke-width: 2;
+            transition: all 0.3s ease;
+        }
+
+        .eye-icon.line {
+            stroke-dasharray: 30;
+            stroke-dashoffset: 30;
+            transition: stroke-dashoffset 0.3s ease;
+        }
+
+        .hide .eye-icon.line {
+            stroke-dashoffset: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="input-container">
+        <input type="password" id="passwordInput" placeholder="Enter password">
+        <button class="toggle-btn" id="toggleBtn" onclick="togglePassword()">
+            <svg class="eye-icon" viewBox="0 0 24 24">
+                <path d="M1 12C1 12 5 4 12 4s11 8 11 8-4 8-11 8S1 12 1 12z"/>
+                <circle cx="12" cy="12" r="3"/>
+                <line class="line" x1="4" y1="4" x2="20" y2="20" />
+            </svg>
+        </button>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const pw = document.getElementById('passwordInput');
+            const btn = document.getElementById('toggleBtn');
+            pw.type = pw.type === 'password' ? 'text' : 'password';
+            btn.classList.toggle('hide');
+        }
+    </script>
+
+</body>
+</html>

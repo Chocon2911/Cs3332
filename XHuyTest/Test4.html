@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stock Chart</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    .chart-container {
+      width: 90%;
+      max-width: 900px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .timeframe-buttons {
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    .timeframe-buttons button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    .timeframe-buttons button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Stock Chart</h1>
+  <div class="chart-container">
+    <div class="timeframe-buttons">
+      <button onclick="updateChart('1D')">1D</button>
+      <button onclick="updateChart('5D')">5D</button>
+      <button onclick="updateChart('1M')">1M</button>
+      <button onclick="updateChart('1Y')">1Y</button>
+    </div>
+    <canvas id="stockChart"></canvas>
+  </div>
+
+  <script>
+    const ctx = document.getElementById('stockChart').getContext('2d');
+
+    let chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Stock Price',
+          data: [],
+          borderColor: '#007bff',
+          fill: false,
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: { display: true, title: { display: true, text: 'Date' } },
+          y: { display: true, title: { display: true, text: 'Price ($)' } },
+        }
+      }
+    });
+
+    const dataSets = {
+      '1D': { labels: ['9AM', '10AM', '11AM', '12PM', '1PM'], data: [100, 102, 101, 105, 104] },
+      '5D': { labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'], data: [98, 100, 102, 105, 104] },
+      '1M': { labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'], data: [95, 97, 100, 103] },
+      '1Y': { labels: ['Jan', 'Apr', 'Jul', 'Oct'], data: [90, 100, 110, 120] },
+    };
+
+    function updateChart(period) {
+      chart.data.labels = dataSets[period].labels;
+      chart.data.datasets[0].data = dataSets[period].data;
+      chart.update();
+    }
+
+    // Initialize chart with 1D data
+    updateChart('1D');
+  </script>
+</body>
+</html>

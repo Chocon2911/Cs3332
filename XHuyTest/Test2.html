@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chọn Giới Tính & Role</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 300px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: #f9f9f9;
+        }
+
+        .option-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin: 5px 0;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Chọn Giới Tính & Vai Trò</h2>
+
+        <!-- Chọn giới tính (radio) -->
+        <div class="option-group">
+            <h3>Giới tính:</h3>
+            <label><input type="radio" name="gender" value="Nam"> Nam</label>
+            <label><input type="radio" name="gender" value="Nữ"> Nữ</label>
+            <label><input type="radio" name="gender" value="Khác"> Khác</label>
+        </div>
+
+        <!-- Chọn vai trò (checkbox) -->
+        <div class="option-group">
+            <h3>Vai trò:</h3>
+            <label><input type="checkbox" name="role" value="Admin"> Admin</label>
+            <label><input type="checkbox" name="role" value="User"> User</label>
+            <label><input type="checkbox" name="role" value="Editor"> Editor</label>
+        </div>
+
+        <button onclick="showSelection()">Xác nhận</button>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        function showSelection() {
+            // Lấy giá trị giới tính (radio)
+            let gender = document.querySelector('input[name="gender"]:checked');
+            let genderText = gender ? gender.value : "Chưa chọn";
+
+            // Lấy danh sách role được chọn (checkbox)
+            let roles = document.querySelectorAll('input[name="role"]:checked');
+            let roleText = roles.length > 0 ? Array.from(roles).map(r => r.value).join(", ") : "Chưa chọn";
+
+            // Hiển thị kết quả
+            document.getElementById("result").innerHTML = `Giới tính: ${genderText} <br> Vai trò: ${roleText}`;
+        }
+    </script>
+
+</body>
+</html>

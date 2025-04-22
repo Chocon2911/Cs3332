@@ -1,0 +1,296 @@
+/*============================================================================================*/
+/*===========================================Header===========================================*/
+/*============================================================================================*/
+
+/*============================================Main============================================*/
+#Main
+{
+    background-color: #E3ECF1;
+}
+
+#Main header
+{
+    display: block !important;
+    background-image: linear-gradient(#75b2d3, #065885);
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.538);
+    position: fixed;
+    top: 0;            
+    left: 0;
+    width: 100%;       
+    z-index: 1000;
+}
+
+/*=========================================Nav Header=========================================*/
+#NavHeader
+{
+    display: contents;
+}
+
+/*============================================Logo============================================*/
+#Logo
+{
+    margin-left: 20px;
+}
+
+#Logo img
+{
+    transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+}
+
+#Logo img:hover
+{
+    transform: scale(1.1);
+    filter: drop-shadow(0px 0px 10px rgb(122, 64, 3));
+}
+
+#Logo img:active
+{
+    transform: scale(0.9);
+}
+
+@media screen and (max-width: 599px)
+{
+    #Logo
+    {
+        justify-self: center;
+    }    
+}
+
+/*========================================Menu Content========================================*/
+#MenuContent
+{
+    justify-content: flex-end; 
+}
+
+#MenuContent ul.navbar-nav
+{
+    display: flex;
+    flex-direction: row;
+}
+
+#MenuContent ul li
+{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#MenuContent ul li a
+{
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    transition: color 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+#MenuContent ul li a:hover
+{
+    transform: scale(1.2);
+    color: #915108;
+}
+
+#MenuContent ul li a:active
+{
+    transform: scale(1);
+}
+
+@media screen and (max-width: 599px)
+{
+    #MenuContent ul li
+    {
+        display: none;
+    }
+}
+
+
+/*=======================================Account Button=======================================*/
+#AccountButton
+{
+    margin-right: 3%;
+    margin-left: 4%;
+}
+
+#AccountButton button
+{
+    width: 37px;
+    height: 37px;
+    border-radius: 50%;
+    padding: 0;
+    border: none;
+    background: none;
+    justify-content: flex-end;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+#AccountButton button img
+{
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+}
+
+#AccountButton button:hover
+{
+    transform: scale(1.1);
+    box-shadow: 0px 0px 10px 5px rgb(122, 64, 3);
+}
+
+/*==========================================Account===========================================*/
+#Account ul
+{
+    list-style: none;
+}
+
+#Account ul a
+{
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+}
+
+#Account div ul a:hover
+{
+    transform: scale(1.1);
+    color: #915108;
+}
+
+/*=======================================Account Pop Up=======================================*/
+#AccountPopup
+{
+    position: fixed;
+    top: 90px;
+    right: 2%;
+    width: 150px;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 15px;
+    display: none;
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+#AccountPopup.show
+{
+    transition: opacity 0.3s , transform 0.3s ease-in-out;
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+    z-index: 1200;
+}
+
+#AccountPopup ul
+{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#AccountPopup ul li
+{
+    border-radius: 5px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    transition: all 0.3s ease-in-out;
+    border-bottom: none;
+}
+
+#AccountPopup ul li a
+{
+    text-decoration: none;
+    color: #333;
+    font-weight: 700;
+}
+
+#AccountPopup ul li:hover
+{
+    background: #61616185;
+}
+
+/*========================================Menu Button=========================================*/
+#MenuButton
+{
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+@media screen and (min-width: 600px)
+{
+    #MenuButton
+    {
+        display: none;
+    }    
+}
+
+/*===================================Menu Collapse Content====================================*/
+#MenuContentCollapse ul li
+{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#MenuContentCollapse ul li a
+{
+    font-size: 18px;
+    font-weight: 700;
+    text-decoration: none;
+    color: white;
+    transition: color 0.3s ease-in-out; 
+}
+
+#MenuContentCollapse ul li a:hover
+{
+    color: #915108;
+}
+
+@media screen and (min-width: 600px)
+{
+    #MenuContentCollapse
+    {
+        display: none !important;
+    }
+}
+
+#MainBody
+{
+    margin-top: 120px;
+}
+
+/*===========================================Title============================================*/
+#Title
+{
+    text-align: center;
+    width: 400px;
+    margin: 50px auto;
+    border-radius: 20px;
+    outline:rgba(0, 0, 0, 0.538) solid 2px;
+    background: linear-gradient(#e1f88c, #d6da19);
+    box-shadow: 0px 6px 0 rgb(38, 43, 15);
+    transition: all 0.2s ease-in-out;
+}
+
+#Title:hover
+{
+    box-shadow: 0px 5px 10px 5px rgba(17, 17, 17, 0.63);
+}
+
+#Title h1
+{
+    color:rgb(0, 0, 0)
+}
+
+@media screen and (max-width: 768px)
+{
+    #Title
+    {
+        width: 300px;
+        box-shadow: 0px 3px 0 rgb(38, 43, 15);
+    }    
+
+    #Title h1
+    {
+        font-size: 24px;
+    }
+}

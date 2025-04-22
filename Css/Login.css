@@ -1,0 +1,84 @@
+/*=======================================Black Overlay========================================*/
+.Overlay
+{
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.Overlay.show
+{
+    display: block;
+}
+
+/*=====================================Web Role Container=====================================*/
+.WebRoleContainer
+{
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 400px;
+    z-index: 1000;
+}
+
+.WebRoleContainer.show
+{
+    display: block;
+}
+
+@media screen and (max-width: 768px)
+{
+    .WebRoleContainer
+    {
+        width: 300px
+    }    
+}
+
+/*=======================================Web Role List========================================*/
+.WebRoleList
+{
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/*======================================Web Role Button=======================================*/
+.WebRoleButton
+{
+    display: none;
+}
+
+.WebRoleButton.show
+{
+    display: block;
+    width: 200px;
+    padding: 10px 20px;
+    background: linear-gradient(#00f2fe, #4facfe);
+    box-shadow: 0px 5px 3px rgba(0, 0, 0, 0.3);
+    color: #ffffff;
+    border: none;
+    border-radius: 60px;
+    cursor: pointer;
+    margin-bottom: 5px;
+    justify-content: center;
+}
+
+.WebRoleButton:hover
+{
+    background: linear-gradient(#4facfe, #00f2fe);
+    box-shadow: none;
+    margin-bottom: 0px;
+}
