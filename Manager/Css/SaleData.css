@@ -3,6 +3,7 @@
 {
     display: flex;
     flex-direction: row;
+    gap: 50px;
 }
 
 @media screen and (max-width: 768px)
@@ -48,6 +49,20 @@
     border: none
 }
 
+@media screen and (max-width: 768px)
+{
+    .DateInput 
+    {
+        padding: 10px;
+        font-size: 15px;
+        width: 200px;
+        height: 40px;
+        border-radius: 50px;
+        outline:rgba(0, 0, 0, 0.5) solid 1px;
+        border: none
+    }    
+}
+
 /*=========================================Date Label=========================================*/
 .DateLabel
 {
@@ -56,32 +71,112 @@
     margin-right: 15px;
 }
 
-/*======================================Scroll Container======================================*/
-.ScrollContainer
+/*======================================Custom Products=======================================*/
+.CustomProducts
 {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
     width: 400px;
-    height: 400px;
+    height: 460px;
     border: 2px solid #333;
     overflow: auto;
     padding: 10px;
+    background: linear-gradient(#8afbf2, #3dc8cd);
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.6);
+    border-radius: 15px;
+    overflow-x: hidden;
+    margin-bottom: 70px;
+}
+
+@media screen and (max-width: 768px)
+{
+    .CustomProducts
+    {
+        width: 300px;
+    }    
+}
+
+/*======================================Scroll Container======================================*/
+.ScrollContainer
+{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    width: 400px;
+    height: 460px;
+    overflow: auto;
+    padding: 10px;
+    background: linear-gradient(#77eee9, #3dc8cd);
+}
+
+/*========================================Product Item========================================*/
+.ProductItem
+{
+    background: linear-gradient(#ffffff, #bebebe);
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
+    width: 300px;
+    height: 40px;
+    border-radius: 15px;
+    margin-bottom: 10px;
+}
+
+.ProductItem:hover
+{
+    background: linear-gradient(#bebebe, #ffffff);
+    margin-top: 5px;
+    box-shadow: none;
+}
+
+.ProductItem input
+{
+    margin-left: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.ProductItem label
+{
+    margin-left: 10px;
+    font-size: 24px;
+}
+
+@media screen and (max-width: 768px)
+{
+    .ProductItem
+    {
+        width: 250px;
+    }    
 }
 
 /*======================================Chart Container=======================================*/
 .ChartContainer
 {
-    flex: 6;
-    height: 600px;
+    margin-top: 30px;
+    width: 100%;
+    max-width: 100%;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.ChartContainer canvas
+{
+    width: 100% !important;
     align-self: center;
-    color: white;
-    margin-right: 2%;
-    margin-top: 70px;
+    margin-top: 20px;
+    border-radius: 15px;
+    background-color: rgb(255, 255, 255);
 }
 
 @media screen and (max-width: 768px)
 {
     .ChartContainer
     {
-        width: 600px;
         margin-right: 0;
+        align-self: center;
+        width: 90% !important;
+        margin-bottom: 80px;
     }    
 }

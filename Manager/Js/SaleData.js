@@ -200,7 +200,7 @@ function createChartInAMonth(date, productDbs, xLabelName, yLabelName)
 
     else if (date.day == 2)
     {
-        labelCount = 28;
+        labelCount = 29;
     }
 
     else
@@ -324,13 +324,14 @@ function createProductCheckBoxs(productNames)
     {
         let product = document.createElement("div");
         product.classList.add("ProductItem");
-        product.innerHTML = `<input type="checkbox" value="${productNames[i]}">${productNames[i]}</input>`;
+        product.innerHTML = `<input type="checkbox" value="${productNames[i]}">
+        <label> ${productNames[i]} </label></input>`;
         document.getElementById("Products").appendChild(product);
     }
 }
 
 //==========================================Display===========================================
-const productNames = ["Cappuccino", "Latte", "Espresso"];
+const productNames = ["Cappuccino", "Latte", "Espresso", "h", "aa", "bb", "cc", "dd", "ee", "ff", "gg", "hh"];
 const productDbs = [
     new ProductDb(10000000, "Cappuccino", 100),
     new ProductDb(1, "Latte", 50),
