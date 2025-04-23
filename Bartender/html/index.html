@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Barista Dashboard</title>
+
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <script defer src="../js/app.js"></script>
+</head>
+<body>
+  <header>
+    <h1 class="brand"><span>☕</span>&nbsp;Barista Dashboard</h1>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h2>Craft Every Cup&nbsp;to&nbsp;Perfection</h2>
+      <p>Track, brew &amp; finish orders in one place.</p>
+    </div>
+  </section>
+
+  <main>
+    <section id="orders-container" class="cards"></section>
+  </main>
+
+  <!-- DETAIL MODAL ------------------------------------------------------>
+  <div id="detail-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2 id="detail-title"></h2>
+      <p>Status: <span id="detail-status" class="badge"></span></p>
+      <p><strong>Special request:</strong> <span id="detail-req"></span></p>
+
+      <button id="btn-take"   class="btn take">Take Order</button>
+      <button class="btn close-btn" data-close>Close</button>
+    </div>
+  </div>
+
+  <!-- WORK MODAL -------------------------------------------------------->
+  <div id="work-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2 id="work-title"></h2>
+      <p><strong>Formula:</strong> <span id="work-formula"></span></p>
+      <p><strong>Special request:</strong> <span id="work-req"></span></p>
+
+      <div class="actions">
+        <button id="btn-cancel" class="btn cancel">Cancel Order</button>
+        <button id="btn-finish" class="btn confirm">Mark Finished</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
