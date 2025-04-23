@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            background-color: #dff6fd;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: #0b3b69;
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .sidebar h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .menu-item i {
+            margin-right: 10px;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            background: #145a92;
+            border-radius: 5px;
+        }
+
+        .menu-item:last-child {
+            margin-top: auto;
+        }
+
+        .back-btn {
+            margin-top: auto;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            background-color: #145a92;
+            border-radius: 5px;
+        }
+
+        .back-btn:hover {
+            background: #1b6bb0;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            background-color: #0b3b69;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 50px;
+        }
+
+        .header .search-box {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            color: #1e3a8a;
+            padding: 5px;
+            border-radius: 20px;
+        }
+
+        .header .search-box input {
+            border: none;
+            background: none;
+            outline: none;
+            padding: 5px;
+        }
+
+        .header .search-box i {
+            margin-left: 5px;
+            cursor: pointer;
+        }
+
+        .header .account {
+            background-color: white;
+            color: #1e3a8a;
+            border: none;
+            border-radius: 20px;
+            padding: 5px 15px;
+            cursor: pointer;
+            width: 80px;
+            height: 32px;
+            text-align: center;
+        }
+
+        /* Dashboard Sections */
+        .dashboard {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+            justify-content: space-between;
+        }
+
+        /* Product Transaction */
+        .transaction {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            flex: 1;
+            transition: box-shadow 0.3s ease;
+            cursor: pointer;
+            max-width: calc(33.333% - 20px);
+        }
+
+        .transaction:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .bar-chart {
+            margin-top: 10px;
+        }
+
+        .bar {
+            display: flex;
+            margin-bottom: 5px;
+        }
+
+        .bar-label {
+            flex: 1;
+            font-size: 12px;
+        }
+
+        .bar-container {
+            width: 70%;
+            display: flex;
+        }
+
+        .bar-export {
+            background: lightgreen;
+            height: 12px;
+            border-top-left-radius: 6px;
+            border-bottom-left-radius: 6px;
+        }
+
+        .bar-import {
+            background: green;
+            height: 12px;
+            border-top-right-radius: 6px;
+            border-bottom-right-radius: 6px;
+        }
+
+        /* Card Styling */
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transition: box-shadow 0.3s ease;
+            cursor: pointer;
+            flex: 1;
+            max-width: calc(33.333% - 20px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .card table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .card table th,
+        .card table td {
+            padding: 8px 10px;
+            text-align: left;
+            font-size: 14px;
+            word-wrap: break-word;
+        }
+
+        .card table th {
+            background-color: #f3f4f6;
+            font-weight: bold;
+        }
+
+        .card table tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Storage Manager</h2>
+        <div class="menu-item active" onclick="location.href='dashboard.html'">📊 Dashboard</div>
+        <div class="menu-item" onclick="location.href='Inventory.html'">📦 Inventory</div>
+        <div class="menu-item" onclick="location.href='History.html'">📜 History</div>
+        <div class="menu-item" onclick="location.href='DailyChecks.html'">✅ Daily-checks</div>
+        <div class="menu-item" onclick="location.href='Back.html'">🔙 Back</div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+        <div class="header">
+            <div class="search-box">
+                <input type="text" placeholder="Search">
+                <i>🔍</i>
+            </div>
+            <div>
+                <button class="account">Account</button>
+            </div>
+        </div>
+
+        <div class="dashboard">
+            <!-- Product Transaction -->
+            <div class="transaction" onclick="location.href='#'">
+                <h3>Product transaction: <span>dd/mm/yy</span></h3>
+                <div class="bar-chart">
+                    <div class="bar">
+                        <div class="bar-label">Carraro Villaggio</div>
+                        <div class="bar-container">
+                            <div class="bar-export" style="width: 70%;"></div>
+                            <div class="bar-import" style="width: 30%;"></div>
+                        </div>
+                    </div>
+                    <div class="bar">
+                        <div class="bar-label">Matcha</div>
+                        <div class="bar-container">
+                            <div class="bar-export" style="width: 20%;"></div>
+                            <div class="bar-import" style="width: 80%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Running Out -->
+            <div class="card" onclick="location.href='Inventory2.html?tab=running-out'">
+                <h3>Running Out</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Ingredients</th>
+                            <th>Supplier</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Code 1</td>
+                            <td>Ingredient A</td>
+                            <td>Supplier X</td>
+                        </tr>
+                        <tr>
+                            <td>Code 2</td>
+                            <td>Ingredient B</td>
+                            <td>Supplier Y</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Expiring -->
+            <div class="card" onclick="location.href='Inventory2.html?tab=expiring'">
+                <h3>Expiring</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Ingredients</th>
+                            <th>Supplier</th>
+                            <th>Import Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Code A</td>
+                            <td>Ingredient X</td>
+                            <td>Supplier Z</td>
+                            <td>01/04/2025</td>
+                        </tr>
+                        <tr>
+                            <td>Code B</td>
+                            <td>Ingredient Y</td>
+                            <td>Supplier W</td>
+                            <td>02/04/2025</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
