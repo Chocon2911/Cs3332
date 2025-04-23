@@ -6,6 +6,7 @@
     <title>Coffee</title>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
     rel="stylesheet" 
@@ -79,17 +80,18 @@
                 <div class="CustomDate">
                     <input class="DateInput" id="Date" type="date">
                 </div>
-
-                <div class="ScrollContainer" id="Products" onload="displayProducts()">
-                    
+                
+                <div class="CustomProducts">
+                    <h2>Product List</h2>
+                    <h7>Uncheck to hide product in chart</h7>
+                    <div class="ScrollContainer" id="Products">
+                    </div>
                 </div>
             </div>
 
             <!--Chart-->
             <div class="ChartContainer">
-                <canvas id="SaleChart" onload="displayChart()">
-                    
-                </canvas>
+                <canvas id="SaleChart"></canvas>
             </div>
         </div>
 
