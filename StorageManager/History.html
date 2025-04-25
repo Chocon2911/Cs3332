@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>History</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      background-color: #dff6fd;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background-color: #0b3b69;
+      color: white;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .sidebar h2 {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .menu-item i {
+      margin-right: 10px;
+    }
+
+    .menu-item:hover,
+    .menu-item.active {
+      background-color: #145a92;
+      border-radius: 5px;
+    }
+
+    .menu-item:last-child {
+      margin-top: auto;
+    }
+
+    .back-btn {
+      margin-top: auto;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+      background-color: #145a92;
+      border-radius: 5px;
+    }
+
+    .back-btn:hover {
+      background-color: #1b6bb0;
+    }
+
+    /* Main content */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      background-color: #0b3b69;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 50px;
+    }
+
+    .header .search-box input {
+      border: none;
+      background: none;
+      outline: none;
+      padding: 5px;
+    }
+
+    .header .search-box {
+      display: flex;
+      align-items: center;
+      background-color: white;
+      color: #1e3a8a;
+      padding: 5px;
+      border-radius: 20px;
+    }
+
+    .header .search-box i {
+      margin-left: 5px;
+      cursor: pointer;
+    }
+
+    .header .cart,
+    .header .account {
+      background-color: white;
+      color: #1e3a8a;
+      border: none;
+      border-radius: 20px;
+      padding: 5px 15px;
+      cursor: pointer;
+      width: 80px;
+      height: 32px;
+      text-align: center;
+    }
+
+    /* Filter section */
+    .filter-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 300px;
+      margin-bottom: 20px;
+      padding: 20px;
+    }
+
+    .filter-section input {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    /* Table */
+    .table-container{
+        padding: 0 20px 20px 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0;
+      background-color: white;
+      border: 1px solid #d1d5db;
+    }
+
+    th, td {
+      border: 1px solid #d1d5db;
+      padding: 10px;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th {
+      background-color: #f3f4f6;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9fafb;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Storage Manager</h2>
+    <div class="menu-item" onclick="location.href='Dashboard.html'">📊 Dashboard</div>
+    <div class="menu-item" onclick="location.href='Inventory.html'">📦 Inventory</div>
+    <div class="menu-item active" onclick="location.href='History.html'">📜 History</div>
+    <div class="menu-item" onclick="location.href='DailyChecks.html'">✅ Daily-checks</div>
+    <div class="menu-item" onclick="location.href='Back.html'">🔙 Back</div>
+  </div>
+
+  <!-- Main content -->
+  <div class="main-content">
+    <!-- Header -->
+    <div class="header">
+      <div class="search-box">
+        <input type="text" placeholder="Search">
+        <i>🔍</i>
+      </div>
+      <div>
+        <button class="account">Account</button>
+      </div>
+    </div>
+
+    <!-- Filter section -->
+    <div class="filter-section">
+      <input type="text" placeholder="From:">
+      <input type="text" placeholder="To:">
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+        <table class = "table">
+            <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Name</th>
+                  <th>Supplier</th>
+                  <th>Import</th>
+                  <th>Export</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>11/09/2024</td>
+                  <td>Cararo Villaggio Evaluna</td>
+                  <td>DHL Company</td>
+                  <td>100 kg</td>
+                  <td>50 kg</td>
+                </tr>
+                <tr>
+                  <td>12/09/2024</td>
+                  <td>Cararo Villaggio Evaluna</td>
+                  <td>DHL Company</td>
+                  <td>100 kg</td>
+                  <td>100 kg</td>
+                </tr>
+                <tr>
+                  <td>13/09/2024</td>
+                  <td>Cararo Villaggio Evaluna</td>
+                  <td>DHL Company</td>
+                  <td>100 kg</td>
+                  <td>100 kg</td>
+                </tr>
+                <tr>
+                  <td>14/09/2024</td>
+                  <td>Cararo Villaggio Evaluna</td>
+                  <td>DHL Company</td>
+                  <td>100 kg</td>
+                  <td>100 kg</td>
+                </tr>
+                <tr>
+                  <td>25/09/2024</td>
+                  <td>Cararo Villaggio Evaluna</td>
+                  <td>DHL Company</td>
+                  <td>100 kg</td>
+                  <td>100 kg</td>
+                </tr>
+                <tr>
+                  <td>16/09/204</td>
+                  <td>Cararo Villaggio Evaluna</td>
+                  <td>DHL Company</td>
+                  <td>100 kg</td>
+                  <td>100 kg</td>
+                </tr>
+              </tbody>
+        </table>
+    </div>
+  </div>
+</body>
+</html>
