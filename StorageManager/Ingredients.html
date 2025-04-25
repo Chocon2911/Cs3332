@@ -15,8 +15,6 @@
       font-family: Arial, sans-serif;
       display: flex;
       background-color: #dff6fd;
-      height: 100vh;
-      overflow: hidden;
     }
 
     /* Sidebar */
@@ -28,9 +26,6 @@
       display: flex;
       flex-direction: column;
       padding: 20px;
-      position: fixed;
-      left: 0;
-      top: 0;
     }
 
     .sidebar h2 {
@@ -56,7 +51,7 @@
     }
 
     .menu-item:last-child {
-      margin-top: auto;
+        margin-top:auto;
     }
 
     .back-btn {
@@ -75,10 +70,8 @@
     /* Main content */
     .main-content {
       flex: 1;
-      margin-left: 250px;
       display: flex;
       flex-direction: column;
-      height: 100vh;
     }
 
     /* Header */
@@ -89,12 +82,14 @@
       align-items: center;
       justify-content: space-between;
       padding: 15px 50px;
-      position: fixed;
-      top: 0;
-      left: 250px;
-      right: 0;
-      width: calc(100% - 250px - 15px);
-      z-index: 1000;
+      width: 100%;
+    }
+
+    .header .search-box input{
+      border: none;
+      background: none;
+      outline: none;
+      padding: 5px;
     }
 
     .header .search-box {
@@ -106,18 +101,12 @@
       border-radius: 20px;
     }
 
-    .header .search-box input {
-      border: none;
-      background: none;
-      outline: none;
-      padding: 5px;
-    }
-
-    .header .search-box i {
+    .header .search-box i{
       margin-left: 5px;
       cursor: pointer;
     }
 
+    .header .cart,
     .header .account {
       background-color: white;
       color: #1e3a8a;
@@ -130,50 +119,59 @@
       text-align: center;
     }
 
-    /* Scrollable Section */
-    .main-section {
-      flex: 1;
-      overflow-y: auto;
-      padding: 90px 20px 20px;
-      height: calc(100vh - 70px);
+    /* Product details */
+    .product-details {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 100px;
+      padding: 20px;
+      width: 80%;
     }
 
-    /* Product grid */
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 20px;
-    }
-
-    .product-card {
-      background-color: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    .product-info {
       text-align: center;
-      padding: 10px;
+      flex: 1;
+      margin-right: -50px;
     }
 
-    .product-card:hover {
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    }
-
-    .product-card img {
-      max-width: 100%;
+    .product-info img {
+      /*max-width: 100%;*/
+      max-width: 300px;
       height: auto;
       border-radius: 10px;
     }
 
-    .product-card h3 {
-      font-size: 16px;
+    .product-info h3 {
       margin: 10px 0;
+      font-size: 18px;
     }
 
-    .product-card p {
+    .product-info p {
       font-size: 14px;
       color: #4b5563;
     }
 
-    .product-card button {
+    .qr-code {
+      text-align: center;
+      flex: 1;
+      margin-left: -50px;
+    }
+
+    .qr-code img {
+      max-width: 200px;
+      height: auto;
+    }
+
+    .actions {
+      display: flex;
+      /*align-items: center;*/
+      gap: 10px;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .actions button {
       background-color: #047857;
       color: white;
       padding: 5px 15px;
@@ -181,16 +179,39 @@
       border-radius: 5px;
       cursor: pointer;
       font-size: 14px;
+      margin-left: 10px;
     }
 
-    .product-card button:hover {
+    .actions button:hover {
       background-color: #065f46;
     }
 
+    .quantity {
+      display: flex;
+      align-items: center;
+    }
+
+    .quantity button {
+      background-color: #1e3a8a;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 5px;
+    }
+
+    .quantity button:hover {
+      background-color: #2563eb;
+    }
+
+    .quantity span {
+      margin: 0 10px;
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
-
   <!-- Sidebar -->
   <div class="sidebar">
     <h2>Storage Manager</h2>
@@ -200,7 +221,7 @@
     <div class="menu-item" onclick="location.href='History.html'">📜 History</div>
     <div class="menu-item" onclick="location.href='Analytics.html'">📈 Analytics</div>
     <div class="menu-item" onclick="location.href='Back.html'">🔙 Back</div>
-  </div>
+</div>
 
   <!-- Main content -->
   <div class="main-content">
@@ -216,43 +237,29 @@
       </div>
     </div>
 
-    <!-- Scrollable Section -->
-    <div class="main-section">
-      <!-- Product grid -->
-      <div class="product-grid">
-        <div class="product-card">
-          <img src="Image/ca-phe-hat-carraro-villagio-evaluna.png" alt="Product Image">
-          <h3>Carraro Villaggio Evaluna</h3>
-          <button onclick="location.href='Ingredients.html'">View</button>
-        </div>
-        <div class="product-card">
-          <img src="Image/ca-phe-hat-carraro-villagio-evaluna.png" alt="Product Image">
-          <h3>Carraro Villaggio Evaluna</h3>
-          <button onclick="location.href='Ingredients.html'">View</button>
-        </div>
-        <div class="product-card">
-          <img src="Image/ca-phe-hat-carraro-villagio-evaluna.png" alt="Product Image">
-          <h3>Carraro Villaggio Evaluna</h3>
-          <button onclick="location.href='Ingredients.html'">View</button>
-        </div>
-        <div class="product-card">
-          <img src="Image/ca-phe-hat-carraro-villagio-evaluna.png" alt="Product Image">
-          <h3>Carraro Villaggio Evaluna</h3>
-          <button onclick="location.href='Ingredients.html'">View</button>
-        </div>
-        <div class="product-card">
-          <img src="Image/ca-phe-hat-carraro-villagio-evaluna.png" alt="Product Image">
-          <h3>Carraro Villaggio Evaluna</h3>
-          <button onclick="location.href='Ingredients.html'">View</button>
-        </div>
-        <div class="product-card">
-          <img src="Image/ca-phe-hat-carraro-villagio-evaluna.png" alt="Product Image">
-          <h3>Carraro Villaggio Evaluna</h3>
-          <button onclick="location.href='Ingredients.html'">View</button>
+    <!-- Product details -->
+    <div class="product-details">
+      <!-- Product info -->
+      <div class="product-info">
+        <img src="Image/ca-phe-hat-carraro-villagio-evaluna.png" alt="Product Image">
+        <h3>Cà phê hạt Carraro Villaggio Evaluna</h3>
+        <p>Supplier: Doan Hoang Long Company</p>
+        <p>Amount: 1 billions left</p>
+      </div>
+
+      <!-- QR code and actions -->
+      <div class="qr-code">
+        <img src="Image/QR_code_for_mobile_English_Wikipedia.svg.png" alt="QR Code">
+        <div class="actions">
+          <div class="quantity">
+            <button>-</button>
+            <span>1</span>
+            <button>+</button>
+          </div>
+          <button>Import</button>
         </div>
       </div>
     </div>
   </div>
-
 </body>
 </html>
