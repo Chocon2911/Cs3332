@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>State-based UI Example</title>
+  <style>
+    div {
+      margin: 20px;
+      padding: 20px;
+      border: 1px solid black;
+      width: 250px;
+      display: none; /* Ẩn hết ban đầu */
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Các UI màn hình -->
+  <div id="loginUI" style="display: block;">
+    <h2>Login UI</h2>
+    <button onclick="loginAs('manager')">Login as Manager</button>
+    <button onclick="loginAs('bartender')">Login as Bartender</button>
+    <button onclick="loginAs('storageManager')">Login as Storage Manager</button>
+    <button onclick="loginAs('cashierCustomer')">Login as Cashier/Customer</button>
+  </div>
+
+  <div id="managerUI">
+    <h2>Manager UI</h2>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <div id="bartenderUI">
+    <h2>Bartender UI</h2>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <div id="storageManagerUI">
+    <h2>Storage Manager UI</h2>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <div id="cashierCustomerUI">
+    <h2>Cashier/Customer UI</h2>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <!-- Script điều khiển State -->
+  <script>
+    // Biến state để biết đang ở màn nào
+    let currentState = "login";
+
+    function loginAs(role) {
+      currentState = role; // đổi state
+      updateUI();
+    }
+
+    function logout() {
+      currentState = "login"; // logout thì về login
+      updateUI();
+    }
+
+    function updateUI() {
+      // Ẩn hết tất cả các UI
+      document.getElementById("loginUI").style.display = "none";
+      document.getElementById("managerUI").style.display = "none";
+      document.getElementById("bartenderUI").style.display = "none";
+      document.getElementById("storageManagerUI").style.display = "none";
+      document.getElementById("cashierCustomerUI").style.display = "none";
+
+      // Hiện đúng UI theo currentState
+      if (currentState === "login") {
+        document.getElementById("loginUI").style.display = "block";
+      } else if (currentState === "manager") {
+        document.getElementById("managerUI").style.display = "block";
+      } else if (currentState === "bartender") {
+        document.getElementById("bartenderUI").style.display = "block";
+      } else if (currentState === "storageManager") {
+        document.getElementById("storageManagerUI").style.display = "block";
+      } else if (currentState === "cashierCustomer") {
+        document.getElementById("cashierCustomerUI").style.display = "block";
+      }
+    }
+  </script>
+
+</body>
+</html>

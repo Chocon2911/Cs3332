@@ -44,7 +44,7 @@
                     <label class="RowName">Password: </label>
                     <div class="PasswordRow">
                         <input type="password" class="InputFocus TextInput" id="Password">
-                        <button class="TogglePasswordButton" id="TogglePassword">
+                        <button type="button" class="TogglePasswordButton" id="TogglePassword">
                             <img src="../Image/PasswordEye.png">
                         </button>
                     </div>
@@ -62,9 +62,9 @@
         <div class="WebRoleContainer" id="WebRole">
             <h2>Select the website <br> you want to access</h2>
             <ul class="WebRoleList">
-                <button class="WebRoleButton" id="ManagerBtn">Manager</button>
-                <button class="WebRoleButton" id="StorageManagerBtn">Storage Manager</button>
-                <button class="WebRoleButton" id="BartenderBtn">Bartender</button>
+                <button class="WebRoleButton show" id="ManagerBtn" onclick="window.location.href='Profile.html'">Manager</button>
+                <button class="WebRoleButton show" id="StorageManagerBtn" onclick="window.location.href='../../StorageManager/DashBoard.html'">Storage Manager</button>
+                <button class="WebRoleButton show" id="BartenderBtn" onclick="window.location.href='../../Bartender/html/index.html'">Bartender</button>
                 <button class="WebRoleButton" id="CustomerBtn">Customer</button>
             </ul>
         </div>
