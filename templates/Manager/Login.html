@@ -10,9 +10,9 @@
     integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
     crossorigin="anonymous">
 
-    <link rel="stylesheet" href="../Css/Style.css">
-    <link rel="stylesheet" href="../Css/EnterForm.css">
-    <link rel="stylesheet" href="../Css/Login.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='Manager/css/Style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='Manager/css/EnterForm.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='Manager/css/Login.css') }}">
 </head>
 
 <body id="Main">
@@ -21,7 +21,7 @@
             <div class="container-fluid" id="NavHeader">
                 <!--Logo-->
                 <a class="" id="Logo">
-                    <img src="../Image/Coffee.png" width="140" height="70">
+                    <img src="{{ url_for('static', filename='Manager/Image/Coffee.png') }}" width="140" height="70">
                 </a>
             </div>
         </nav>
@@ -45,7 +45,7 @@
                     <div class="PasswordRow">
                         <input type="password" class="InputFocus TextInput" id="Password">
                         <button type="button" class="TogglePasswordButton" id="TogglePassword">
-                            <img src="../Image/PasswordEye.png">
+                            <img src="{{ url_for('static', filename='Manager/Image/PasswordEye.png') }}">
                         </button>
                     </div>
                 </div>
@@ -62,7 +62,7 @@
         <div class="WebRoleContainer" id="WebRole">
             <h2>Select the website <br> you want to access</h2>
             <ul class="WebRoleList">
-                <button class="WebRoleButton show" id="ManagerBtn" onclick="window.location.href='Profile.html'">Manager</button>
+                <button class="WebRoleButton show" id="ManagerBtn" onclick="window.location.href='/manager/profile'">Manager</button>
                 <button class="WebRoleButton show" id="StorageManagerBtn" onclick="window.location.href='../../StorageManager/DashBoard.html'">Storage Manager</button>
                 <button class="WebRoleButton show" id="BartenderBtn" onclick="window.location.href='../../Bartender/html/index.html'">Bartender</button>
                 <button class="WebRoleButton" id="CustomerBtn">Customer</button>
@@ -70,7 +70,7 @@
         </div>
     </main>
 
-    <script src="../Js/Login.js"></script>
+    <script src="{{ url_for('static', filename='Manager/js/Login.js') }}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" 
     integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" 
