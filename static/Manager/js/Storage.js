@@ -1,6 +1,6 @@
 function generateIngredients()
 {
-    const image = "../Image/Espresso.png";
+    const image = "{{ url_for('static', filename='Manager/Image/Espresso.png') }}";
     const name = "Espresso";
     const weight = "0g";
     const expiry = "2023-12-31";
