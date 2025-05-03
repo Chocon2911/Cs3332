@@ -10,8 +10,8 @@
     integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
     crossorigin="anonymous">
 
-    <link rel="stylesheet" href="../Css/Style.css">
-    <link rel="stylesheet" href="../Css/Ingredient.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='Manager/css/Style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='Manager/css/Ingredient.css') }}">
 </head>
 
 <body onload="" id="Main">
@@ -20,36 +20,36 @@
             <div class="container-fluid" id="NavHeader">
                 <!--Menu Collapse Button-->
                 <button class="navbar-toggler" id="MenuButton" type="button" data-bs-toggle="collapse" data-bs-target="#MenuContentCollapse">
-                    <img src="../Image/Menu.png" width="30" height="30">
+                    <img src="{{ url_for('static', filename='Manager/Image/Menu.png') }}" width="30" height="30">
                 </button>
 
                 <!--Logo-->
                 <a class="" href="#" id="Logo">
-                    <img src="../Image/Coffee.png" width="140" height="70">
+                    <img src="{{ url_for('static', filename='Manager/Image/Coffee.png') }}" width="140" height="70">
                 </a>
 
                 <!--Menu Content-->
                 <div class="ms-auto" id="MenuContent">
                     <ul class="navbar-nav">
-                        <li class="nav-item"><a class="nav-link" href="Storage.html">Storage</a></li>
-                        <li class="nav-item"><a class="nav-link" href="StaffAccount.html">Staff Account</a></li>
-                        <li class="nav-item"><a class="nav-link" href="SaleData.html">Sale Data</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/manager/storage">Storage</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/manager/staff_account">Staff Account</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/manager/sale_data">Sale Data</a></li>
                     </ul>
                 </div>
 
                 <!--Account-->
                 <div id="AccountButton">
                     <button class="btn">
-                        <img src="../Image/Account.png">
+                        <img src="{{ url_for('static', filename='Manager/Image/Account.png') }}">
                     </button>
                 </div>
 
                 <!--Menu Content Collapse-->
                 <div class="collapse navbar-collapse" id="MenuContentCollapse">
                     <ul class="navbar-nav">
-                        <li><a href="Storage.html">Storage</a></li>
-                        <li><a href="StaffAccount.html">Staff Account</a></li>
-                        <li><a href="SaleData.html">Sale Data</a></li>
+                        <li><a href="/manager/storage">Storage</a></li>
+                        <li><a href="/manager/staff_account">Staff Account</a></li>
+                        <li><a href="/manager/sale_data">Sale Data</a></li>
                     </ul>
                 </div>
             </div>
@@ -59,8 +59,8 @@
     <!--Account Popup-->
     <div id="AccountPopup">
         <ul>
-            <li><a class="" href="Profile.html">Profile</a></li>
-            <li><a class="" href="#">Log out</a></li>
+            <li><a class="" href="/manager/profile">Profile</a></li>
+            <li><a class="" href="/manager/login">Log out</a></li>
         </ul>
     </div>
 
@@ -112,7 +112,7 @@
     </main>
         
 
-    <script src="../Js/Header.js"></script>
+    <script src="{{ url_for('static', filename='Manager/js/Header.js') }}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" 
     integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" 
