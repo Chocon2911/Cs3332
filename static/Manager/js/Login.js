@@ -7,11 +7,14 @@ const managerBtn = document.getElementById("ManagerBtn");
 const storageManagerBtn = document.getElementById("StorageManagerBtn");
 const bartenderBtn = document.getElementById("BartenderBtn");
 const customerBtn = document.getElementById("CustomerBtn");
+const togglePasswordBtn = document.getElementById("TogglePassword");
 
 loginBtn.addEventListener("click", function (event)
 {
     showPopUp();
 })
+
+
 
 overlay.addEventListener("click", function (event)
 {
@@ -29,3 +32,16 @@ function hidePopUp()
     overlay.classList.remove("show");
     webRole.classList.remove("show");
 }
+
+function togglePassword(passwordId, btnId)
+{
+    const passwordInput = document.getElementById(passwordId);
+    const togglePasswordButton = document.getElementById(btnId);
+    passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+    togglePasswordButton.classList.toggle("hide");
+}
+
+togglePasswordBtn.addEventListener("click", function (event)
+{
+    togglePassword("Password", "TogglePassword");
+});

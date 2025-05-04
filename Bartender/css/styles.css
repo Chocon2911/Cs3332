@@ -1,0 +1,129 @@
+/* === RESET & BASE ====================================== */
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:"Poppins",sans-serif;
+  background:#f5f5f4;
+  color:#222;
+  min-height:100vh;
+  line-height:1.45
+}
+
+/* === HEADER (coffee brown bar) ========================= */
+header{
+  /* xanh biển thuần */
+  background:#0077b6;       /* hoặc thử #0d6efd, #0096c7, tuỳ ý */
+  color:#fdfcf9;
+  text-align:center;
+  padding:1rem 2rem;
+  box-shadow:0 4px 12px rgba(0,0,0,.15);
+}
+
+header h1{font-family:"Playfair Display",serif;font-weight:700;font-size:2.1rem;letter-spacing:.4px}
+header span{display:inline-block;margin-right:.4rem}
+
+/* === HERO SECTION ====================================== */
+.hero{
+  position:relative;
+  height:260px;
+  background:url("https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=1920&q=80") center/cover no-repeat;
+  display:flex;align-items:center;justify-content:center;
+  text-align:center;
+  color:#fdfcf9;
+  pointer-events:none;          /* keeps clicks flowing to cards */
+}
+
+.hero::after{                   /* subtle dark overlay */
+  content:"";
+  position:absolute;inset:0;
+  background:rgba(0,0,0,.45)
+}
+
+.hero-content{
+  position:relative;            /* above overlay */
+  max-width:640px;padding:0 1rem
+}
+.hero-content h2{
+  font-family:"Playfair Display",serif;
+  font-size:2.4rem;font-weight:700;margin-bottom:.6rem
+}
+.hero-content p{font-size:1.05rem;opacity:.9}
+
+/* === ORDER CARDS ======================================= */
+.cards{
+  max-width:1200px;margin:2.5rem auto;
+  display:grid;gap:1.5rem;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr))
+}
+.card{
+  background:#fff;border-radius:12px;overflow:hidden;
+  box-shadow:0 4px 10px rgba(0,0,0,.08);
+  transition:transform .2s,box-shadow .2s;
+  cursor:pointer
+}
+.card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.14)}
+.card img{width:100%;height:160px;object-fit:cover}
+.card .info{padding:1rem}
+.card h3{font-size:1.25rem;margin-bottom:.35rem;color:#1f1f1f}
+.card small{color:#666}
+.status,
+.badge{
+  display:inline-block;margin-top:.55rem;
+  padding:.25rem .75rem;border-radius:999px;
+  font-size:.7rem;font-weight:600;letter-spacing:.45px;text-transform:uppercase
+}
+.status.Untaken,.badge.Untaken{background:#eaf8f6;color:#00856f}
+.status.Taken,.badge.Taken{background:#fff4d6;color:#c78b00}
+.status.Finished,.badge.Finished{background:#d9f3e5;color:#2b794d}
+
+.card img{
+  width:100%;height:180px;object-fit:cover;
+  background:#ececec;        /* subtle placeholder while loading/failure */
+}
+
+/* === MODALS ============================================ */
+.modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.55);z-index:1000}
+.modal.hidden{display:none}
+
+.modal-content{
+  background:#fff;padding:2rem 2.4rem;border-radius:16px;
+  max-width:420px;width:90%;
+  box-shadow:0 6px 24px rgba(0,0,0,.25);
+  animation:zoom .25s ease
+}
+@keyframes zoom{from{transform:scale(.86)}to{transform:scale(1)}}
+.modal-content h2{
+  font-family:"Playfair Display",serif;font-size:1.55rem;
+  color:#2c1d20;margin-bottom:.9rem
+}
+.actions{margin-top:1.5rem;display:flex;gap:1rem}
+
+.btn{
+  flex:1;padding:.8rem 1rem;border:none;border-radius:8px;
+  font-weight:600;font-size:.9rem;cursor:pointer;transition:opacity .2s
+}
+.btn:hover{opacity:.85}
+.take{background:#118ab2;color:#fff}
+.cancel{background:#ef233c;color:#fff}
+.confirm{background:#2b794d;color:#fff}
+.close-btn{background:#2c1d20;color:#fff;width:100%;margin-top:1.2rem}
+
+/* === SCROLLBAR ========================================= */
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-thumb{background:rgba(0,0,0,.18);border-radius:4px}
+
+/* === ORDER CARDS ==================================================== */
+.cards{
+  max-width:1200px;margin:2.5rem auto;
+  display:grid;gap:1.75rem;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr))
+}
+.card{
+  background:#fff;border-radius:14px;overflow:hidden;
+  box-shadow:0 6px 18px rgba(0,0,0,.08);
+  transition:transform .25s,box-shadow .25s;
+  cursor:pointer
+}
+.card:hover{transform:translateY(-6px);box-shadow:0 12px 28px rgba(0,0,0,.14)}
+.card img{width:100%;height:180px;object-fit:cover}          /*  ← 180 px */
+.card .info{padding:1.1rem 1.2rem}
