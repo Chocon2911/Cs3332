@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventory</title>
+  <link rel="stylesheet" href="../css/Inventory2.css" />
+  <script defer src="../js/inventory2.js"></script>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Storage Manager</h2>
+    <div class="menu-item" onclick="location.href='Dashboard.html'">📊 Dashboard</div>
+    <div class="menu-item active" onclick="location.href='Inventory.html'">📦 Inventory</div>
+    <div class="menu-item" onclick="location.href='History.html'">📜 History</div>
+    <div class="menu-item" onclick="location.href='DailyChecks.html'">✅ Daily-checks</div>
+    <div class="menu-item" onclick="location.href='Back.html'">🔙 Back</div>
+  </div>
+
+  <!-- Main content -->
+  <div class="main-content">
+    <!-- Header -->
+    <div class="header">
+      <div class="search-box">
+        <input type="text" placeholder="Search">
+        <i>🔍</i>
+      </div>
+      <div>
+        <button class="account">Account</button>
+      </div>
+    </div>
+
+    <div class = "scrollable-content">
+      <!-- Tabs -->
+      <div class="tabs">
+        <div class="tab active" onclick="showTable(0)">All ingredients</div>
+        <div class="tab" onclick="showTable(1)">Expiring</div>
+        <div class="tab" onclick="showTable(2)">Running out</div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-container">
+        <table class="table" id="table-0">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Supplier</th>
+              <th>Quantity</th>
+              <th>Import Date</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+
+        <table class="table" id="table-1" style="display:none;">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Supplier</th>
+              <th>Quantity</th>
+              <th>Import Date</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+
+        <table class="table" id="table-2" style="display:none;">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Supplier</th>
+              <th>Quantity</th>
+              <th>Import Date</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        
+      </div>
+    </div>
+
+  </div>
+
+  <button class="import-btn" onclick="location.href='../html/import.html'">Import</button>
+
+</body>
+</html>
