@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventory</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='StorageManager/css/inventory.css') }}" />
+  <script defer src="{{ url_for('static', filename='StorageManager/js/inventory.js') }}"></script>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Storage Manager</h2>
+    <div class="menu-item" onclick="location.href='{{ url_for('dashboard') }}'">📊 Dashboard</div>
+    <div class="menu-item active" onclick="location.href='{{ url_for('inventory') }}'">📦 Inventory</div>
+    <div class="menu-item" onclick="location.href='{{ url_for('history') }}'">📜 History</div>
+    <div class="menu-item" onclick="location.href='{{ url_for('daily_checks') }}'">✅ Daily-checks</div>
+    <div class="menu-item" onclick="showLogoutModal()">🔙 Log out</div>
+</div>
+
+  <!-- Main content -->
+  <div class="main-content">
+
+    <div class="header">
+      <div class="search-box">
+        <input type="text" placeholder="Search">
+        <i>🔍</i>
+      </div>
+      <div>
+        <button class="account">Account</button>
+      </div>
+    </div>
+
+    <div class="scrollable-content">
+      <!-- Dashboard content -->
+      <div class="dashboard-content">
+      
+        <div class="left-column">
+          <div class="card" id="card-all" onclick="navigateTo('all-ingredients')">
+            <h3>All ingredients</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Supplier</th>
+                  <th>Quantity</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      
+        <div class="right-column">
+
+          <div class="card" id="card-expiring" onclick="navigateTo('expiring')">
+            <h3>Expiring</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Supplier</th>
+                  <th>Quantity</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div class="card" id="card-running" onclick="navigateTo('running-out')">
+            <h3>Running out</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Supplier</th>
+                  <th>Quantity</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Logout Modal -->
+  <div class="modal-overlay" id="logout-modal" style="display: none;">
+    <div class="modal">
+      <p>Do you want to log out?</p>
+      <div class="modal-actions">
+        <button id="confirm-yes">Yes</button>
+        <button id="confirm-no">No</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
