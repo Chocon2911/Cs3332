@@ -422,7 +422,7 @@ function showOrderSuccessPopup() {
 
 // ----- Active link sidebar tự động -----
 document.addEventListener('DOMContentLoaded', () => {
-  const currentPath = window.location.pathname.split('/').pop(); // Lấy tên file
+  const currentPath = window.location.pathname;
   document.querySelectorAll('.sidebar a').forEach(link => {
     const linkPath = link.getAttribute('href');
     if (linkPath === currentPath) {
@@ -436,7 +436,10 @@ document.addEventListener('DOMContentLoaded', () => {
 // ----- Back về Map -----
 document.addEventListener("DOMContentLoaded", function() {
   const backBtn = document.getElementById('backBtn');
-  backBtn.addEventListener('click', function() {
-    window.location.href = '../../cafetest.html'; // 🔥 Đường dẫn về lại Map (quản lý quán cà phê)
-  });
+  if (backBtn) {
+    const backUrl = backBtn.dataset.backUrl;
+    backBtn.addEventListener("click", function () {
+        window.location.href = backUrl;
+    });
+  }
 });

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test cafe shop</title>
     <!-- CSS Chính -->
-    <link rel="stylesheet" href="main_cafetest.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='Cashier/css/main_cafetest.css') }}">
     <!-- Font chữ -->
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap" rel="stylesheet">
 </head>
@@ -46,9 +46,9 @@
     <!-- Sidebar chuyển đổi giữa các trang Map / Customer Order / History -->
     <div id="sidebar" class="hidden">
         <div class="menu-button-group">
-            <a href="cafetest.html" class="menu-button">Map</a>
-            <a href="customer_order.html" class="menu-button">Customer Order</a>
-            <a href="history.html" class="menu-button">History</a>            
+            <a href="{{ url_for('cashier_cafetest') }}" class="menu-button">Map</a>
+            <a href="{{ url_for('cashier_customer_order') }}" class="menu-button">Customer Order</a>
+            <a href="{{ url_for('cashier_history') }}" class="menu-button">History</a>   
         </div>
     </div>
 
@@ -61,7 +61,9 @@
             <h3 id="popupTitle">Table</h3>
             <div class="popup-buttons">
                 <button id="billBtn" onclick="handleBill()">Bill</button>
+                <!-- <button id="orderBtn" href="/customer/coffee">Order</button> -->
                 <button id="orderBtn" onclick="handleOrder()">Order</button>
+
             </div>
             <div class="popup-buttons">
                 <button id="forceEmptyBtn" onclick="handleForceEmpty()">Force Empty</button>
@@ -70,9 +72,21 @@
         </div>
     </div>
 
+        <!-- Bill popup) -->
+    <div id="billPopup" class="bill-popup" style="display: none; z-index: 2000;">
+        <button id="backBtn" class="back-btn">Back</button>
+        <div id="billContent" class="bill-content"></div>
+        <div id="billTotal" class="bill-total"></div>
+        <button id="printBtn" class="print-btn">Print</button>
+    </div>
+
+    <script>
+        const cashierHistoryURL = "{{ url_for('cashier_history') }}";
+    </script>
+
     <!-- Javascript Chính -->
-    <script defer src="script.js"></script>
-    <script defer src="sidebar.js"></script>
+    <script defer src="{{ url_for('static', filename='Cashier/js/script.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='Cashier/js/sidebar.js') }}"></script>
 
     <!-- Script phụ trợ điều hướng trang -->
     <script>
@@ -84,3 +98,4 @@
     <div id="toast-container"></div>
 </body>
 </html>
+

@@ -117,7 +117,7 @@ function renderTables() {
 
     const addTableBtn = document.createElement("button");
     addTableBtn.className = "add-table-btn";
-    addTableBtn.textContent = "Thêm bàn";
+    addTableBtn.textContent = "Add table";
     addTableBtn.onclick = addTable;
     tableContainer.appendChild(addTableBtn);
 
@@ -270,7 +270,6 @@ function updateButtonStates(status) {
     });
 }
 
-
 function handleBill() {
     const billData = areas[currentArea][currentTableId]?.bill || [];
 
@@ -280,82 +279,92 @@ function handleBill() {
     }
 
     const tablePopup = document.getElementById("tablePopup");
+    const overlay = document.getElementById("popupOverlay");
+    const billPopup = document.getElementById("billPopup");
+    const billContent = document.getElementById("billContent");
+    const billTotal = document.getElementById("billTotal");
+
     if (tablePopup) tablePopup.style.display = "none";
+    if (overlay) overlay.style.display = "block";
 
-    const billPopup = document.createElement('div');
-    billPopup.className = 'bill-popup';
-    billPopup.id = 'billPopup';
-    billPopup.style.zIndex = '2000';
+    // Xóa nội dung cũ
+    billContent.innerHTML = "";
+    billTotal.innerHTML = "";
 
-    const backButton = document.createElement('button');
-    backButton.textContent = "Back";
-    backButton.className = "back-btn";
-    backButton.onclick = function() {
-        billPopup.remove();
-        const popup = document.getElementById("tablePopup");
-        const overlay = document.getElementById("popupOverlay");
-        if (popup) popup.style.display = "block";
-        if (overlay) overlay.style.display = "block";
-    };
-
-    const content = document.createElement('div');
-    content.className = 'bill-content';
+    // Tạo nội dung mới
+    let totalPrice = 0;
     billData.forEach(item => {
+        const itemTotal = (prices[item.name] || 0) * item.quantity;
         const itemDiv = document.createElement('div');
         itemDiv.className = 'bill-item';
-        const itemTotal = (prices[item.name] || 0) * item.quantity;
         itemDiv.innerHTML = `
             <span>${item.name} x${item.quantity}</span>
             <span>$${itemTotal.toFixed(2)}</span>
         `;
-        content.appendChild(itemDiv);
+        billContent.appendChild(itemDiv);
+        totalPrice += itemTotal;
     });
 
-    const totalDiv = document.createElement('div');
-    totalDiv.className = 'bill-total';
-    let totalPrice = 0;
-    billData.forEach(item => {
-        totalPrice += (prices[item.name] || 0) * item.quantity;
-    });
-    totalDiv.innerHTML = `<strong>Total:</strong> $${totalPrice.toFixed(2)}`;
+    billTotal.innerHTML = `<strong>Total:</strong> $${totalPrice.toFixed(2)}`;
 
-    const printButton = document.createElement('button');
-    printButton.textContent = "Print";
-    printButton.className = "print-btn";
-    printButton.addEventListener('click', function() {
-        let historyBills = JSON.parse(localStorage.getItem('historyBills')) || [];
-        if (!Array.isArray(historyBills)) {
-            historyBills = [];
-        }
-        const newBill = {
-            tableName: areas[currentArea][currentTableId]?.name || `Table ${currentTableId + 1}`,
-            items: Array.isArray(billData) ? billData.map(item => ({
-                name: item.name,
-                quantity: item.quantity
-            })) : [],
-            total: totalPrice,
-            timestamp: new Date().toISOString()
-        };
-        historyBills.push(newBill);
-        saveHistoryBillsToLocalStorage(historyBills);
-
-        areas[currentArea][currentTableId].bill = [];
-        areas[currentArea][currentTableId].status = "empty";
-        saveAreasToLocalStorage();
-
-        showToast('Done!!! ✅');
-        setTimeout(() => {
-            window.location.href = 'history.html';
-        }, 1500);
-    });
-
-    billPopup.appendChild(backButton);
-    billPopup.appendChild(content);
-    billPopup.appendChild(totalDiv);
-    billPopup.appendChild(printButton);
-
-    document.body.appendChild(billPopup);
+    // Lưu để print dùng lại
+    billPopup.dataset.total = totalPrice;
+    billPopup.style.display = "block";
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    const backBtn = document.getElementById("backBtn");
+    if (backBtn) {
+        backBtn.addEventListener("click", function () {
+            document.getElementById("billPopup").style.display = "none";
+
+            const tablePopup = document.getElementById("tablePopup");
+            const overlay = document.getElementById("popupOverlay");
+
+            if (tablePopup) tablePopup.style.display = "block";
+            if (overlay) overlay.style.display = "block";
+        });
+    }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const printBtn = document.getElementById("printBtn");
+    if (printBtn) {
+        printBtn.addEventListener("click", function () {
+            const billPopup = document.getElementById("billPopup");
+            const billData = areas[currentArea][currentTableId]?.bill || [];
+            const totalPrice = parseFloat(billPopup.dataset.total || "0");
+
+            let historyBills = JSON.parse(localStorage.getItem('historyBills')) || [];
+            if (!Array.isArray(historyBills)) {
+                historyBills = [];
+            }
+
+            const newBill = {
+                tableName: areas[currentArea][currentTableId]?.name || `Table ${currentTableId + 1}`,
+                items: Array.isArray(billData) ? billData.map(item => ({
+                    name: item.name,
+                    quantity: item.quantity
+                })) : [],
+                total: totalPrice,
+                timestamp: new Date().toISOString()
+            };
+
+            historyBills.push(newBill);
+            saveHistoryBillsToLocalStorage(historyBills);
+
+            areas[currentArea][currentTableId].bill = [];
+            areas[currentArea][currentTableId].status = "empty";
+            saveAreasToLocalStorage();
+
+            showToast('Done!!! ✅');
+
+            setTimeout(() => {
+                window.location.href = cashierHistoryURL;
+            }, 1500);
+        });
+    }
+});
 
 function handleOrder() {
     if (areas[currentArea] && areas[currentArea][currentTableId]) {
@@ -363,7 +372,7 @@ function handleOrder() {
         saveAreasToLocalStorage();
         renderTables(); // Cập nhật lại màu bàn
     }
-    window.location.href = 'customerCf/customerCf/Coffee.html';
+    window.location.href = "/customer/coffee";
 }
 
 function handleForceEmpty() {
@@ -418,7 +427,7 @@ if (popupOverlay) {
         popupOverlay.style.display = "none";
 
         const billPopup = document.getElementById('billPopup');
-        if (billPopup) billPopup.remove();
+        if (billPopup) billPopup.style.display = "none"; 
 
         const tablePopup = document.getElementById("tablePopup");
         if (tablePopup) tablePopup.style.display = "none";
