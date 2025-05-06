@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Storage Manager</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='StorageManager/css/import.css') }}" />
+  <script defer src="{{ url_for('static', filename='StorageManager/js/import.js') }}"></script>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Storage Manager</h2>
+    <div class="menu-item" onclick="location.href='{{ url_for('dashboard') }}'">📊 Dashboard</div>
+    <div class="menu-item active" onclick="location.href='{{ url_for('inventory') }}'">📦 Inventory</div>
+    <div class="menu-item" onclick="location.href='{{ url_for('history') }}'">📜 History</div>
+    <div class="menu-item" onclick="location.href='{{ url_for('daily_checks') }}'">✅ Daily-checks</div>
+    <div class="menu-item" onclick="showLogoutModal()">🔙 Log out</div>
+  </div>
+
+  <!-- Main content -->
+  <div class="main-content">
+    <!-- Header -->
+    <div class="header">
+      <div class="search-box">
+        <input type="text" placeholder="Search">
+        <i>🔍</i>
+      </div>
+      <div>
+        <button class="account">Account</button>
+      </div>
+    </div>
+
+
+    <div class="scrollable-content">
+      <div class="dashboard-content">
+        <div class="card">
+          <h3>Import</h3>
+          <div class="form-row">
+            <input type="text" id="ingredient" placeholder="Ingredients" />
+            <input type="text" id="supplier" placeholder="Supplier" />
+            <input type="number" id="quantity" placeholder="Quantity (kg)" />
+            <button class="done-btn" onclick="handleDone()">Done</button>
+          </div>
+        </div>
+
+        <div class="suggestions" id="results"></div>
+        <div class="suggestions" id="suggestions"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Logout Modal -->
+  <div class="modal-overlay" id="logout-modal" style="display: none;">
+    <div class="modal">
+      <p>Do you want to log out?</p>
+      <div class="modal-actions">
+        <button id="confirm-yes">Yes</button>
+        <button id="confirm-no">No</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
