@@ -49,6 +49,7 @@
                         </button>
                     </div>
                 </div>
+                <span class="Error" id="ErrorMessage">Your username or password is incorrect</span>
                 <div class="ButtonRow">
                     <button type="button" class="ContentButton" id="Login">Login</button>
                 </div>
@@ -56,16 +57,16 @@
         </form>
 
         <!--Black Overlay-->
-        <div class="Overlay" id="Overlay"></div>
+        <div class="Overlay show" id="Overlay"></div>
 
         <!--Web Choosing Pop-up-->
-        <div class="WebRoleContainer" id="WebRole">
-            <h2>Select the website <br> you want to access</h2>
+        <div class="WebRoleContainer show" id="WebRole">
+            <h2>Who are you?</h2>
             <ul class="WebRoleList">
-                <button class="WebRoleButton show" id="ManagerBtn" onclick="window.location.href='/manager/profile'">Manager</button>
-                <button class="WebRoleButton show" id="StorageManagerBtn" onclick="window.location.href='../../StorageManager/DashBoard.html'">Storage Manager</button>
-                <button class="WebRoleButton show" id="BartenderBtn" onclick="window.location.href='../../Bartender/html/index.html'">Bartender</button>
-                <button class="WebRoleButton" id="CustomerBtn">Customer</button>
+                <button class="WebRoleButton show" id="ManagerBtn">Manager</button>
+                <button class="WebRoleButton show" id="StorageManagerBtn">Storage Manager</button>
+                <button class="WebRoleButton show" id="BartenderBtn">Bartender</button>
+                <button class="WebRoleButton show" id="CustomerBtn">Customer</button>
             </ul>
         </div>
     </main>

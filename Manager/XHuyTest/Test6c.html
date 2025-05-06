@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Tạo tài khoản</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .signup-container {
+      background: #fff;
+      padding: 24px;
+      border-radius: 10px;
+      width: 340px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    input.invalid {
+      border-color: red;
+    }
+    .error-message {
+      color: red;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="signup-container">
+    <h2>Tạo tài khoản</h2>
+    
+    <div class="form-group">
+      <input type="text" id="username" placeholder="Tên đăng nhập">
+      <div id="usernameError" class="error-message"></div>
+    </div>
+
+    <div class="form-group">
+      <input type="password" id="password" placeholder="Mật khẩu">
+      <div id="passwordError" class="error-message"></div>
+    </div>
+
+    <div class="form-group">
+      <input type="password" id="confirmPassword" placeholder="Nhập lại mật khẩu">
+      <div id="confirmPasswordError" class="error-message"></div>
+    </div>
+
+    <button onclick="validateForm()">Đăng ký</button>
+  </div>
+
+  <script>
+    const existingUsers = ["admin", "user1", "guest"];
+
+    function validateForm() {
+      // Lấy các input và error elements
+      const username = document.getElementById("username");
+      const password = document.getElementById("password");
+      const confirmPassword = document.getElementById("confirmPassword");
+
+      const usernameError = document.getElementById("usernameError");
+      const passwordError = document.getElementById("passwordError");
+      const confirmPasswordError = document.getElementById("confirmPasswordError");
+
+      // Reset lỗi cũ
+      usernameError.innerText = "";
+      passwordError.innerText = "";
+      confirmPasswordError.innerText = "";
+
+      username.classList.remove("invalid");
+      password.classList.remove("invalid");
+      confirmPassword.classList.remove("invalid");
+
+      let isValid = true;
+
+      // Kiểm tra tên đăng nhập
+      if (!username.value.trim()) {
+        usernameError.innerText = "Vui lòng nhập tên đăng nhập.";
+        username.classList.add("invalid");
+        isValid = false;
+      } else if (username.value.trim().length < 4) {
+        usernameError.innerText = "Tên đăng nhập phải có ít nhất 4 ký tự.";
+        username.classList.add("invalid");
+        isValid = false;
+      } else if (existingUsers.includes(username.value.trim().toLowerCase())) {
+        usernameError.innerText = "Tên đăng nhập đã tồn tại.";
+        username.classList.add("invalid");
+        isValid = false;
+      }
+
+      // Kiểm tra mật khẩu
+      if (!password.value.trim()) {
+        passwordError.innerText = "Vui lòng nhập mật khẩu.";
+        password.classList.add("invalid");
+        isValid = false;
+      } else if (password.value.length < 6) {
+        passwordError.innerText = "Mật khẩu phải có ít nhất 6 ký tự.";
+        password.classList.add("invalid");
+        isValid = false;
+      }
+
+      // Kiểm tra nhập lại mật khẩu
+      if (!confirmPassword.value.trim()) {
+        confirmPasswordError.innerText = "Vui lòng nhập lại mật khẩu.";
+        confirmPassword.classList.add("invalid");
+        isValid = false;
+      } else if (confirmPassword.value !== password.value) {
+        confirmPasswordError.innerText = "Mật khẩu nhập lại không khớp.";
+        confirmPassword.classList.add("invalid");
+        isValid = false;
+      }
+
+      // Nếu hợp lệ
+      if (isValid) {
+        alert("Tạo tài khoản thành công!");
+        localStorage.setItem("newUser", JSON.stringify({
+          username: username.value,
+          password: password.value
+        }));
+        window.location.href = "login.html";
+      }
+    }
+  </script>
+
+</body>
+</html>

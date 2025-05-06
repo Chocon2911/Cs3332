@@ -267,3 +267,18 @@
     width: 30px;
     height: 20px;
 }
+
+/*=======================================Error Message========================================*/
+.Error
+{
+    display: none;
+    margin-top: 10px;
+    color: red;
+    font-weight: 500;
+}
+
+.Error.show
+{
+    display: block;
+    text-align: center;
+}
