@@ -105,7 +105,6 @@
     font-size: 18px;
     width: 450px;
     height: 40px;
-    min-height: 40px;
     border-radius: 50px;
     outline:rgba(0, 0, 0, 0.568) solid 1px;
     border: none
@@ -119,7 +118,7 @@
         padding: 10px;
         font-size: 15px;
         width: 300px;
-        height: 20px;
+        height: 40px;
         border-radius: 50px;
         outline:rgba(0, 0, 0, 0.568) solid 1px;
         border: none;
@@ -144,14 +143,13 @@
     }
 }
 
-/*========================================Birth Input=========================================*/
-.BirthInput
+/*=========================================Date Input=========================================*/
+.DateInput 
 {
-    flex: 2;
     padding: 15px;
     font-size: 18px;
-    width: 100px;
-    height: 35px;
+    width: 450px;
+    height: 40px;
     border-radius: 50px;
     outline:rgba(0, 0, 0, 0.568) solid 1px;
     border: none
@@ -159,48 +157,16 @@
 
 @media screen and (max-width: 768px)
 {
-    .BirthInput
+    .DateInput 
     {
-        flex: 2;
         padding: 10px;
         font-size: 15px;
-        width: 50px;
-        height: 30px;
+        width: 300px;
+        height: 40px;
         border-radius: 50px;
         outline:rgba(0, 0, 0, 0.5) solid 1px;
         border: none
     }    
-}
-
-/*=========================================Role Input=========================================*/
-.RoleInput
-{
-    padding: 15px;
-    width: 20px;
-    height: 20px;
-    border: none;
-}
-
-.RoleInput:focus
-{
-    outline: #ffffff !important;
-    box-shadow: none !important;
-}
-
-/*=========================================Role Label=========================================*/
-.RoleLabel
-{
-    font-weight: 400;
-    font-size: 18px;
-}
-
-@media screen and (max-width: 768px)
-{
-    .RoleLabel
-    {
-        font-weight: 400;
-        font-size: 15px;
-    }
 }
 
 
@@ -224,7 +190,7 @@
 .ContentButton
 {
     margin-top: 30px;
-    width: 300px;
+    width: 200px;
     height: 45px;
     border-radius: 50px;
     border: none;
@@ -235,7 +201,7 @@
 
 .ContentButton:hover
 {
-    box-shadow: 0px 0px 20px rgb(255, 196, 0);
+    box-shadow: 0px 0px 20px rgb(252, 219, 109);
     transform: scale(1.1);
 }
 
@@ -249,7 +215,7 @@
 {
     .ContentButton
     {
-        width: 100px;
+        width: 150px;
         height: 40px;
     }
 }
