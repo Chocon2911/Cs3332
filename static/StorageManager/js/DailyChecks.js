@@ -117,7 +117,7 @@ function showLogoutModal() {
 
 window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('confirm-yes').addEventListener('click', () => {
-    window.location.href = 'manager/login';  // Giao diện sau khi log out
+    window.location.href = '/manager/login';  // Giao diện sau khi log out
   });
   document.getElementById('confirm-no').addEventListener('click', () => {
     document.getElementById('logout-modal').style.display = 'none';

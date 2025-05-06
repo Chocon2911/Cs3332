@@ -1,4 +1,4 @@
 function logout()
 {
-    window.location.href = "../../Manager/html/login.html";
+    window.location.href = "/manager/login";
 }
