@@ -1,0 +1,18 @@
+[
+    { "id": "A001", "name": "Sugar", "supplier": "Supplier A", "quantity": 30, "importDate": "2025-01-01" },
+    { "id": "A002", "name": "Salt", "supplier": "Supplier B", "quantity": 25, "importDate": "2025-01-02" },
+    { "id": "A003", "name": "Rice", "supplier": "Supplier C", "quantity": 50, "importDate": "2025-01-03" },
+    { "id": "A004", "name": "Flour", "supplier": "Supplier D", "quantity": 40, "importDate": "2025-01-04" },
+    { "id": "A005", "name": "Oil", "supplier": "Supplier E", "quantity": 60, "importDate": "2025-01-05" },
+    { "id": "A006", "name": "Vinegar", "supplier": "Supplier F", "quantity": 20, "importDate": "2025-01-06" },
+    { "id": "A007", "name": "Milk", "supplier": "Supplier G", "quantity": 35, "importDate": "2025-01-07" },
+    { "id": "A008", "name": "Eggs", "supplier": "Supplier H", "quantity": 45, "importDate": "2025-01-08" },
+    { "id": "A009", "name": "Butter", "supplier": "Supplier I", "quantity": 15, "importDate": "2025-01-09" },
+    { "id": "A010", "name": "Cheese", "supplier": "Supplier J", "quantity": 55, "importDate": "2025-01-10" },
+    { "id": "A011", "name": "Chocolate", "supplier": "Supplier K", "quantity": 30, "importDate": "2025-01-11" },
+    { "id": "A012", "name": "Coffee", "supplier": "Supplier L", "quantity": 20, "importDate": "2025-01-12" },
+    { "id": "A013", "name": "Tea", "supplier": "Supplier M", "quantity": 40, "importDate": "2025-01-13" },
+    { "id": "A014", "name": "Honey", "supplier": "Supplier N", "quantity": 25, "importDate": "2025-01-14" },
+    { "id": "A015", "name": "Jam", "supplier": "Supplier O", "quantity": 30, "importDate": "2025-01-15" },
+    { "id": "A016", "name": "Pasta", "supplier": "Supplier P", "quantity": 50, "importDate": "2025-01-16" }
+  ]

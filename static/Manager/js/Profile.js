@@ -35,28 +35,29 @@ document.getElementById("SaveButton").addEventListener("click", function ()
 //==========================================On Load===========================================
 window.onload = function()
 {
-    defaultProfile();
+    // defaultProfile();
+    managerInit()
 };
 
 //===========================================Method===========================================
-function defaultProfile()
-{
-    fetch("../Db/profile.json")
-    .then(response => response.json())
-    .then(data => 
-    {
-        document.getElementById("Name").value = data.name;
-        document.getElementById("Username").value = data.username;
-        document.getElementById("Password").value = data.password;
-        document.getElementById("BirthDay").value = data.birthDay;
-        document.getElementById("BirthMonth").value = data.birthMonth;
-        document.getElementById("BirthYear").value = data.birthYear;
-    })
-    .catch(error)
-    {
-        console.log(error);
-    }
-}
+// function defaultProfile()
+// {
+//     fetch("../Db/profile.json")
+//     .then(response => response.json())
+//     .then(data => 
+//     {
+//         document.getElementById("Name").value = data.name;
+//         document.getElementById("Username").value = data.username;
+//         document.getElementById("Password").value = data.password;
+//         document.getElementById("BirthDay").value = data.birthDay;
+//         document.getElementById("BirthMonth").value = data.birthMonth;
+//         document.getElementById("BirthYear").value = data.birthYear;
+//     })
+//     .catch(error)
+//     {
+//         console.log(error);
+//     }
+// }
 
 //======================================Toggle Password=======================================
 document.getElementById("TogglePassword").addEventListener("click", function ()

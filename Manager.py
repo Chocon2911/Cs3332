@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, abort
 
 def register_manager_routes(app):
     @app.route('/manager/login')
@@ -24,3 +24,6 @@ def register_manager_routes(app):
     @app.route('/manager/sale_data')
     def manager_sale_data():
         return render_template('Manager/SaleData.html')
+    @app.route('/manager/error')
+    def manager_error():
+        return render_template('Manager/Error.html')
