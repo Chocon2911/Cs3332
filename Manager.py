@@ -24,6 +24,9 @@ def register_manager_routes(app):
     @app.route('/manager/sale_data')
     def manager_sale_data():
         return render_template('Manager/SaleData.html')
+    @app.route('/manager/new_item')
+    def manager_new_item():
+        return render_template('Manager/NewItem.html')
     @app.route('/manager/error')
     def manager_error():
         return render_template('Manager/Error.html')

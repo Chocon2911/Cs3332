@@ -1,3 +1,27 @@
+//==========================================Variable==========================================
+const RealName = document.getElementById("Name");
+const Username = document.getElementById("Username");
+const Password = document.getElementById("Password");
+const RePassword = document.getElementById("RePassword");
+const BirthDate = document.getElementById("Date");
+const ErrorMessage = document.getElementById("ErrorMessage");
+const StorageManagerRole = document.getElementById("StorageManager");
+const CashierRole = document.getElementById("Cashier");
+const BartenderRole = document.getElementById("Bartender");
+
+//===========================================Class============================================
+class Account
+{
+    constructor(name, username, password, birthDate, roles)
+    {
+        this.name = name;
+        this.username = username;
+        this.password = password;
+        this.birthDate = birthDate;
+        this.roles = roles;
+    }
+}
+
 //======================================Toggle Password=======================================
 function togglePassword(passwordId, btnId)
 {
@@ -37,32 +61,105 @@ document.getElementById("ToggleRePassword").addEventListener("click", function (
 //=======================================Create Button========================================
 document.getElementById("CreateButton").addEventListener("click", function ()
 {
-    const data = 
+    roles = [];
+    if (StorageManagerRole.checked)
+        roles.push(StorageManagerRole.value);
+    if (CashierRole.checked)
+        roles.push(CashierRole.value);
+    if (BartenderRole.checked)
+        roles.push(BartenderRole.value);
+
+    if (!RealName.value.trim() || !Username.value.trim() || !Password.value.trim() 
+        || !RePassword.value.trim() || !BirthDate.value.trim() || roles.length == 0)
     {
-        name: document.getElementById("Name").value,
-        username: document.getElementById("Username").value,
-        password: document.getElementById("Password").value,
-        birthDay: document.getElementById("BirthDay").value,
-        birthMonth: document.getElementById("BirthMonth").value,
-        birthYear: document.getElementById("BirthYear").value,
-        role: document.querySelector('input[name="role"]:checked').value,
-        id: getRandomString(10)
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "You must fill in all fields and choose at least one role";
+        return;
     }
 
-    const jsonString = JSON.stringify(data);
+    realName = RealName.value;
+    username = Username.value;
+    password = Password.value;
+    birthDate = BirthDate.value;
+    unixBirthTime = new Date(birthDate).getTime();
 
-    const blob = new Blob([jsonString], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
+    account = new Account(realName, username, password, unixBirthTime, roles);
+    validateData(account);
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = getRandomString(10) + ".json";
-    a.click();
+    // const data = 
+    // {
+    //     name: document.getElementById("Name").value,
+    //     username: document.getElementById("Username").value,
+    //     password: document.getElementById("Password").value,
+    //     birthDay: document.getElementById("BirthDay").value,
+    //     birthMonth: document.getElementById("BirthMonth").value,
+    //     birthYear: document.getElementById("BirthYear").value,
+    //     role: document.querySelector('input[name="role"]:checked').value,
+    //     id: getRandomString(10)
+    // }
 
-    URL.revokeObjectURL(url);
+    // const jsonString = JSON.stringify(data);
 
-    alert("Account created!");
+    // const blob = new Blob([jsonString], { type: "application/json" });
+    // const url = URL.createObjectURL(blob);
+
+    // const a = document.createElement("a");
+    // a.href = url;
+    // a.download = getRandomString(10) + ".json";
+    // a.click();
+
+    // URL.revokeObjectURL(url);
+
+    // alert("Account created!");
 });
+
+function validateData(data)
+{
+    if (data.password.length < 8)
+    {
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "Password must be above 8 characters";
+    }
+
+    else if (data.password.length > 32)
+    {
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "Password must be below 32 characters";
+    }
+
+    else if (data.birthDate < 0)
+    {
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "Your date of birth must be later than 1970";
+    }
+
+    else if (data.birthDate > Date.now())
+    {
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "Your date of birth must be earlier than today";
+    }
+
+    else if (RePassword.value != Password.value)
+    {
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "Your passwords do not match";
+    }
+
+    else 
+    {
+        ErrorMessage.classList.remove("show");
+        ErrorMessage.textContent = "";
+    }
+
+    for (i = 0; i < data.name.length; i++)
+    {
+        if (data.name[i] == "1" || data.name[i] == "2" || data.name[i] == "3" || data.name[i] == "4" || data.name[i] == "5" || data.name[i] == "6" || data.name[i] == "7" || data.name[i] == "8" || data.name[i] == "9")
+        {
+            ErrorMessage.classList.add("show");
+            ErrorMessage.textContent = "Your name cannot contain numbers";
+        }
+    }
+}
 
 //===========================================Other============================================
 function getRandomString(length)

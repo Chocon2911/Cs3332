@@ -107,33 +107,31 @@
                 <!--Date of Birth-->
                 <div class="ContentRow">
                     <label class="RowName">Date of Birth:</label>
-                    <ul class="ListRow">
-                        <input type="number" class="InputFocus BirthInput" id="BirthDay" min="1" max="31" placeholder="DD" maxlength="2" oninput="limitInputLength(event, 2)">
-                        <input type="number" class="InputFocus BirthInput" id="BirthMonth" min="1" max="12" placeholder="MM" maxlength="2" oninput="limitInputLength(event, 2)">
-                        <input type="number" class="InputFocus BirthInput" id="BirthYear" min="1900" max="2025" placeholder="YYYY" maxlength="4" oninput="limitInputLength(event, 4)">
-                    </ul>
+                    <input class="DateInput" id="Date" type="date">
                 </div>
                 <!--Role-->
                 <div class="ContentRow">
                     <label class="RowName">Role:</label>
                     <ul class="ListRow">
                         <li>
-                            <input type="checkbox" class="RoleInput" id="Cashier">
+                            <input type="checkbox" class="RoleInput" value="CASHIER" id="Cashier">
                             <label class="RoleLabel">Cashier</label>
                         </li>
                         <li>
-                            <input type="checkbox" class="RoleInput" id="StorageManager">
+                            <input type="checkbox" class="RoleInput" value="STORAGE_MANAGER" id="StorageManager">
                             <label class="RoleLabel">Storage Manager</label>
                         </li>
                         <li>
-                            <input type="checkbox" class="RoleInput" id="Bartender">
+                            <input type="checkbox" class="RoleInput" value="BARTENDER" id="Bartender">
                             <label class="RoleLabel">Bartender</label>
                         </li>
                     </ul>
                 </div>
+                <!--Error Message-->
+                <span class="Error" id="ErrorMessage"></span>
                 <!--Button Row-->
                 <div class="ButtonRow">
-                    <button class="ContentButton" id="CreateButton">Create</button>
+                    <button type="button" class="ContentButton" id="CreateButton">Create</button>
                 </div>
             </ul>
         </form>
