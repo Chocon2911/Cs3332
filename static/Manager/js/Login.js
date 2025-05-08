@@ -36,23 +36,51 @@ function getCookie(name)
 }
 
 //===========================================Login============================================
-loginBtn.addEventListener("click", function (event)
+loginBtn.addEventListener("click", async function (event)
 {
     username = usernameField.value;
     password = passwordField.value;
 
-    if (username == "admin" && password == "1234")
+    if (!username.trim() || !password.trim())
     {
-        setCookie("token", "1234");
-
-        if (getCookie("token") == "1234")
-        {
-            login(getCookie("role"));
-            return;
-        }
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "You must fill in all fields";
+        return;
     }
 
-    ErrorMessage.classList.add("show");    
+    try
+    {
+        res = await fetch("/manager/login", {
+            method: "POST",
+            headers: 
+            { 
+                "Content-Type": "application/json" 
+            },
+            body: JSON.stringify({ 
+                username: username, 
+                password: password 
+            })
+        });
+
+        const result = await res.json();
+        if (result.status == "success")
+        {
+            setCookie("username", username);
+            setCookie("token", result.token);
+            login(result.role);
+        }
+        else
+        {
+            ErrorMessage.classList.add("show");
+            ErrorMessage.value = result.message;
+        }
+    }
+    catch (error)
+    {
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "Unexpected Error: " + error;
+        console.log(error);
+    }
 })
 
 function login(role)

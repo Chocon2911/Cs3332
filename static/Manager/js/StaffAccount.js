@@ -12,13 +12,26 @@ const BartenderRole = document.getElementById("Bartender");
 //===========================================Class============================================
 class Account
 {
-    constructor(name, username, password, birthDate, roles)
+    constructor(name, username, rePassword, password, birthDate, roles)
     {
         this.name = name;
         this.username = username;
+        this.rePassword = rePassword;
         this.password = password;
         this.birthDate = birthDate;
         this.roles = roles;
+    }
+
+    toJson()
+    {
+        return {
+            name: this.name,
+            username: this.username,
+            rePassword: this.rePassword,
+            password: this.password,
+            birthDate: this.birthDate,
+            roles: this.roles
+        };
     }
 }
 
@@ -59,7 +72,7 @@ document.getElementById("ToggleRePassword").addEventListener("click", function (
 // });
 
 //=======================================Create Button========================================
-document.getElementById("CreateButton").addEventListener("click", function ()
+document.getElementById("CreateButton").addEventListener("click", async function ()
 {
     roles = [];
     if (StorageManagerRole.checked)
@@ -79,12 +92,45 @@ document.getElementById("CreateButton").addEventListener("click", function ()
 
     realName = RealName.value;
     username = Username.value;
+    rePassword = RePassword.value;
     password = Password.value;
-    birthDate = BirthDate.value;
+    birthDate = BirthDate.value;    
     unixBirthTime = new Date(birthDate).getTime();
 
-    account = new Account(realName, username, password, unixBirthTime, roles);
-    validateData(account);
+    account = new Account(realName, username, rePassword, password, unixBirthTime, roles);
+    try 
+    {
+        const token = getCookie("token");
+        const res = await fetch("/manager/create_staff_account", {
+           method: "POST",
+           headers:
+           {
+                "Content-Type": "application/json",
+                "Authorization": token
+           }, 
+           body: JSON.stringify(account.toJson())
+        }); 
+
+        const result = await res.json();
+        if (result.status == "success")
+        {
+            alert("New account has been created!");
+        }
+        else if (result.status == "no permission")
+        {
+            window.location.href = result.url;
+        }
+        else
+        {
+            ErrorMessage.classList.add("show");
+            ErrorMessage.textContent = result.errorMessage;
+        }
+    }
+    catch (error)
+    {
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "Unexpected Error: " + error;
+    }
 
     // const data = 
     // {
