@@ -8,18 +8,80 @@ const ErrorMessage = document.getElementById("ErrorMessage");
 //===========================================Class============================================
 class Profile
 {
-    constructor(name, username, password, birthDate)
+    constructor(name, username, password, birthTime)
     {
         this.name = name;
         this.username = username;
         this.password = password;
-        this.birthDate = birthDate;
+        this.birthTime = birthTime;
+    }
+
+    toJSON() 
+    {
+        return {
+            name: this.name,
+            username: this.username,
+            password: this.password,
+            birthTime: this.birthTime
+        };
     }
 }
 
-//========================================Save Button=========================================
-document.getElementById("SaveButton").addEventListener("click", function ()
+//==========================================On Load===========================================
+window.onload = async function ()
 {
+    try 
+    {
+        const token = getCookie("token");
+        const username = getCookie("username");
+        const res = await fetch("/manager/get_account_profile", {
+            method: "POST",
+            headers:
+            {
+                "Content-Type": "application/json", 
+                "Authorization": token,
+            },
+            body: JSON.stringify({ username: username })
+        });
+
+        const result = await res.json();
+        if (result.status == "success")
+        {
+            RealName.value = result.name;
+            Username.value = result.username;
+            Password.value = result.password;
+
+            let unixTime = result.dateOfBirth; 
+            console.log(unixTime); 
+            let date = new Date(unixTime);
+            console.log(date);
+            let formattedDate = date.toISOString().split('T')[0];
+            BirthDate.value = formattedDate;
+        }
+        else if (result.status == "no permission")
+        {
+            window.location.href = result.url;
+        }
+    }
+    catch (error)
+    {
+        console.log(error);
+    }
+};
+
+//======================================Toggle Password=======================================
+document.getElementById("TogglePassword").addEventListener("click", function ()
+{
+    const passwordInput = document.getElementById("Password");
+    const togglePasswordButton = document.getElementById("TogglePassword");
+    passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+    togglePasswordButton.classList.toggle("hide");
+});
+
+//========================================Save Button=========================================
+document.getElementById("SaveButton").addEventListener("click", async function ()
+{
+    ErrorMessage.classList.remove("show");
     // must be init
     if (!RealName.value.trim() || !Username.value.trim() || !Password.value.trim() || !BirthDate.value.trim())
     {
@@ -32,10 +94,45 @@ document.getElementById("SaveButton").addEventListener("click", function ()
     username = Username.value;
     password = Password.value;
     birthDate = BirthDate.value;
-    unixBirthTime = new Date(birthDate).getTime();
 
+    unixBirthTime = new Date(birthDate).getTime();
     profile = new Profile(realName, username, password, unixBirthTime);
-    validateData(profile);
+    const token = getCookie("token");
+    const role = getCookie("role");
+
+    try 
+    {
+        const res = await fetch("/manager/save_account_profile", {
+            method: "POST",
+            headers: 
+            {
+                "Content-Type": "application/json", 
+                "Authorization": token,
+                "Role": role
+            },
+            body: JSON.stringify(profile.toJSON())
+        });
+        const result = await res.json();
+        if (result.status == "success")
+        {
+            alert("New profile has been saved!");
+        }
+        else if (result.status == "no permission")
+        {
+            window.location.href = result.url;
+        }
+        else
+        {
+            ErrorMessage.classList.add("show");
+            ErrorMessage.textContent = result.errorMessage;
+        }
+    }
+    catch (error)
+    {
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "Unexpected Error: " + error;
+        console.log(error);
+    }
 
     // const data = 
     // {
@@ -62,47 +159,47 @@ document.getElementById("SaveButton").addEventListener("click", function ()
     // alert("Profile Saved!");
 });
 
-function validateData(data)
-{
-    if (data.password.length < 8)
-    {
-        ErrorMessage.classList.add("show");
-        ErrorMessage.textContent = "Password must be above 8 characters";
-    }
+// function validateData(data)
+// {
+//     if (data.password.length < 8)
+//     {
+//         ErrorMessage.classList.add("show");
+//         ErrorMessage.textContent = "Password must be above 8 characters";
+//     }
 
-    else if (data.password.length > 32)
-    {
-        ErrorMessage.classList.add("show");
-        ErrorMessage.textContent = "Password must be below 32 characters";
-    }
+//     else if (data.password.length > 32)
+//     {
+//         ErrorMessage.classList.add("show");
+//         ErrorMessage.textContent = "Password must be below 32 characters";
+//     }
 
-    else if (data.birthDate < 0)
-    {
-        ErrorMessage.classList.add("show");
-        ErrorMessage.textContent = "Your date of birth must be later than 1970";
-    }
+//     else if (data.birthDate < 0)
+//     {
+//         ErrorMessage.classList.add("show");
+//         ErrorMessage.textContent = "Your date of birth must be later than 1970";
+//     }
 
-    else if (data.birthDate > Date.now())
-    {
-        ErrorMessage.classList.add("show");
-        ErrorMessage.textContent = "Your date of birth must be earlier than today";
-    }
+//     else if (data.birthDate > Date.now())
+//     {
+//         ErrorMessage.classList.add("show");
+//         ErrorMessage.textContent = "Your date of birth must be earlier than today";
+//     }
 
-    else 
-    {
-        ErrorMessage.classList.remove("show");
-        ErrorMessage.textContent = "";
-    }
+//     else 
+//     {
+//         ErrorMessage.classList.remove("show");
+//         ErrorMessage.textContent = "";
+//     }
 
-    for (i = 0; i < data.name.length; i++)
-    {
-        if (data.name[i] == "1" || data.name[i] == "2" || data.name[i] == "3" || data.name[i] == "4" || data.name[i] == "5" || data.name[i] == "6" || data.name[i] == "7" || data.name[i] == "8" || data.name[i] == "9")
-        {
-            ErrorMessage.classList.add("show");
-            ErrorMessage.textContent = "Your name cannot contain numbers";
-        }
-    }
-}
+//     for (i = 0; i < data.name.length; i++)
+//     {
+//         if (data.name[i] == "1" || data.name[i] == "2" || data.name[i] == "3" || data.name[i] == "4" || data.name[i] == "5" || data.name[i] == "6" || data.name[i] == "7" || data.name[i] == "8" || data.name[i] == "9")
+//         {
+//             ErrorMessage.classList.add("show");
+//             ErrorMessage.textContent = "Your name cannot contain numbers";
+//         }
+//     }
+// }
 
 //=======================================Cancel Button========================================
 // document.getElementById("CancelButton").addEventListener("click", function ()
@@ -111,11 +208,11 @@ function validateData(data)
 // });
 
 //==========================================On Load===========================================
-window.onload = function()
-{
-    // defaultProfile();
-    managerInit()
-};
+// window.onload = function()
+// {
+//     // defaultProfile();
+//     managerInit()
+// };
 
 //===========================================Method===========================================
 // function defaultProfile()
@@ -136,35 +233,3 @@ window.onload = function()
 //         console.log(error);
 //     }
 // }
-
-//======================================Toggle Password=======================================
-document.getElementById("TogglePassword").addEventListener("click", function ()
-{
-    const passwordInput = document.getElementById("Password");
-    const togglePasswordButton = document.getElementById("TogglePassword");
-    passwordInput.type = passwordInput.type === "password" ? "text" : "password";
-    togglePasswordButton.classList.toggle("hide");
-});
-
-//=======================================Validate Form========================================
-function validateForm() {
-    let isValid = true;
-    let name = document.getElementById("Name");
-    let nameError = document.getElementById("nameError");
-    let emailError = document.getElementById("emailError");
-
-    nameError.textContent = "";
-    emailError.textContent = "";
-
-    if (name.value.trim() === "") {
-        nameError.textContent = "Tên không được để trống!";
-        isValid = false;
-    }
-
-    if (email.value.trim() === "") {
-        emailError.textContent = "Email không được để trống!";
-        isValid = false;
-    }
-
-    return isValid;
-}
