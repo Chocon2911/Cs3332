@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily-Checks</title>
+  <link rel="stylesheet" href="../css/dailychecks.css" />
+  <script defer src="../js/dailychecks.js"></script>
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Storage Manager</h2>
+    <div class="menu-item" onclick="location.href='dashboard.html'">📊 Dashboard</div>
+    <div class="menu-item" onclick="location.href='Inventory.html'">📦 Inventory</div>
+    <div class="menu-item" onclick="location.href='History.html'">📜 History</div>
+    <div class="menu-item active" onclick="location.href='DailyChecks.html'">✅ Daily-checks</div>
+    <div class="menu-item" onclick="location.href='Back.html'">🔙 Back</div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Header -->
+    <div class="header">
+      <div class="search-box">
+        <input type="text" placeholder="Search">
+        <i>🔍</i>
+      </div>
+      <button class="account">Account</button>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="filter-section">
+      <button id="input-button" class="hidden">Input</button>
+      <button id="submit-button">Submit</button>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+      <table id="input-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Actual Quantity</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input type="text" placeholder="ID"></td>
+            <td><input type="text" placeholder="Name"></td>
+            <td><input type="text" placeholder="Actual Quantity"></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table id="main-output-table" class="hidden">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Initial Qty</th>
+            <th>Used</th>
+            <th>Remaining</th>
+            <th>Actual</th>
+            <th>Warnings</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <table id="sub-output-table" class="hidden">
+        <thead>
+          <tr><th>ID</th><th>Name</th><th>Warnings</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+    </div>
+
+  </div>
+</body>
+</html>

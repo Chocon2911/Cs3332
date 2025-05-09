@@ -1,0 +1,250 @@
+/*========================================Main Content========================================*/
+#MainContent
+{
+    margin: 50px auto;
+    max-width: 700px;
+    padding: 20px;
+    background: linear-gradient(#ffffff, #d6d6d6);
+    border-radius: 20px;
+    /* outline:rgba(0, 0, 0, 0.538) solid 2px; */
+    box-shadow: 0px 5px 10px rgb(38, 43, 15);
+}
+
+#MainContent ul
+{
+    list-style: none;
+    padding: 0;
+    margin-top: 30px;
+}
+
+#MainContent ul div
+{
+    margin-bottom: 0px;
+}
+
+@media screen and (max-width: 768px)
+{
+    #MainContent
+    {
+        max-width: 340px;
+    }
+
+    #MainContent ul div
+    {
+        margin-bottom: 20px;
+    }
+}
+
+/*========================================Input Focus=========================================*/
+.InputFocus:focus
+{
+    outline:rgba(15, 173, 15, 0.568) solid 2px;
+    box-shadow: 0 0 20px rgba(15, 173, 15, 0.568);
+}
+
+/*========================================Content Row=========================================*/
+.ContentRow
+{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    height: 70px;
+}
+
+@media screen and (max-width: 768px)
+{
+    .ContentRow
+    {
+        flex-direction: column;
+    }
+}
+
+/*==========================================Row Name==========================================*/
+.RowName
+{
+    font-weight: 700;
+    font-size: 18px;
+    width: 200px;
+    height: 30px;
+}
+
+@media screen  and (max-width: 768px)
+{
+    .RowName
+    {
+        font-weight: 700;
+        font-size: 15px;
+        width: 200px;
+        height: 30px;
+    }
+}
+
+/*========================================Password Row========================================*/
+.PasswordRow
+{
+    display: flex;
+    flex: 2;
+    gap: 10px;
+    width: 450px;
+    height: 40px;
+}
+
+@media screen and (max-width: 768px)
+{
+    .PasswordRow
+    {
+        width: 300px
+    }
+}
+
+/*=========================================Text Input=========================================*/
+.TextInput
+{
+    flex: 2;
+    padding: 15px;
+    font-size: 18px;
+    width: 450px;
+    height: 40px;
+    border-radius: 50px;
+    outline:rgba(0, 0, 0, 0.568) solid 1px;
+    border: none
+}
+
+@media screen and (max-width: 768px)
+{
+    .TextInput
+    {
+        flex: 2;
+        padding: 10px;
+        font-size: 15px;
+        width: 300px;
+        height: 40px;
+        border-radius: 50px;
+        outline:rgba(0, 0, 0, 0.568) solid 1px;
+        border: none;
+    }
+}
+
+/*==========================================List Row==========================================*/
+.ListRow
+{
+    display: flex;
+    gap: 10px;
+    width: 450px;
+    margin-top: 0px !important;
+}
+
+@media screen and (max-width: 768px)
+{
+    .ListRow
+    {
+        width: 300px;
+        margin-top: 0px !important;
+    }
+}
+
+/*=========================================Date Input=========================================*/
+.DateInput 
+{
+    padding: 15px;
+    font-size: 18px;
+    width: 450px;
+    height: 40px;
+    border-radius: 50px;
+    outline:rgba(0, 0, 0, 0.568) solid 1px;
+    border: none
+}
+
+@media screen and (max-width: 768px)
+{
+    .DateInput 
+    {
+        padding: 10px;
+        font-size: 15px;
+        width: 300px;
+        height: 40px;
+        border-radius: 50px;
+        outline:rgba(0, 0, 0, 0.5) solid 1px;
+        border: none
+    }    
+}
+
+
+/*=========================================Button Row=========================================*/
+.ButtonRow
+{
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+}
+
+@media screen and (max-width: 768px)
+{
+    .ButtonRow
+    {
+        gap: 20px
+    }
+}
+
+/*=======================================Content Button=======================================*/
+.ContentButton
+{
+    margin-top: 30px;
+    width: 200px;
+    height: 45px;
+    border-radius: 50px;
+    border: none;
+    background: linear-gradient(#f8dd8c, #dab019);
+    transition: all 0.2s ease-in-out;
+    font-weight: 700;
+}
+
+.ContentButton:hover
+{
+    box-shadow: 0px 0px 20px rgb(252, 219, 109);
+    transform: scale(1.1);
+}
+
+.ContentButton:active
+{
+    box-shadow: none;
+    transform: scale(0.9);
+}
+
+@media screen and (max-width: 768px)
+{
+    .ContentButton
+    {
+        width: 150px;
+        height: 40px;
+    }
+}
+
+/*===================================Toggle Password Button===================================*/
+.TogglePasswordButton
+{
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.TogglePasswordButton img
+{
+    width: 30px;
+    height: 20px;
+}
+
+/*=======================================Error Message========================================*/
+.Error
+{
+    display: none;
+    margin-top: 10px;
+    color: red;
+    font-weight: 500;
+}
+
+.Error.show
+{
+    display: block;
+    text-align: center;
+}

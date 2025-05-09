@@ -1,0 +1,406 @@
+[
+    {
+      "date": "2025-05-01",
+      "id": "ING001",
+      "name": "Sugar",
+      "supplier": "Supplier A",
+      "import_quantity": 70,
+      "export_quantity": 25
+    },
+    {
+      "date": "2025-05-01",
+      "id": "ING002",
+      "name": "Salt",
+      "supplier": "Supplier B",
+      "import_quantity": 60,
+      "export_quantity": 30
+    },
+    {
+      "date": "2025-05-01",
+      "id": "ING003",
+      "name": "Flour",
+      "supplier": "Supplier C",
+      "import_quantity": 80,
+      "export_quantity": 45
+    },
+    {
+      "date": "2025-05-01",
+      "id": "ING004",
+      "name": "Rice",
+      "supplier": "Supplier D",
+      "import_quantity": 50,
+      "export_quantity": 20
+    },
+    {
+      "date": "2025-05-01",
+      "id": "ING005",
+      "name": "Milk Powder",
+      "supplier": "Supplier E",
+      "import_quantity": 90,
+      "export_quantity": 60
+    },
+    {
+      "date": "2025-05-01",
+      "id": "ING006",
+      "name": "Butter",
+      "supplier": "Supplier A",
+      "import_quantity": 75,
+      "export_quantity": 40
+    },
+    {
+      "date": "2025-05-01",
+      "id": "ING007",
+      "name": "Yeast",
+      "supplier": "Supplier B",
+      "import_quantity": 65,
+      "export_quantity": 30
+    },
+    {
+      "date": "2025-05-01",
+      "id": "ING008",
+      "name": "Baking Soda",
+      "supplier": "Supplier C",
+      "import_quantity": 40,
+      "export_quantity": 20
+    },
+    {
+      "date": "2025-05-01",
+      "id": "ING009",
+      "name": "Vanilla",
+      "supplier": "Supplier D",
+      "import_quantity": 30,
+      "export_quantity": 15
+    },
+    {
+      "date": "2025-05-01",
+      "id": "ING010",
+      "name": "Cocoa Powder",
+      "supplier": "Supplier E",
+      "import_quantity": 85,
+      "export_quantity": 50
+    },
+  
+    {
+      "date": "2025-05-02",
+      "id": "ING011",
+      "name": "Olive Oil",
+      "supplier": "Supplier A",
+      "import_quantity": 60,
+      "export_quantity": 35
+    },
+    {
+      "date": "2025-05-02",
+      "id": "ING012",
+      "name": "Corn Starch",
+      "supplier": "Supplier B",
+      "import_quantity": 55,
+      "export_quantity": 20
+    },
+    {
+      "date": "2025-05-02",
+      "id": "ING013",
+      "name": "Soy Sauce",
+      "supplier": "Supplier C",
+      "import_quantity": 70,
+      "export_quantity": 25
+    },
+    {
+      "date": "2025-05-02",
+      "id": "ING014",
+      "name": "Black Pepper",
+      "supplier": "Supplier D",
+      "import_quantity": 40,
+      "export_quantity": 10
+    },
+    {
+      "date": "2025-05-02",
+      "id": "ING015",
+      "name": "Chili Powder",
+      "supplier": "Supplier E",
+      "import_quantity": 35,
+      "export_quantity": 5
+    },
+    {
+      "date": "2025-05-02",
+      "id": "ING016",
+      "name": "Garlic",
+      "supplier": "Supplier A",
+      "import_quantity": 90,
+      "export_quantity": 60
+    },
+    {
+      "date": "2025-05-02",
+      "id": "ING017",
+      "name": "Onion",
+      "supplier": "Supplier B",
+      "import_quantity": 85,
+      "export_quantity": 50
+    },
+    {
+      "date": "2025-05-02",
+      "id": "ING018",
+      "name": "Ginger",
+      "supplier": "Supplier C",
+      "import_quantity": 65,
+      "export_quantity": 35
+    },
+    {
+      "date": "2025-05-02",
+      "id": "ING019",
+      "name": "Oregano",
+      "supplier": "Supplier D",
+      "import_quantity": 20,
+      "export_quantity": 10
+    },
+    {
+      "date": "2025-05-02",
+      "id": "ING020",
+      "name": "Basil",
+      "supplier": "Supplier E",
+      "import_quantity": 25,
+      "export_quantity": 12
+    },
+  
+    {
+      "date": "2025-05-03",
+      "id": "ING021",
+      "name": "Thyme",
+      "supplier": "Supplier A",
+      "import_quantity": 35,
+      "export_quantity": 15
+    },
+    {
+      "date": "2025-05-03",
+      "id": "ING022",
+      "name": "Parsley",
+      "supplier": "Supplier B",
+      "import_quantity": 30,
+      "export_quantity": 12
+    },
+    {
+      "date": "2025-05-03",
+      "id": "ING023",
+      "name": "Cinnamon",
+      "supplier": "Supplier C",
+      "import_quantity": 45,
+      "export_quantity": 18
+    },
+    {
+      "date": "2025-05-03",
+      "id": "ING024",
+      "name": "Nutmeg",
+      "supplier": "Supplier D",
+      "import_quantity": 20,
+      "export_quantity": 5
+    },
+    {
+      "date": "2025-05-03",
+      "id": "ING025",
+      "name": "Cardamom",
+      "supplier": "Supplier E",
+      "import_quantity": 25,
+      "export_quantity": 7
+    },
+    {
+      "date": "2025-05-03",
+      "id": "ING026",
+      "name": "Lemon Juice",
+      "supplier": "Supplier A",
+      "import_quantity": 80,
+      "export_quantity": 40
+    },
+    {
+      "date": "2025-05-03",
+      "id": "ING027",
+      "name": "Vinegar",
+      "supplier": "Supplier B",
+      "import_quantity": 70,
+      "export_quantity": 30
+    },
+    {
+      "date": "2025-05-03",
+      "id": "ING028",
+      "name": "Mustard",
+      "supplier": "Supplier C",
+      "import_quantity": 50,
+      "export_quantity": 25
+    },
+    {
+      "date": "2025-05-03",
+      "id": "ING029",
+      "name": "Mayonnaise",
+      "supplier": "Supplier D",
+      "import_quantity": 60,
+      "export_quantity": 35
+    },
+    {
+      "date": "2025-05-03",
+      "id": "ING030",
+      "name": "Ketchup",
+      "supplier": "Supplier E",
+      "import_quantity": 75,
+      "export_quantity": 45
+    },
+  
+    {
+      "date": "2025-05-04",
+      "id": "ING031",
+      "name": "Tomato Paste",
+      "supplier": "Supplier A",
+      "import_quantity": 80,
+      "export_quantity": 50
+    },
+    {
+      "date": "2025-05-04",
+      "id": "ING032",
+      "name": "Cream",
+      "supplier": "Supplier B",
+      "import_quantity": 85,
+      "export_quantity": 40
+    },
+    {
+      "date": "2025-05-04",
+      "id": "ING033",
+      "name": "Cheese",
+      "supplier": "Supplier C",
+      "import_quantity": 90,
+      "export_quantity": 60
+    },
+    {
+      "date": "2025-05-04",
+      "id": "ING034",
+      "name": "Yogurt",
+      "supplier": "Supplier D",
+      "import_quantity": 60,
+      "export_quantity": 35
+    },
+    {
+      "date": "2025-05-04",
+      "id": "ING035",
+      "name": "Eggs",
+      "supplier": "Supplier E",
+      "import_quantity": 95,
+      "export_quantity": 70
+    },
+    {
+      "date": "2025-05-04",
+      "id": "ING036",
+      "name": "Beef",
+      "supplier": "Supplier A",
+      "import_quantity": 100,
+      "export_quantity": 80
+    },
+    {
+      "date": "2025-05-04",
+      "id": "ING037",
+      "name": "Chicken",
+      "supplier": "Supplier B",
+      "import_quantity": 90,
+      "export_quantity": 65
+    },
+    {
+      "date": "2025-05-04",
+      "id": "ING038",
+      "name": "Fish",
+      "supplier": "Supplier C",
+      "import_quantity": 85,
+      "export_quantity": 60
+    },
+    {
+      "date": "2025-05-04",
+      "id": "ING039",
+      "name": "Shrimp",
+      "supplier": "Supplier D",
+      "import_quantity": 70,
+      "export_quantity": 40
+    },
+    {
+      "date": "2025-05-04",
+      "id": "ING040",
+      "name": "Tofu",
+      "supplier": "Supplier E",
+      "import_quantity": 65,
+      "export_quantity": 35
+    },
+  
+    {
+      "date": "2025-05-05",
+      "id": "ING041",
+      "name": "Spinach",
+      "supplier": "Supplier A",
+      "import_quantity": 40,
+      "export_quantity": 20
+    },
+    {
+      "date": "2025-05-05",
+      "id": "ING042",
+      "name": "Carrot",
+      "supplier": "Supplier B",
+      "import_quantity": 50,
+      "export_quantity": 30
+    },
+    {
+      "date": "2025-05-05",
+      "id": "ING043",
+      "name": "Potato",
+      "supplier": "Supplier C",
+      "import_quantity": 90,
+      "export_quantity": 70
+    },
+    {
+      "date": "2025-05-05",
+      "id": "ING044",
+      "name": "Cabbage",
+      "supplier": "Supplier D",
+      "import_quantity": 55,
+      "export_quantity": 25
+    },
+    {
+      "date": "2025-05-05",
+      "id": "ING045",
+      "name": "Lettuce",
+      "supplier": "Supplier E",
+      "import_quantity": 45,
+      "export_quantity": 20
+    },
+    {
+      "date": "2025-05-05",
+      "id": "ING046",
+      "name": "Mushroom",
+      "supplier": "Supplier A",
+      "import_quantity": 65,
+      "export_quantity": 40
+    },
+    {
+      "date": "2025-05-05",
+      "id": "ING047",
+      "name": "Bell Pepper",
+      "supplier": "Supplier B",
+      "import_quantity": 60,
+      "export_quantity": 35
+    },
+    {
+      "date": "2025-05-05",
+      "id": "ING048",
+      "name": "Zucchini",
+      "supplier": "Supplier C",
+      "import_quantity": 70,
+      "export_quantity": 50
+    },
+    {
+      "date": "2025-05-05",
+      "id": "ING049",
+      "name": "Pumpkin",
+      "supplier": "Supplier D",
+      "import_quantity": 80,
+      "export_quantity": 55
+    },
+    {
+      "date": "2025-05-05",
+      "id": "ING050",
+      "name": "Broccoli",
+      "supplier": "Supplier E",
+      "import_quantity": 85,
+      "export_quantity": 60
+    }
+  ]  
