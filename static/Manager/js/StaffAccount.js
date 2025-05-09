@@ -115,6 +115,13 @@ document.getElementById("CreateButton").addEventListener("click", async function
         if (result.status == "success")
         {
             alert("New account has been created!");
+            ErrorMessage.classList.remove("show");
+            ErrorMessage.textContent = "";
+        }
+        else if (result.status == "error")
+        {
+            ErrorMessage.classList.add("show");
+            ErrorMessage.textContent = result.errorMessage;
         }
         else if (result.status == "no permission")
         {

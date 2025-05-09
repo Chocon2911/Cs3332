@@ -2,6 +2,7 @@ const accountBtn = document.getElementById("AccountButton");
 const accountPopup = document.getElementById("AccountPopup");
 const mainBody = document.getElementById("MainBody");
 
+//===========================================Event============================================
 accountBtn.addEventListener("click", function (event) 
 { 
     accountPopup.classList.toggle("show"); 
@@ -25,14 +26,31 @@ mainBody.addEventListener("click", function (event)
     }
 });
 
-function managerInit() 
+window.onload = async function ()
 {
-    const token = getCookie("token");
-    const role = getCookie("role");
-
-    if (token !== "123" || role !== "manager") 
+    try
     {
-        window.location.href = "/manager/error";
+        const token = getCookie("token");
+        const username = getCookie("username");
+        const res = await fetch("/manager/get_account_profile", {
+            method: "POST",
+            headers:
+            {
+                "Content-Type": "application/json", 
+                "Authorization": token,
+            },
+            body: JSON.stringify({ username: username })
+        });
+
+        const result = await res.json();
+        if (result.status == "no permission")
+        {
+            window.location.href = result.url;
+        }
+    }
+    catch (error)
+    {
+        console.log(error);
     }
 }
 

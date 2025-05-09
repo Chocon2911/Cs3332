@@ -67,7 +67,7 @@ loginBtn.addEventListener("click", async function (event)
         {
             setCookie("username", username);
             setCookie("token", result.token);
-            login(result.role);
+            window.location.href = "/manager/tab_translation";
         }
         else
         {
@@ -82,26 +82,6 @@ loginBtn.addEventListener("click", async function (event)
         console.log(error);
     }
 })
-
-function login(role)
-{
-    if (role == "manager")
-    {
-        window.location.href = "/manager/profile";
-    }
-    else if (role == "storageManager")
-    {
-        window.location.href = "/storage_manager/dashboard";
-    }
-    else if (role == "bartender")
-    {
-        window.location.href = "/Bartender/html/index.html";
-    }
-    else if (role == "customerCashier")
-    {
-        window.location.href = "/CustomerCashier/html/index.html";
-    }
-}
 
 managerBtn.addEventListener("click", function (event)
 {
