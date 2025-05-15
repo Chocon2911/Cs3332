@@ -1,10 +1,14 @@
-from flask import render_template, request, jsonify, url_for
+from flask import render_template, request, jsonify, url_for, make_response
 from datetime import datetime
 import requests
 
 URL = "http://localhost:8080"
 
-
+def forward_response(r):
+    response = make_response(r.content, r.status_code)
+    if 'Content-Type' in r.headers:
+        response.headers['Content-Type'] = r.headers['Content-Type']
+    return response
 
 #============================================================================================
 #===========================================Route============================================
@@ -38,6 +42,104 @@ def register_manager_routes(app):
     @app.route('/manager/tab_translation')
     def manager_tab_translation():
         return render_template('Manager/TabTranslation.html')
+    
+    #======================================Request Response======================================
+    #===login===
+    @app.route('/login', methods=['POST'])
+    def test_login():
+        header = {
+            'Content-Type': 'application/json',
+            'User-Agent': ''
+        }
+
+        response = requests.post(URL + "/login", json=request.get_json(), headers=header)
+        print ("Login: " + str(response.status_code))
+        return forward_response(response)
+        
+    #===user_info===
+    @app.route('/user_info', methods=['POST'])
+    def user_info():
+        token = request.headers.get("Authorization")
+    
+        header = {
+            'Content-Type': 'application/json',
+            'User-Agent': '',
+            'Authorization': token
+        }
+
+
+        response = requests.get(URL + "/user_info", params=request.get_json(), headers=header)
+        print ( "User Information: " + str(response.status_code))
+        return forward_response(response)
+    
+    #===user_info_update===
+    @app.route('/user_info_update', methods=['POST'])
+    def user_info_update():
+        token = request.headers.get("Authorization")
+        data = request.get_json()
+
+        print(data)
+        print(token)
+
+        header = {
+            'Authorization': token,
+            'Content-Type': 'application/json',
+            'User-Agent': ''
+        }
+
+        response = requests.post(URL + "/user_info_update", json=data, headers=header)
+        print ("User Information Update: " + str(response.status_code))
+        return forward_response(response)
+    
+    #===user_create===
+    @app.route('/user_create', methods=['POST'])
+    def test_register():
+        header = {
+            'Content-Type': 'application/json',
+            'User-Agent': ''
+        }
+
+        response = requests.post(URL + "/user_create", json=request.get_json(), headers=header)
+        print ("Register: " + str(response.status_code))
+        return forward_response(response)
+    
+    #===item_stack_list===
+    @app.route('/item_stack_list', methods=['POST'])
+    def item_stack_list():
+        header = {
+            'Content-Type': 'application/json',
+        }
+
+        response = requests.get(URL + "/item_stack_list", headers=header)
+        print ("Item Stack List: " + str(response.status_code))
+        return forward_response(response)
+    
+    #===product_create===
+    @app.route('/product_create', methods=['POST'])
+    def create_product():
+        token = request.headers.get("Authorization")
+
+        header = {
+            'Authorization': token,
+            'Content-Type': 'application/json',
+            'User-Agent': ''
+        }
+
+        response = requests.post(URL + "/product_create", json=request.get_json(), headers=header)
+        print ("Create Product: " + str(response.status_code))
+        return forward_response(response)
+
+    #===item_list===
+    @app.route('/item_list', methods=['POST'])
+    def item_list():
+        header = {
+            'Content-Type': 'application/json',
+        }
+
+        response = requests.get(URL + "/item_list", headers=header)
+        print ("Item List: " + str(response.status_code))
+        return forward_response(response)
+        
     
     #========================================Save Profile========================================
     @app.route('/manager/save_account_profile', methods=['POST'])
@@ -120,14 +222,14 @@ def register_manager_routes(app):
             for i in range(len(roles)):
                 if roles[i] == "MANAGER":
                     break
-                if i == len(roles) - 1:
-                    status = "no permission"
-                    url = "/manager/login"
-                    res = {
-                        'status': status,
-                        'url': url
-                    }
-                    return jsonify(res)
+                # if i == len(roles) - 1:
+                #     status = "no permission"
+                #     url = "/manager/login"
+                #     res = {
+                #         'status': status,
+                #         'url': url
+                #     }
+                #     return jsonify(res)
 
             res = {
                 'status': status,
@@ -215,6 +317,28 @@ def register_manager_routes(app):
         }
 
         return jsonify(res)
+    
+    #==========================================New Item==========================================
+    @app.route('/manager/new_item', methods=['POST'])
+    def new_item():
+        token = request.headers.get("Authorization")
+        if not token:
+            return jsonify({
+                'status': 'no permission',
+                'url': url_for('manager_login')
+            })
+        data = request.get_json()
+        if not data:
+            return jsonify({
+                'status': 'error',
+                'errorMessage': 'Please fill in all the fields'
+            })
+        
+        return jsonify({
+            'status': 'success'
+        })
+
+    return app
 
 
 

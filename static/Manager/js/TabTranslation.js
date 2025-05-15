@@ -30,10 +30,9 @@ window.onload = async function ()
 {
     try
     {
-        console.log("Fuck")
         const token = getCookie("token");
         const username = getCookie("username");
-        const res = await fetch("/manager/get_account_profile", {
+        const res = await fetch("/user_info", {
             method: "POST",
             headers:
             {
@@ -43,31 +42,32 @@ window.onload = async function ()
             body: JSON.stringify({ username: username })
         });
 
-        const result = await res.json();
-        if (result.status == "no permission")
+        if (res.status >= 400 && res.status <= 600)
         {
-            window.location.href = result.url;
+            window.location.href = "/manager/login";
+            return;
         }
 
-        else
+        else if (res.status == 200)
         {
-            console.log("Fuck")
-            for (let i = 0; i < result.roles.length; i++)
+            const result = await res.json();
+            roles = result["roles"];
+            for (let i = 0; i < roles.length; i++)
             {
-                console.log(result.roles[i]);
-                if (result.roles[i] == "MANAGER")
+                console.log(roles[i]);
+                if (roles[i] == "MANAGER")
                 {
                     ManagerBtn.classList.add("show");
                 }
-                else if (result.roles[i] == "STORAGE_MANAGER")
+                else if (roles[i] == "STORAGE_MANAGER")
                 {
                     StorageManagerBtn.classList.add("show");
                 }
-                else if (result.roles[i] == "BARTENDER")
+                else if (roles[i] == "BARTENDER")
                 {
                     BartenderBtn.classList.add("show");
                 }
-                else if (result.roles[i] == "CASHIER")
+                else if (roles[i] == "CASHIER")
                 {
                     CustomerBtn.classList.add("show");
                 }

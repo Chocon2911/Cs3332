@@ -50,7 +50,7 @@ loginBtn.addEventListener("click", async function (event)
 
     try
     {
-        res = await fetch("/manager/login", {
+        res = await fetch("/login", {
             method: "POST",
             headers: 
             { 
@@ -63,16 +63,21 @@ loginBtn.addEventListener("click", async function (event)
         });
 
         const result = await res.json();
-        if (result.status == "success")
+        if (res.status == 200)
         {
             setCookie("username", username);
-            setCookie("token", result.token);
+            setCookie("token", result["token"]);
             window.location.href = "/manager/tab_translation";
+        }
+        else if (res.status >= 400 && res.status <= 600)
+        {
+            ErrorMessage.classList.add("show");
+            ErrorMessage.textContent = result.error;
         }
         else
         {
             ErrorMessage.classList.add("show");
-            ErrorMessage.value = result.message;
+            ErrorMessage.value = result.error;
         }
     }
     catch (error)

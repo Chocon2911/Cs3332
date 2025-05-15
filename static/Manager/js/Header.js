@@ -2,6 +2,35 @@ const accountBtn = document.getElementById("AccountButton");
 const accountPopup = document.getElementById("AccountPopup");
 const mainBody = document.getElementById("MainBody");
 
+//===========================================Class============================================
+class UserInfo_Request
+{
+    constructor(username)
+    {
+        this.username = username;
+    }
+    toJson()
+    {
+        return {
+            username: this.username
+        };
+    }
+}
+
+class UserInfo_Response
+{
+    constructor(data)
+    {
+        this.username = data['username'];
+        this.name = data['name'];
+        this.email = data['email'];
+        this.phone = data['phone'];
+        this.dateOfBirth = data['dateOfBirth'];
+        this.gender = data['gender'];
+        this.roles = data['roles'];
+    }
+}
+
 //===========================================Event============================================
 accountBtn.addEventListener("click", function (event) 
 { 
@@ -31,26 +60,52 @@ window.onload = async function ()
     try
     {
         const token = getCookie("token");
-        const username = getCookie("username");
-        const res = await fetch("/manager/get_account_profile", {
+        const username = encodeURIComponent(getCookie("username"));
+        request = new UserInfo_Request(username);
+        const res = await fetch("/user_info", {
             method: "POST",
             headers:
             {
-                "Content-Type": "application/json", 
+                "Content-Type": "application/json",
                 "Authorization": token,
             },
-            body: JSON.stringify({ username: username })
+            body: JSON.stringify(request.toJson())
         });
 
-        const result = await res.json();
-        if (result.status == "no permission")
+        data = await res.json();
+        if (res.status == 200)
         {
-            window.location.href = result.url;
+            const result = await new UserInfo_Response(data);
+            for (let i = 0; i < result.roles.length; i++)
+            {
+                if (result.roles[i] == "MANAGER")
+                {
+                    console.log("Has permission");
+                    return;
+                } 
+                if (i == result.roles.length - 1)
+                {
+                    console.log("No permission");
+                    window.location.href = "/manager/login";
+                    return;
+                } 
+            }
+        }
+        else if (res.status >= 400 && res.status <= 600)
+        {
+            console.log(data["error"]);
+            window.location.href = "/manager/login";
+            return;
+        }
+        else
+        {
+            console.log("Unexpected Error: " + data["error"]);
+            return;
         }
     }
     catch (error)
     {
-        console.log(error);
+        console.log("Error: " + error);
     }
 }
 
