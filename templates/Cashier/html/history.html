@@ -27,25 +27,22 @@
     <!-- Sidebar chuyển đổi giữa các trang Map / Customer Order / History -->
     <div id="sidebar" class="hidden">
         <div class="menu-button-group">
-            <a href="{{ url_for('cashier_cafetest') }}" class="menu-button">Map</a>
-            <a href="{{ url_for('cashier_customer_order') }}" class="menu-button">Customer Order</a>
-            <a href="{{ url_for('cashier_history') }}" class="menu-button">History</a>           
+            <form action="{{ url_for('goto_cafetest') }}" method="POST">
+                <button type="submit" class="menu-button" data-page="cafetest">Map</button>
+            </form>
+            <form action="{{ url_for('goto_customer_order') }}" method="POST">
+                <button type="submit" class="menu-button" data-page="customer_order">Customer Order</button>
+            </form>
+            <form action="{{ url_for('goto_history') }}" method="POST">
+                <button type="submit" class="menu-button" data-page="history">History</button>
+            </form> 
         </div>
     </div>
-
-
 
     <!-- Javascript Chính -->
     <script defer src="{{ url_for('static', filename='Cashier/js/script.js') }}"></script>
     <script defer src="{{ url_for('static', filename='Cashier/js/sidebar.js') }}"></script>
     <script defer src="{{ url_for('static', filename='Cashier/js/history.js') }}"></script>    
-    
-    <!-- Script phụ trợ điều hướng trang -->
-    <script>
-        function goToPage(page) {
-            window.location.href = page;
-        }
-    </script>
 
 </body>
 </html>

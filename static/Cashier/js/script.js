@@ -10,6 +10,14 @@ let currentArea = "Inside";
 let selectedTable = null;
 let currentTableId = null;
 
+function postRedirect(url) {
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = url;
+    document.body.appendChild(form);
+    form.submit();
+}
+
 loadAreasFromLocalStorage();
 if (Object.keys(areas).length === 0) {
     areas = { "Inside": [] };
@@ -360,7 +368,7 @@ document.addEventListener("DOMContentLoaded", function () {
             showToast('Done!!! ✅');
 
             setTimeout(() => {
-                window.location.href = cashierHistoryURL;
+                postRedirect("/cashier/goto_history");
             }, 1500);
         });
     }
@@ -372,7 +380,7 @@ function handleOrder() {
         saveAreasToLocalStorage();
         renderTables(); // Cập nhật lại màu bàn
     }
-    window.location.href = "/customer/coffee";
+    postRedirect("/customer/goto_coffee");
 }
 
 function handleForceEmpty() {

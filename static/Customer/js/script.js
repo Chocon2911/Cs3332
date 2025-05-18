@@ -434,12 +434,19 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ----- Back về Map -----
-document.addEventListener("DOMContentLoaded", function() {
-  const backBtn = document.getElementById('backBtn');
-  if (backBtn) {
-    const backUrl = backBtn.dataset.backUrl;
-    backBtn.addEventListener("click", function () {
-        window.location.href = backUrl;
-    });
-  }
+
+
+// ----- Highlight hiện tại trong sidebar khi dùng POST (form + button)
+document.addEventListener('DOMContentLoaded', () => {
+  const pathParts = window.location.pathname.split('/');
+  const currentPage = pathParts[pathParts.length - 1]; // eg: "coffee", "tea", etc.
+
+  document.querySelectorAll('.sidebar-link').forEach(button => {
+    const page = button.dataset.page;
+    if (page === currentPage) {
+      button.classList.add('active');
+    } else {
+      button.classList.remove('active');
+    }
+  });
 });
