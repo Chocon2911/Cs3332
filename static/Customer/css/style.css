@@ -89,9 +89,8 @@
     color: black;
   }
 
-  .sidebar a.active {
-    background-color: #eee; /* nền xám nhẹ */
-    padding: 0.5rem;
+  .sidebar-link.active {
+    background-color: #eee;
     border-radius: 6px;
   }
   
@@ -375,6 +374,21 @@
     background-color: #006fd6;
   }
   
-  
+  .sidebar-link {
+    all: unset;
+    display: block;
+    width: 100%;
+    text-align: left;
+    font-size: 1.5rem;
+    padding: 1rem 0;
+    margin-bottom: 0.5rem; /* 👈 thêm dòng này */
+    cursor: pointer;
+    font-style: italic;
+  }
+
+.sidebar-link:hover {
+    background-color: #eee;
+    border-radius: 6px;
+}
   
   /* Thêm vào cuối file CSS */

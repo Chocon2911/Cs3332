@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Abcxyz Coffee</title>
   <!-- Link đến file CSS -->
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='Customer/css/style.css') }}">
 </head>
 <body>
   
@@ -28,12 +28,22 @@
   <!-- Sidebar menu trái -->
   <aside class="sidebar" id="sidebar">
     <ul>
-      <li><a href="Coffee.html">💖 Shop best-sellers</a></li>
-      <li><a href="espresso.html">☕ Espresso Coffee</a></li>
-      <li><a href="vietnamese-phin.html">🥛 Vietnamese PHIN Coffee</a></li>
-      <li><a href="tea.html">🍵 Tea</a></li>
-      <!-- Nút Back -->   
-      <button id="backBtn" class="back-button">Back</button>
+      <form method="POST" action="{{ url_for('goto_customer_coffee') }}">
+        <button type="submit" class="sidebar-link" data-page="coffee">💖 Shop best-sellers</button>
+      </form>
+      <form method="POST" action="{{ url_for('goto_customer_espresso') }}">
+        <button type="submit" class="sidebar-link" data-page="espresso">☕ Espresso Coffee</button>
+      </form>
+      <form method="POST" action="{{ url_for('goto_customer_vietnamese_phin') }}">
+        <button type="submit" class="sidebar-link" data-page="vietnamese-phin">🥛 Vietnamese PHIN Coffee</button>
+      </form>
+      <form method="POST" action="{{ url_for('goto_customer_tea') }}">
+        <button type="submit" class="sidebar-link" data-page="tea">🍵 Tea</button>
+      </form>
+      <!-- Nút Back -->
+      <form method="POST" action="{{ url_for('goto_cashier_cafetest_from_customer') }}">
+        <button type="submit" class="back-button">Back</button>
+      </form> 
     </ul>
   </aside>
 
@@ -72,24 +82,24 @@
     <div class="content">
       <div class="text-content">
         <p class="intro">
-          <span>Savor the authentic taste of traditional Vietnamese PHIN coffee 🎖️🇻🇳
+          <span>Relax and refresh with our premium teas 🍃🍵
         </p>
       </div>
       <div class="image-content">
         <img class="coffee-image"
-             src="https://png.pngtree.com/png-clipart/20210312/original/pngtree-stainless-steel-glass-cup-vietnam-specialty-filter-coffee-png-image_6067154.png"
+             src="https://images.vexels.com/media/users/3/264251/isolated/preview/ddc83d418bd53a46f3e1bee59a447532-tea-illustration-cup.png"
              alt="Coffee illustration" />
       </div>
     </div>
    
     <!-- Sản phẩm -->
     <section class="products">
-    <h2>Vietnamese PHIN Coffee</h2>
+    <h2>Tea Selection</h2>
       <div class="grid">
         <!-- Sản phẩm 1 -->
         <div class="product-card">
-          <span class="icon">🇻🇳☕</span>
-          <h3>Traditional Phin</h3>
+          <span class="icon">🍵</span>
+          <h3>Green Tea</h3>
           <div class="price">$5.00</div>
           <div class="qty-control">
             <button class="dec">−</button>
@@ -101,8 +111,8 @@
         
         <!-- Sản phẩm 2 -->
         <div class="product-card">
-          <span class="icon">🥛☕</span>
-          <h3>Condensed Milk Phin</h3>
+          <span class="icon">🌿🍵</span>
+          <h3>Oolong Tea</h3>
           <div class="price">$4.50</div>
           <div class="qty-control">
             <button class="dec">−</button>
@@ -114,8 +124,8 @@
         
         <!-- Sản phẩm 3 -->
         <div class="product-card">
-          <span class="icon">🧊☕</span>
-          <h3>Iced Phin Coffee</h3>
+          <span class="icon">⚫🍵</span>
+          <h3>Black Tea</h3>
           <div class="price">$3.50</div>
           <div class="qty-control">
             <button class="dec">−</button>
@@ -127,8 +137,8 @@
         
         <!-- Sản phẩm 4 -->
         <div class="product-card">
-          <span class="icon">🥛🧋</span>
-          <h3>Phin Latte</h3>
+          <span class="icon">🌼🍵</span>
+          <h3>Herbal Tea</h3>
           <div class="price">$6.00</div>
           <div class="qty-control">
             <button class="dec">−</button>
@@ -142,6 +152,6 @@
   </main>
   
   <!-- Link tới JS -->
-  <script src="script.js"></script>
+  <script defer src="{{ url_for('static', filename='Customer/js/script.js') }}"></script>
 </body>
 </html>
