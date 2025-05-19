@@ -26,6 +26,7 @@ def register_cashier_routes(app):
     def goto_history():
         return redirect(url_for('cashier_history'))
     
+    # Điều hướng về trang order
     @app.route('/customer/goto_coffee', methods=['POST'])
     def goto_customer_coffee_from_cashier():
         return redirect(url_for('customer_coffee'))

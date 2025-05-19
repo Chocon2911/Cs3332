@@ -34,6 +34,7 @@ def register_customer_routes(app):
     def goto_customer_vietnamese_phin():
         return redirect(url_for('customer_vietnamese_phin'))
     
+    # Điều hướng về trang Map
     @app.route('/cashier/goto_cafetest', methods=['POST'])
     def goto_cashier_cafetest_from_customer():
         return redirect(url_for('cashier_cafetest'))
