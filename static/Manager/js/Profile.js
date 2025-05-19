@@ -64,6 +64,12 @@ window.onload = async function ()
     }
     else if (res.status >= 400 && res.status <= 600)
     {
+        if (res.status == 401)
+        {
+            window.location.href = "/manager/login";
+            return;
+        }
+
         data = await res.json();
         console.log(data["error"]);
     }

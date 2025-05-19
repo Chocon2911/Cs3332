@@ -57,55 +57,38 @@ mainBody.addEventListener("click", function (event)
 
 window.onload = async function ()
 {
-    try
-    {
-        const token = getCookie("token");
-        const username = encodeURIComponent(getCookie("username"));
-        request = new UserInfo_Request(username);
-        const res = await fetch("/user_info", {
-            method: "POST",
-            headers:
-            {
-                "Content-Type": "application/json",
-                "Authorization": token,
-            },
-            body: JSON.stringify(request.toJson())
-        });
+    const token = getCookie("token");
+    const username = encodeURIComponent(getCookie("username"));
+    request = new UserInfo_Request(username);
+    const res = await fetch("/user_info", {
+        method: "POST",
+        headers:
+        {
+            "Content-Type": "application/json",
+            "Authorization": token,
+        },
+        body: JSON.stringify(request.toJson())
+    });
 
-        data = await res.json();
-        if (res.status == 200)
+    if (res.status == 200)
+    {
+        return;
+    }
+    else if (res.status >= 400 && res.status <= 600)
+    {
+        if (res.status == 401)
         {
-            const result = await new UserInfo_Response(data);
-            for (let i = 0; i < result.roles.length; i++)
-            {
-                if (result.roles[i] == "MANAGER")
-                {
-                    console.log("Has permission");
-                    return;
-                } 
-                if (i == result.roles.length - 1)
-                {
-                    console.log("No permission");
-                    window.location.href = "/manager/login";
-                    return;
-                } 
-            }
-        }
-        else if (res.status >= 400 && res.status <= 600)
-        {
-            console.log(data["error"]);
             window.location.href = "/manager/login";
             return;
         }
-        else
-        {
-            console.log("Unexpected Error: " + data["error"]);
-            return;
-        }
+
+        data = await res.json();
+        console.log(data["error"]);
     }
-    catch (error)
+    else
     {
-        console.log("Error: " + error);
+        data = await res.json();
+        console.log("Unexpected Error: " + data["error"]);
     }
 }
 
