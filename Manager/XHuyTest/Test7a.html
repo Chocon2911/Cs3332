@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create New Menu Item</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .ingredient {
+      margin-bottom: 10px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .ingredient select,
+    .ingredient input {
+      flex: 1;
+    }
+    .remove-btn {
+      background-color: #e74c3c;
+      border: none;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .remove-btn:hover {
+      background-color: #c0392b;
+    }
+    button {
+      padding: 10px 15px;
+      margin-top: 15px;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .ingredients-list {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Create New Menu Item</h2>
+    <label for="dishName">Dish Name:</label>
+    <input type="text" id="dishName" placeholder="Enter dish name..." />
+
+    <div class="ingredients-list" id="ingredientsList">
+      <label>Ingredients:</label>
+      <div class="ingredient">
+        <select class="ingredient-name">
+          <option value="">-- Select Ingredient --</option>
+          <option value="Sugar">Sugar</option>
+          <option value="Salt">Salt</option>
+          <option value="Flour">Flour</option>
+          <option value="Milk">Milk</option>
+          <option value="Butter">Butter</option>
+        </select>
+        <input type="text" placeholder="Amount (e.g., 2 tbsp)" class="ingredient-amount" />
+        <button class="remove-btn" onclick="removeIngredient(this)">−</button>
+      </div>
+    </div>
+
+    <button onclick="addIngredient()">+ Add Ingredient</button>
+    <button onclick="saveRecipe()">Save Recipe</button>
+  </div>
+
+  <script>
+    function addIngredient() {
+      const container = document.getElementById("ingredientsList");
+      const div = document.createElement("div");
+      div.className = "ingredient";
+      div.innerHTML = `
+        <select class="ingredient-name">
+          <option value="">-- Select Ingredient --</option>
+          <option value="Sugar">Sugar</option>
+          <option value="Salt">Salt</option>
+          <option value="Flour">Flour</option>
+          <option value="Milk">Milk</option>
+          <option value="Butter">Butter</option>
+        </select>
+        <input type="text" placeholder="Amount (e.g., 2 tbsp)" class="ingredient-amount" />
+        <button class="remove-btn" onclick="removeIngredient(this)">−</button>
+      `;
+      container.appendChild(div);
+    }
+
+    function removeIngredient(button) {
+      const ingredientDiv = button.parentElement;
+      ingredientDiv.remove();
+    }
+
+    function saveRecipe() {
+      const dishName = document.getElementById("dishName").value;
+      const ingredientNames = document.querySelectorAll(".ingredient-name");
+      const ingredientAmounts = document.querySelectorAll(".ingredient-amount");
+
+      const ingredients = [];
+      for (let i = 0; i < ingredientNames.length; i++) {
+        const name = ingredientNames[i].value.trim();
+        const amount = ingredientAmounts[i].value.trim();
+        if (name && amount) {
+          ingredients.push({ name, amount });
+        }
+      }
+
+      const recipe = {
+        dishName,
+        ingredients
+      };
+
+      console.log("Saved Recipe:", recipe);
+      alert("Recipe saved! Check the console (F12) to view data.");
+    }
+  </script>
+</body>
+</html>

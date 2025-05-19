@@ -12,10 +12,10 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='Manager/css/Style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='Manager/css/EnterForm.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='Manager/css/StaffAccount.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='Manager/css/NewItem.css') }}">
 </head>
 
-<body id="Main">
+<body onload="" id="Main">
     <header>
         <nav class="navbar navbar-expand-md">
             <div class="container-fluid" id="NavHeader">
@@ -59,88 +59,64 @@
         </nav>
     </header>
 
-    <!--Account Popup-->
-    <div id="AccountPopup">
+     <!--Account Popup-->
+     <div id="AccountPopup">
         <ul>
             <li><a class="" href="/manager/profile">Profile</a></li>
             <li><a class="" href="/manager/login">Log out</a></li>
         </ul>
     </div>
 
+    <!--Main Body-->
     <main id="MainBody">
         <!--Title-->
         <div id="Title">
-            <h1>Create Staff Account</h1>
+            <h1>Create New Item</h1>
         </div>
 
         <!--Content-->
         <form id="MainContent">
-            <ul>
-                <!--Name-->
-                <div class = "ContentRow">
-                    <label for="name" class="RowName">Name: </label>
-                    <input type="text" class="InputFocus TextInput" id="Name" placeholder="Enter your name">
-                </div>
-                <!--Username-->
-                <div class = "ContentRow">
-                    <label for="name" class="RowName">Username:</label>
-                    <input type="Text" class="InputFocus TextInput" id="Username" placeholder="Enter your username">
-                </div>
-                <!--New Password-->
-                <div class = "ContentRow">
-                    <label class="RowName">New Password:</label>
-                    <div class="PasswordRow">
-                        <input type="password" class="InputFocus TextInput" id="Password" placeholder="at least 8 characters">
-                        <button type="button" class="TogglePasswordButton" id="TogglePassword">
-                            <img src="{{ url_for('static', filename='Manager/Image/PasswordEye.png') }}">
-                        </button>
-                    </div>
-                </div>
-                <!--Re-Enter Password-->
-                <div class = "ContentRow">
-                    <label class="RowName">Re-Enter Password:</label>
-                    <div class="PasswordRow">
-                        <input type="password" class="InputFocus TextInput" id="RePassword" placeholder="enter your above password">
-                        <button type="button" class="TogglePasswordButton" id="ToggleRePassword">
-                            <img src="{{ url_for('static', filename='Manager/Image/PasswordEye.png') }}">
-                        </button>
-                    </div>
-                </div>
-                <!--Date of Birth-->
-                <div class="ContentRow">
-                    <label class="RowName">Date of Birth:</label>
-                    <input class="DateInput" id="Date" type="date">
-                </div>
-                <!--Role-->
-                <div class="ContentRow">
-                    <label class="RowName">Role:</label>
-                    <ul class="ListRow">
-                        <li>
-                            <input type="checkbox" class="RoleInput" value="CASHIER" id="Cashier">
-                            <label class="RoleLabel">Cashier</label>
-                        </li>
-                        <li>
-                            <input type="checkbox" class="RoleInput" value="STORAGE_MANAGER" id="StorageManager">
-                            <label class="RoleLabel">Storage Manager</label>
-                        </li>
-                        <li>
-                            <input type="checkbox" class="RoleInput" value="BARTENDER" id="Bartender">
-                            <label class="RoleLabel">Bartender</label>
-                        </li>
-                    </ul>
-                </div>
-                <!--Error Message-->
-                <span class="Error" id="ErrorMessage"></span>
-                <!--Button Row-->
-                <div class="ButtonRow">
-                    <button type="button" class="ContentButton" id="CreateButton">Create</button>
-                </div>
+            <!--Item Name-->
+            <div class="ContentRow">
+                <label class="RowName">Item Name: </label>
+                <input class="InputFocus TextInput" id="ItemName" placeholder="eg: Cappuccino">
+            </div>
+
+            <!--Item Unit-->
+            <div class="ContentRow">
+                <label class="RowName">Unit: </label>
+                <input class="InputFocus TextInput" id="ItemUnit" placeholder="eg: cup, dish, etc">
+            </div>
+
+            <!--Item Price-->
+            <div class="ContentRow">
+                <label class="RowName">Price ($): </label>
+                <input type="number" min="0.0001" class="InputFocus TextInput" id="ItemPrice" placeholder="eg: 2.50">
+            </div>
+
+            <!--Ingredients-->
+            <label class="RowName">---Ingredients---</label>
+            <ul class="IngredientsContainer" id="IngredientsContainer">
+                <!--Ingredient-->
             </ul>
+
+            <!--Execute-->
+            <label class="RowName ExecuteLabel">---Execute Guide---</label>
+            <div>
+                <textarea class="ExecuteInput InputFocus" id="ExecuteGuide" placeholder="Enter executing steps..."></textarea>
+            </div>
+
+            <!--Button-->
+            <div class="ButtonRow">
+                <button type="button" class="ContentButton" id="AddButton" onclick="addIngredient()">Add ingredient</button>
+                <button type="button" class="ContentButton" id="SubmitButton">Submit</button>
+            </div>
         </form>
     </main>
 
+    <!--java script-->
     <script src="{{ url_for('static', filename='Manager/js/Header.js') }}"></script>
-    <script src="{{ url_for('static', filename='Manager/js/StaffAccount.js') }}"></script>
+    <script src="{{ url_for('static', filename='Manager/js/NewItem.js') }}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" 
     integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" 
@@ -149,6 +125,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" 
     integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" 
     crossorigin="anonymous"></script>
-</body>
 
+</body>
 </html>

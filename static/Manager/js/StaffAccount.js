@@ -1,3 +1,69 @@
+//==========================================Variable==========================================
+const RealName = document.getElementById("Name");
+const Username = document.getElementById("Username");
+const Password = document.getElementById("Password");
+const RePassword = document.getElementById("RePassword");
+const BirthDate = document.getElementById("Date");
+const ErrorMessage = document.getElementById("ErrorMessage");
+const StorageManagerRole = document.getElementById("StorageManager");
+const CashierRole = document.getElementById("Cashier");
+const BartenderRole = document.getElementById("Bartender");
+
+//===========================================Class============================================
+class UserCreate_Request
+{
+    constructor(username, password, name, dateOfBirth, roles)
+    {
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.email = "abc@gmail.com";
+        this.phone = "0123456789";
+        this.dateOfBirth = dateOfBirth;
+        this.gender = "other";
+        this.roles = roles;
+    }
+
+    toJson()
+    {
+        return {
+            username: this.username,
+            password: this.password,
+            name: this.name,
+            email: this.email,
+            phone: this.phone,
+            dateOfBirth: this.dateOfBirth,
+            gender: this.gender,
+            roles: this.roles
+        };
+    }
+}
+
+class Account
+{
+    constructor(name, username, rePassword, password, birthDate, roles)
+    {
+        this.name = name;
+        this.username = username;
+        this.rePassword = rePassword;
+        this.password = password;
+        this.birthDate = birthDate;
+        this.roles = roles;
+    }
+
+    toJson()
+    {
+        return {
+            name: this.name,
+            username: this.username,
+            rePassword: this.rePassword,
+            password: this.password,
+            birthDate: this.birthDate,
+            roles: this.roles
+        };
+    }
+}
+
 //======================================Toggle Password=======================================
 function togglePassword(passwordId, btnId)
 {
@@ -35,34 +101,137 @@ document.getElementById("ToggleRePassword").addEventListener("click", function (
 // });
 
 //=======================================Create Button========================================
-document.getElementById("CreateButton").addEventListener("click", function ()
+document.getElementById("CreateButton").addEventListener("click", async function ()
 {
-    const data = 
+    roles = [];
+    if (StorageManagerRole.checked)
+        roles.push(StorageManagerRole.value);
+    if (CashierRole.checked)
+        roles.push(CashierRole.value);
+    if (BartenderRole.checked)
+        roles.push(BartenderRole.value);
+
+    if (!RealName.value.trim() || !Username.value.trim() || !Password.value.trim() 
+        || !RePassword.value.trim() || !BirthDate.value.trim() || roles.length == 0)
     {
-        name: document.getElementById("Name").value,
-        username: document.getElementById("Username").value,
-        password: document.getElementById("Password").value,
-        birthDay: document.getElementById("BirthDay").value,
-        birthMonth: document.getElementById("BirthMonth").value,
-        birthYear: document.getElementById("BirthYear").value,
-        role: document.querySelector('input[name="role"]:checked').value,
-        id: getRandomString(10)
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "You must fill in all fields and choose at least one role";
+        return;
     }
 
-    const jsonString = JSON.stringify(data);
+    realName = RealName.value;
+    username = Username.value;
+    rePassword = RePassword.value;
+    password = Password.value;
+    birthDate = BirthDate.value;    
+    unixBirthTime = new Date(birthDate).getTime();
 
-    const blob = new Blob([jsonString], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
+    request = new UserCreate_Request(username, password, realName, unixBirthTime, roles);
+    
+    if (!validateData(request)) 
+    {
+        return;
+    }
+    try 
+    {
+        const token = getCookie("token");
+        const res = await fetch("/user_create", {
+           method: "POST",
+           headers:
+           {
+                "Content-Type": "application/json",
+                "Authorization": token
+           }, 
+           body: JSON.stringify(request.toJson())
+        }); 
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = getRandomString(10) + ".json";
-    a.click();
-
-    URL.revokeObjectURL(url);
-
-    alert("Account created!");
+        if (res.status == 200)
+        {
+            alert("New account has been created!");
+            RealName.value = "";
+            Username.value = "";
+            Password.value = "";
+            RePassword.value = "";
+            BirthDate.value = "";
+            StorageManagerRole.checked = false;
+            CashierRole.checked = false;
+            BartenderRole.checked = false;
+        }
+        else if (res.status >= 400 && res.status <= 600)
+        {
+            if (res.status == 401)
+            {
+                window.location.href = "/manager/login";
+                return;
+            }
+            data = await res.json();
+            ErrorMessage.classList.add("show");
+            ErrorMessage.textContent = "Server Error: " + data["error"];
+        }
+        else
+        {
+            data = await res.json();
+            console.log("Unexpected Error: " + data["error"]);
+        }
+    }
+    catch (error)
+    {
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "Unexpected Error: " + error;
+    }
 });
+
+function validateData(data)
+{
+    if (data.password.length < 8)
+    {
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "Password must be above 8 characters";
+        return false;
+    }
+
+    else if (data.password.length > 32)
+    {
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "Password must be below 32 characters";
+        return false;
+    }
+
+    else if (data.dateOfBirth < 0)
+    {
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "Your date of birth must be later than 1970";
+        return false;
+    }
+
+    else if (data.dateOfBirth > Date.now())
+    {
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "Your date of birth must be earlier than today";
+        return false;
+    }
+
+    else if (RePassword.value != data.password)
+    {
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "Your passwords do not match";
+        return false;
+    }
+
+    for (i = 0; i < data.name.length; i++)
+    {
+        if (data.name[i] == "1" || data.name[i] == "2" || data.name[i] == "3" || data.name[i] == "4" || data.name[i] == "5" || data.name[i] == "6" || data.name[i] == "7" || data.name[i] == "8" || data.name[i] == "9")
+        {
+            ErrorMessage.classList.add("show");
+            ErrorMessage.textContent = "Your name cannot contain numbers";
+            return false;
+        }
+    }
+
+    ErrorMessage.classList.remove("show");
+    ErrorMessage.textContent = "";
+    return true;
+}
 
 //===========================================Other============================================
 function getRandomString(length)

@@ -1,0 +1,84 @@
+/*===================================Ingredients Container====================================*/
+.IngredientsContainer
+{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/*=========================================Ingredient=========================================*/
+.Ingredient
+{
+    display: flex;
+    flex-direction: row;
+}
+
+@media screen and (max-width: 768px)
+{
+    .Ingredient
+    {
+        width: 300px;
+    }
+    
+}
+
+/*=====================================Ingredient Select======================================*/
+.IngredientSelect
+{
+    flex: 4;
+    height: 40px;
+    margin-right: 10px;
+    border-radius: 60px;
+    padding: 5px;
+}
+
+/*=======================================Quantity Input=======================================*/
+.QuantityInput
+{
+    flex: 4;
+    border: none;
+    outline:rgba(0, 0, 0, 0.568) solid 1px;
+    padding: 15px;
+    border-width: 1px;
+    height: 40px;
+    margin-right: 10px;
+    border-radius: 60px;
+}
+
+/*=======================================Remove Button========================================*/
+.RemoveButton
+{
+    margin-top: 2.5px;
+    width: 35px;
+    height: 35px;
+    background: linear-gradient(rgb(240, 117, 117), rgb(241, 22, 22));
+    border: chocolate;
+    border-width: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 1000;
+    transition: all 0.2s ease-in-out;
+}
+
+.RemoveButton:hover
+{
+    transform: scale(1.1);
+    box-shadow: 0px 0px 5px rgb(249, 68, 68);
+}
+
+/*=======================================Execute Label========================================*/
+.ExecuteLabel
+{
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+/*=======================================Execute Input========================================*/
+.ExecuteInput
+{
+    padding: 15px;
+    border-radius: 10px;
+    width: 100%;
+    height: 200px;
+}
