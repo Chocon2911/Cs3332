@@ -1,10 +1,14 @@
-from flask import render_template, request, jsonify, url_for
+from flask import render_template, request, jsonify, url_for, make_response
 from datetime import datetime
 import requests
 
 URL = "http://localhost:8080"
 
-
+def forward_response(r):
+    response = make_response(r.content, r.status_code)
+    if 'Content-Type' in r.headers:
+        response.headers['Content-Type'] = r.headers['Content-Type']
+    return response
 
 #============================================================================================
 #===========================================Route============================================
@@ -35,11 +39,117 @@ def register_manager_routes(app):
     @app.route('/manager/error')
     def manager_error():
         return render_template('Manager/Error.html')
+    @app.route('/manager/tab_translation')
+    def manager_tab_translation():
+        return render_template('Manager/TabTranslation.html')
+    
+    #======================================Request Response======================================
+    #===login===
+    @app.route('/login', methods=['POST'])
+    def test_login():
+        header = {
+            'Content-Type': 'application/json',
+            'User-Agent': ''
+        }
+
+        response = requests.post(URL + "/login", json=request.get_json(), headers=header)
+        print ("Login: " + str(response.status_code))
+        return forward_response(response)
+        
+    #===user_info===
+    @app.route('/user_info', methods=['POST'])
+    def user_info():
+        token = request.headers.get("Authorization")
+    
+        header = {
+            'Content-Type': 'application/json',
+            'User-Agent': '',
+            'Authorization': token
+        }
+
+
+        response = requests.get(URL + "/user_info", params=request.get_json(), headers=header)
+        print ( "User Information: " + str(response.status_code))
+        return forward_response(response)
+    
+    #===user_info_update===
+    @app.route('/user_info_update', methods=['POST'])
+    def user_info_update():
+        token = request.headers.get("Authorization")
+        data = request.get_json()
+
+        print(data)
+        print(token)
+
+        header = {
+            'Authorization': token,
+            'Content-Type': 'application/json',
+            'User-Agent': ''
+        }
+
+        response = requests.post(URL + "/user_info_update", json=data, headers=header)
+        print ("User Information Update: " + str(response.status_code))
+        return forward_response(response)
+    
+    #===user_create===
+    @app.route('/user_create', methods=['POST'])
+    def test_register():
+        header = {
+            'Content-Type': 'application/json',
+            'User-Agent': ''
+        }
+
+        response = requests.post(URL + "/user_create", json=request.get_json(), headers=header)
+        print ("Register: " + str(response.status_code))
+        return forward_response(response)
+    
+    #===item_stack_list===
+    @app.route('/item_stack_list', methods=['POST'])
+    def item_stack_list():
+        header = {
+            'Content-Type': 'application/json',
+        }
+
+        response = requests.get(URL + "/item_stack_list", headers=header)
+        print ("Item Stack List: " + str(response.status_code))
+        return forward_response(response)
+    
+    #===product_create===
+    @app.route('/product_create', methods=['POST'])
+    def create_product():
+        token = request.headers.get("Authorization")
+
+        header = {
+            'Authorization': token,
+            'Content-Type': 'application/json',
+            'User-Agent': ''
+        }
+
+        response = requests.post(URL + "/product_create", json=request.get_json(), headers=header)
+        print ("Create Product: " + str(response.status_code))
+        return forward_response(response)
+
+    #===item_list===
+    @app.route('/item_list', methods=['POST'])
+    def item_list():
+        header = {
+            'Content-Type': 'application/json',
+        }
+
+        response = requests.get(URL + "/item_list", headers=header)
+        print ("Item List: " + str(response.status_code))
+        return forward_response(response)
+        
     
     #========================================Save Profile========================================
     @app.route('/manager/save_account_profile', methods=['POST'])
     def save_account_profile():
         token = request.headers.get("Authorization")
+        if not token:
+            return jsonify({
+                'status': 'no permission',
+                'url': "/manager/login"
+            })
         data = request.get_json()
         if not data:
             return jsonify({
@@ -77,6 +187,11 @@ def register_manager_routes(app):
     @app.route('/manager/get_account_profile', methods=['POST'])
     def get_account_profile():
         token = request.headers.get("Authorization")
+        if not token:
+            return jsonify({
+                'status': 'no permission',
+                'url': "/manager/login"
+            })
         data = request.get_json()
         if not data or token is None:
             return jsonify({
@@ -104,6 +219,18 @@ def register_manager_routes(app):
             gender = serverResponse.gender
             roles = serverResponse.roles
 
+            for i in range(len(roles)):
+                if roles[i] == "MANAGER":
+                    break
+                # if i == len(roles) - 1:
+                #     status = "no permission"
+                #     url = "/manager/login"
+                #     res = {
+                #         'status': status,
+                #         'url': url
+                #     }
+                #     return jsonify(res)
+
             res = {
                 'status': status,
                 'username': username,
@@ -112,7 +239,7 @@ def register_manager_routes(app):
                 'phone': phone,
                 'dateOfBirth': dateOfBirth,
                 'gender': gender,
-                'roles': roles,
+                'roles': roles
             }
 
         return jsonify(res)
@@ -175,8 +302,14 @@ def register_manager_routes(app):
             serverData = UserCreate_Request(username, password, realName, "abc@gmail.com", "0123456789", dateOfBirth, "male", roles)
             serverResponse = serverData.request()
             if serverResponse is None:
-                status = "error"
+                status = "no permission"
                 errorMessage = "Server Error"
+            elif serverResponse.status == "error":
+                status = "error"
+                errorMessage = serverResponse.text
+            elif serverResponse.status == "success":
+                status = "success"
+                errorMessage = ""
         
         res = {
             'status': status,
@@ -184,6 +317,28 @@ def register_manager_routes(app):
         }
 
         return jsonify(res)
+    
+    #==========================================New Item==========================================
+    @app.route('/manager/new_item', methods=['POST'])
+    def new_item():
+        token = request.headers.get("Authorization")
+        if not token:
+            return jsonify({
+                'status': 'no permission',
+                'url': url_for('manager_login')
+            })
+        data = request.get_json()
+        if not data:
+            return jsonify({
+                'status': 'error',
+                'errorMessage': 'Please fill in all the fields'
+            })
+        
+        return jsonify({
+            'status': 'success'
+        })
+
+    return app
 
 
 
@@ -221,10 +376,13 @@ class UserInformationUpdate_Request:
         }
 
         serverResponse = requests.post(URL + "/user_info_update", json=payload, headers=header)
-        if serverResponse.status_code != 200:
-            return None
-        else:
+        if serverResponse.status_code == 200:
             return UserInformationUpdate_Response(serverResponse)
+        elif serverResponse.status_code >= 400:
+            if (serverResponse.text != ''):
+                data = serverResponse.json()
+                print("UserInformationUpdate_Request [ERROR]: " + data['error'])
+            return None
 
 class UserInfo_Request:
     def __init__(self, token, username):
@@ -243,10 +401,13 @@ class UserInfo_Request:
         }
 
         serverResponse = requests.get(URL + "/user_info", params=payload, headers=header)
-        if serverResponse.status_code != 200:
-            return None
-        else:
+        if serverResponse.status_code == 200:
             return UserInfo_Response(serverResponse)
+        elif serverResponse.status_code >= 400:
+            if (serverResponse.text != ''):
+                data = serverResponse.json()
+                print("UserInfo_Request [ERROR]: " + data['error'])
+            return None
         
 class Login_Request:
     def __init__(self, username, password):
@@ -265,21 +426,24 @@ class Login_Request:
         }
 
         serverResponse = requests.post(URL + "/login", json=payload, headers=header)
-        if serverResponse.status_code != 200:
-            return None
-        else:
+        if serverResponse.status_code == 200:
             return Login_Response(serverResponse)
+        elif serverResponse.status_code >= 400:
+            if (serverResponse.text != ''):
+                data = serverResponse.json()
+                print("Login_Request [ERROR]: " + data['error'])
+            return None
         
 class UserCreate_Request:
     def __init__(self, username, password, name, email, phone, dateOfBirth, gender, roles):
-        self.username = username
-        self.password = password
-        self.name = name
-        self.email = email
-        self.phone = phone
-        self.dateOfBirth = dateOfBirth
-        self.gender = gender
-        self.roles = roles
+        self.username = username # LeHuy
+        self.password = password # P@55w0rd
+        self.name = name # Le Xuan Huy
+        self.email = email # abc@gmail.com
+        self.phone = phone # 0123456789
+        self.dateOfBirth = dateOfBirth # 193938000
+        self.gender = gender # 'male', 'female', 'other'
+        self.roles = roles # 'STORAGE_MANAGER', 'CASHIER', 'BARTENDER'
 
     def request(self):
         header = {
@@ -299,10 +463,15 @@ class UserCreate_Request:
         }
 
         serverResponse = requests.post(URL + "/user_create", json=payload, headers=header)
-        if serverResponse.status_code == 201:
-            return UserCreate_Response(serverResponse)
+        if serverResponse.status_code == 200:
+            return UserCreate_Response("success", serverResponse)
         elif serverResponse.status_code >= 400:
-            data = serverResponse.json()
+            if (serverResponse.text != ''):
+                data = serverResponse.json()
+                print("UserCreate_Request [ERROR]: " + data['error'])
+                if data['error'] == "User already existed!":
+                    return UserCreate_Response("error", serverResponse)
+            return None
 
 #==========================================Response==========================================
 class UserInformationUpdate_Response:
@@ -333,9 +502,14 @@ class Login_Response:
         self.roles = data['roles']
 
 class UserCreate_Response:
-    def __init__(self, res):
-        data = res.json
-        self.text = data['text']
+    def __init__(self, status, res):
+        data = res.json()
+        if status == "success":
+            self.status = "success"
+            self.text = data['text']
+        elif status == "error":
+            self.status = "error"
+            self.text = data['error']
 
 
 
@@ -381,10 +555,10 @@ class StaffAccount:
         self.roles = roles # [STORAGE_MANAGER, CASHIER]
 
 def validateCreateAccountData(data):
-    if (data.password.length < 8):
+    if (len(data.password) < 8):
         return "Password must be above 8 characters"
 
-    elif (data.password.length > 32):
+    elif (len(data.password) > 32):
         return "Password must be below 32 characters"
 
     elif (data.birthDate < 0):
@@ -396,8 +570,9 @@ def validateCreateAccountData(data):
     elif (data.rePassword != data.password):
         return "Your passwords do not match"
     
-    for i in range(0, data.name.length):
-        if (data.name[i] != '0' or data.name[i] != '1' or data.name[i] != '2' or data.name[i] != '3' or data.name[i] != '4' or data.name[i] != '5' or data.name[i] != '6' or data.name[i] != '7' or data.name[i] != '8' or data.name[i] != '9'):
-            return "Your name cannot contain numbers"
+    for i in range(0, len(data.name)):
+        if (data.name[i] != '0' and data.name[i] != '1' and data.name[i] != '2' and data.name[i] != '3' and data.name[i] != '4' and data.name[i] != '5' and data.name[i] != '6' and data.name[i] != '7' and data.name[i] != '8' and data.name[i] != '9'):
+            continue    
+        return "Your name cannot contain numbers"
 
     return ""

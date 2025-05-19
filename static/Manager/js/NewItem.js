@@ -2,43 +2,113 @@
 // Ingredient
 const IngredientsContainer = document.getElementById("IngredientsContainer");
 const ItemName = document.getElementById("ItemName");
+const ItemUnit = document.getElementById("ItemUnit");
+const ItemPrice = document.getElementById("ItemPrice");
 const ExecuteGuide = document.getElementById("ExecuteGuide");
 
 // Other
 ingredientIndex = 1;
-ingredientNames =
-[
-    "Sugar",
-    "Milk",
-    "Coffee Bean",
-    "Flour",
-    "Salt",
-    "Water",
-];
+itemStacks = []; // List<ItemStack>
 
 //===========================================Class============================================
-class Recipe
+class ProductCreate_Request
 {
-    constructor(itemName, ingredients, executeGuide) 
+    constructor(itemName, unit, price, ingredients, executeGuide) 
     {
         this.itemName = itemName;
+        this.unit = unit;
+        this.price = price;
         this.ingredients = ingredients;
         this.executeGuide = executeGuide;
+    }
+
+    toJson()
+    {
+        let tempIngredients = [];
+        for (let i = 0; i < this.ingredients.length; i++)
+        {
+            tempIngredients[i] = this.ingredients[i].toJson();
+        }
+        return {
+            name: this.itemName,
+            unit: this.unit,
+            price: this.price,
+            ingredients: tempIngredients,
+            // executeGuide: this.executeGuide
+        };
     }
 }
 
 class Ingredient
 {
-    constructor(name, quantity)
+    constructor(itemStackId, quantity)
     {
+        this.itemStackId = itemStackId;
+        this.quantity = quantity;
+    }
+    toJson()
+    {
+        return {
+            itemStackID: this.itemStackId,
+            quantity: this.quantity
+        };
+    }
+}
+
+class ItemStackList_Response
+{
+    constructor(data)
+    {
+        this.itemStacks = [];
+        let tempItemStacks = [];
+        tempItemStacks = data['itemStacks'];
+        for (let i = 0; i < tempItemStacks.length; i++)
+        {
+            this.itemStacks[i] = new ItemStack(tempItemStacks[i]['id'], tempItemStacks[i]['name'], tempItemStacks[i]['quantity']);
+        }
+    }
+}
+
+class ItemStack
+{
+    constructor(id, name, quantity)
+    {
+        this.id = id;
         this.name = name;
         this.quantity = quantity;
     }
 }
 
 //===========================================Method===========================================
-window.onload = () => 
+window.onload = async () => 
 {
+        const res = await fetch("/item_stack_list", {
+            method: "POST",
+            headers:
+            {
+                "Content-Type": "application/json"
+            }
+        });
+
+        data = await res.json();
+        if (res.status == 200)
+        {
+            const result = await new ItemStackList_Response(data);
+            itemStacks = result.itemStacks;
+            for (let i = 0; i < itemStacks.length; i++)
+                console.log(itemStacks[i]);
+        }
+        else if (res.status >= 400 && res.status <= 600)
+        {
+            // window.location.href = "/manager/login";
+            console.log(data["error"]);
+            return;
+        }
+        else
+        {
+            console.log("Unexpected Error: " + res["error"]);
+        }
+
     addIngredient();
     addIngredient();
 }
@@ -67,9 +137,8 @@ function addIngredient()
     ingredientsContainer.appendChild(div);
 }
 
-function submit()
+async function submit()
 {
-    console.log("Fuck");
     ingredients = [];
     for (i = 0; i < ingredientIndex; i++)
     {
@@ -83,19 +152,50 @@ function submit()
         ingredients.push(new Ingredient(name, quantity));
     }
 
-    const recipe = new Recipe(ItemName.value.trim(), ingredients, ExecuteGuide.value.trim());
-    console.log("Submit Recipe: ", recipe);
+    const token = getCookie("token");
+    const request = new ProductCreate_Request(ItemName.value, ItemUnit.value, ItemPrice.value, ingredients, ExecuteGuide.value);
+    
+    console.log(request.toJson());
+    
+    const res = await fetch("/product_create", {
+        method: "POST",
+        headers:
+        {
+            "Content-Type": "application/json",
+            "Authorization": token
+        },
+        body: JSON.stringify(request.toJson())
+    });
+
+    const result = await res.json();
+    if (res.status == 200)
+    {
+        alert("New item has been saved!");
+    }
+    else if (res.status >= 400 && res.status <= 600)
+    {
+        if (result["error"] == "Unauthorized")
+        {
+            window.location.href = "/manager/login";
+            return;
+        }
+        console.log("Server Error: " + result["error"]);
+    }
+    else
+    {
+        console.log("Unexpected Error: " + result["error"]);
+    }
 }
 
 function getIngredientNames()
 {
     result = "";
-    for (i = 0; i < ingredientNames.length; i++)
+    for (i = 0; i < itemStacks.length; i++)
     {
-        result += `<option value="${ingredientNames[i]}">${ingredientNames[i]}</option>`;
+        result += `<option value="${itemStacks[i].id}">${itemStacks[i].name}</option>`;
     }
 
     return result;
 }
 
-document.getElementById("SubmitButton").addEventListener("click", submit);
+document.getElementById("SubmitButton").addEventListener("click", async function () {submit();});
