@@ -82,32 +82,73 @@ class ItemStack
 //===========================================Method===========================================
 window.onload = async () => 
 {
-        const res = await fetch("/item_stack_list", {
-            method: "POST",
-            headers:
-            {
-                "Content-Type": "application/json"
-            }
-        });
 
-        data = await res.json();
-        if (res.status == 200)
+    const token = getCookie("token");
+    const username = encodeURIComponent(getCookie("username"));
+    request = new UserInfo_Request(username);
+    res = await fetch("/user_info", {
+        method: "POST",
+        headers:
         {
-            const result = await new ItemStackList_Response(data);
-            itemStacks = result.itemStacks;
-            for (let i = 0; i < itemStacks.length; i++)
-                console.log(itemStacks[i]);
-        }
-        else if (res.status >= 400 && res.status <= 600)
+            "Content-Type": "application/json",
+            "Authorization": token,
+        },
+        body: JSON.stringify(request.toJson())
+    });
+
+    if (res.status == 200)
+    {
+        return;
+    }
+    else if (res.status >= 400 && res.status <= 600)
+    {
+        if (res.status == 401)
         {
-            // window.location.href = "/manager/login";
-            console.log(data["error"]);
+            window.location.href = "/manager/login";
             return;
         }
-        else
+
+        data = await res.json();
+        console.log(data["error"]);
+    }
+    else
+    {
+        data = await res.json();
+        console.log("Unexpected Error: " + data["error"]);
+    }
+
+
+    res = await fetch("/item_stack_list", {
+        method: "POST",
+        headers:
         {
-            console.log("Unexpected Error: " + res["error"]);
+            "Content-Type": "application/json"
         }
+    });
+
+    data = await res.json();
+    if (res.status == 200)
+    {
+        const result = await new ItemStackList_Response(data);
+        itemStacks = result.itemStacks;
+        for (let i = 0; i < itemStacks.length; i++)
+            console.log(itemStacks[i]);
+    }
+    else if (res.status >= 400 && res.status <= 600)
+    {
+        if (res.status == 401)
+        {
+            window.location.href = "/manager/login";
+            return;
+        }
+        
+        data = await res.json();
+        console.log(data["error"]);
+    }
+    else
+    {
+        console.log("Unexpected Error: " + res["error"]);
+    }
 
     addIngredient();
     addIngredient();
