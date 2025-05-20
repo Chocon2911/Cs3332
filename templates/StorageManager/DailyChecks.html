@@ -6,17 +6,19 @@
   <title>Daily-Checks</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='StorageManager/css/dailychecks.css') }}" />
   <script defer src="{{ url_for('static', filename='StorageManager/js/dailychecks.js') }}"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 </head>
 
 <body>
   <!-- Sidebar -->
   <div class="sidebar">
-    <h2>Storage Manager</h2>
-    <div class="menu-item" onclick="location.href='{{ url_for('dashboard') }}'">📊 Dashboard</div>
-    <div class="menu-item" onclick="location.href='{{ url_for('inventory') }}'">📦 Inventory</div>
-    <div class="menu-item" onclick="location.href='{{ url_for('history') }}'">📜 History</div>
-    <div class="menu-item active" onclick="location.href='{{ url_for('daily_checks') }}'">✅ Daily-checks</div>
-    <div class="menu-item" onclick="showLogoutModal()">🔙 Log out</div>
+    <h2><i class="fas fa-warehouse"></i> Storage Manager</h2>
+    <div class="menu-item" onclick="location.href='{{ url_for('storage_ui.dashboard') }}'"><i class="fas fa-chart-line"></i> Dashboard</div>
+    <div class="menu-item" onclick="location.href='{{ url_for('storage_ui.inventory') }}'"><i class="fas fa-boxes"></i> Inventory</div>
+    <div class="menu-item" onclick="location.href='{{ url_for('storage_ui.import') }}'"><i class="fas fa-file-import"></i> Import</div>
+    <div class="menu-item" onclick="location.href='{{ url_for('storage_ui.history') }}'"><i class="fas fa-history"></i> History</div>
+    <div class="menu-item active" onclick="location.href='{{ url_for('storage_ui.daily_checks') }}'"><i class="fas fa-clipboard-check"></i> Daily Checks</div>
+    <div class="menu-item" onclick="showLogoutModal()"><i class="fas fa-sign-out-alt"></i> Log out</div>
   </div>
 
   <!-- Main Content -->
@@ -25,9 +27,11 @@
     <div class="header">
       <div class="search-box">
         <input type="text" placeholder="Search">
-        <i>🔍</i>
+        <i class="fas fa-search"></i>
       </div>
-      <button class="account">Account</button>
+      <button class="account">
+        <i class="fas fa-user"></i> Account
+      </button>
     </div>
 
     <!-- Filter Section -->
@@ -44,15 +48,10 @@
             <th>ID</th>
             <th>Name</th>
             <th>Actual Quantity</th>
+            <th>Unit</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td><input type="text" placeholder="ID"></td>
-            <td><input type="text" placeholder="Name"></td>
-            <td><input type="text" placeholder="Actual Quantity"></td>
-          </tr>
-        </tbody>
+        <tbody></tbody>
       </table>
 
       <table id="main-output-table" class="hidden">
@@ -64,6 +63,7 @@
             <th>Used</th>
             <th>Remaining</th>
             <th>Actual</th>
+            <th>Unit</th>
             <th>Warnings</th>
           </tr>
         </thead>
@@ -83,10 +83,10 @@
   <!-- Logout Modal -->
   <div class="modal-overlay" id="logout-modal" style="display: none;">
     <div class="modal">
-      <p>Do you want to log out?</p>
+      <p><i class="fas fa-question-circle"></i> Do you want to log out?</p>
       <div class="modal-actions">
-        <button id="confirm-yes">Yes</button>
-        <button id="confirm-no">No</button>
+        <button id="confirm-yes"><i class="fas fa-check"></i> Yes</button>
+        <button id="confirm-no"><i class="fas fa-times"></i> No</button>
       </div>
     </div>
   </div>

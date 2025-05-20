@@ -14,9 +14,11 @@ url = f"http://127.0.0.1:{port}/manager/login"
 def open_browser():
     webbrowser.open_new(url)
 
-register_manager_routes(app)
-register_storage_manager_routes(app)
-
+# Đăng ký các route trong application context
+with app.app_context():
+    register_manager_routes(app)
+    register_storage_manager_routes(app)
 
 if __name__ == '__main__':
+    threading.Timer(1.5, open_browser).start()
     app.run(debug=True, port=port)
