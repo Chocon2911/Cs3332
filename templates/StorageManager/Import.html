@@ -5,16 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Storage Manager</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='StorageManager/css/import.css') }}" />
-  <script defer src="{{ url_for('static', filename='StorageManager/js/import.js') }}"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <script type="module" src="{{ url_for('static', filename='StorageManager/js/import.js') }}"></script>
 </head>
 <body>
+
+  <!-- Sidebar -->
   <div class="sidebar">
-    <h2>Storage Manager</h2>
-    <div class="menu-item" onclick="location.href='{{ url_for('dashboard') }}'">📊 Dashboard</div>
-    <div class="menu-item active" onclick="location.href='{{ url_for('inventory') }}'">📦 Inventory</div>
-    <div class="menu-item" onclick="location.href='{{ url_for('history') }}'">📜 History</div>
-    <div class="menu-item" onclick="location.href='{{ url_for('daily_checks') }}'">✅ Daily-checks</div>
-    <div class="menu-item" onclick="showLogoutModal()">🔙 Log out</div>
+    <h2><i class="fas fa-warehouse"></i> Storage Manager</h2>
+    <div class="menu-item" onclick="location.href='{{ url_for('storage_ui.dashboard') }}'"><i class="fas fa-chart-line"></i> Dashboard</div>
+    <div class="menu-item" onclick="location.href='{{ url_for('storage_ui.inventory') }}'"><i class="fas fa-boxes"></i> Inventory</div>
+    <div class="menu-item active" onclick="location.href='{{ url_for('storage_ui.import') }}'"><i class="fas fa-file-import"></i> Import</div>
+    <div class="menu-item" onclick="location.href='{{ url_for('storage_ui.history') }}'"><i class="fas fa-history"></i> History</div>
+    <div class="menu-item" onclick="location.href='{{ url_for('storage_ui.daily_checks') }}'"><i class="fas fa-clipboard-check"></i> Daily Checks</div>
+    <div class="menu-item" onclick="showLogoutModal()"><i class="fas fa-sign-out-alt"></i> Log out</div>
   </div>
 
   <!-- Main content -->
@@ -22,42 +26,82 @@
     <!-- Header -->
     <div class="header">
       <div class="search-box">
-        <input type="text" placeholder="Search">
-        <i>🔍</i>
+        <input type="text" placeholder="Search ingredients...">
+        <i class="fas fa-search"></i>
       </div>
       <div>
-        <button class="account">Account</button>
+        <button class="account">
+          <i class="fas fa-user"></i> Account
+        </button>
       </div>
     </div>
-
 
     <div class="scrollable-content">
       <div class="dashboard-content">
         <div class="card">
-          <h3>Import</h3>
+          <h3><i class="fas fa-file-import"></i> Import</h3>
           <div class="form-row">
+            <input type="text" id="item-id" placeholder="ID" readonly style="display: none;"/>
+            <!-- User input fields -->
             <input type="text" id="ingredient" placeholder="Ingredients" />
             <input type="text" id="supplier" placeholder="Supplier" />
-            <input type="number" id="quantity" placeholder="Quantity (kg)" />
-            <button class="done-btn" onclick="handleDone()">Done</button>
+            <input type="number" id="quantity" placeholder="Quantity" />
+            <input type="text" id="unit" placeholder="Unit" readonly style="display: none;"/>
+            <button class="done-btn" onclick="handleDone()">
+              <i class="fas fa-check"></i> Done
+            </button>
           </div>
         </div>
 
-        <div class="suggestions" id="results"></div>
-        <div class="suggestions" id="suggestions"></div>
+        <!-- Results Section -->
+        <div class="card">
+          <h3><i class="fas fa-list"></i> Search Results</h3>
+          <div class="suggestions" id="results"></div>
+        </div>
+
+        <!-- Suggestions Section -->
+        <div class="card">
+          <h3><i class="fas fa-lightbulb"></i> Suggestions</h3>
+          <div class="suggestions" id="suggestions"></div>
+        </div>
+      </div>
+    </div>
+
+    <button id="open-add-modal" class="add-btn">
+      <i class="fas fa-plus"></i> Add New Ingredient
+    </button>
+
+  </div>
+
+  <!-- Add New Ingredient Modal -->
+  <div id="add-modal" class="modal-overlay" style="display:none;">
+    <div class="modal card" id="add-modal-content" style="width: 475px; max-width: 90%;">
+      <h3>Add new ingredient</h3>
+      <div class="form-row"> <!-- reuse form-row styling -->
+        <input type="text" id="new-name" placeholder="Ingredient Name" required/>
+        <input type="text" id="new-unit" placeholder="Unit" required/>
+        <button id="confirm-add" class="done-btn">
+          <i class="fas fa-check"></i> Add
+        </button>
       </div>
     </div>
   </div>
+
 
   <!-- Logout Modal -->
   <div class="modal-overlay" id="logout-modal" style="display: none;">
     <div class="modal">
-      <p>Do you want to log out?</p>
+      <p><i class="fas fa-question-circle"></i> Do you want to log out?</p>
       <div class="modal-actions">
-        <button id="confirm-yes">Yes</button>
-        <button id="confirm-no">No</button>
+        <button id="confirm-yes" class="danger-btn">
+          <i class="fas fa-check"></i> Yes
+        </button>
+        <button id="confirm-no" class="cancel-btn">
+          <i class="fas fa-times"></i> No
+        </button>
       </div>
     </div>
   </div>
+
 </body>
 </html>

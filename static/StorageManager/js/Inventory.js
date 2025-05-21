@@ -1,17 +1,17 @@
-const endpoints = [
-    '/static/StorageManager/json/TestData.json', // all ingredients
-    '/static/StorageManager/json/TestData.json', // expiring
-    '/static/StorageManager/json/TestData.json'  // running-out
-];
+// Các endpoint mới
+const endpoints = {
+  allIngredients: '/storage_manager/all_ingredients',
+  runningOut: '/storage_manager/running_out'
+};
 
 async function fetchData(url) {
   try {
-    const response = await fetch(url);
-    if (!response.ok) throw new Error('Fetch failed');
-    return await response.json();
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Fetch failed');
+      return await response.json();
   } catch (e) {
-    console.error('Error fetching inventory:', e);
-    return [];
+      console.error('Error fetching data:', e);
+      return [];
   }
 }
 
@@ -19,29 +19,36 @@ function renderCard(containerId, items) {
   const tbody = document.querySelector(`#${containerId} tbody`);
   tbody.innerHTML = '';
   items.forEach(item => {
-    const row = document.createElement('tr');
-    [item.id, item.name, item.supplier, item.quantity].forEach(text => {
-      const td = document.createElement('td'); td.textContent = text; row.appendChild(td);
-    });
-    tbody.appendChild(row);
+      const row = document.createElement('tr');
+      [item.id, item.name, item.supplier, item.quantity, item.unit].forEach(text => {
+          const td = document.createElement('td');
+          td.textContent = text;
+          row.appendChild(td);
+      });
+      tbody.appendChild(row);
   });
 }
 
 window.onload = async () => {
-    const [allData, expData, runData] = await Promise.all(
-      endpoints.map(url => fetchData(url))
-    );
-    renderCard('card-all', allData.slice(0, 14));
-    renderCard('card-expiring', expData.slice(0, 5));
-    renderCard('card-running', runData.slice(0, 5));
+  try {
+      const [allData, runData] = await Promise.all([
+          fetchData(endpoints.allIngredients),
+          fetchData(endpoints.runningOut)
+      ]);
 
-    document.getElementById('confirm-yes').onclick = () => {
-      window.location.href = 'manager/login';            // Giao diện sau khi log out
-    };
+      renderCard('card-all', allData);
+      renderCard('card-running', runData);
 
-    document.getElementById('confirm-no').onclick = () => {
-      document.getElementById('logout-modal').style.display = 'none';
-    };
+      document.getElementById('confirm-yes').onclick = () => {
+          window.location.href = 'manager/login';
+      };
+
+      document.getElementById('confirm-no').onclick = () => {
+          document.getElementById('logout-modal').style.display = 'none';
+      };
+  } catch (error) {
+      console.error('Error initializing inventory:', error);
+  }
 };
 
 function showLogoutModal() {

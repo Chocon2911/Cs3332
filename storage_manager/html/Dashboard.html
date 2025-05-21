@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="../css/dashboard.css" />
+  <script src="../js/Dashboard.js"></script>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Storage Manager</h2>
+    <div class="menu-item active" onclick="location.href='Dashboard.html'">📊 Dashboard</div>
+    <div class="menu-item" onclick="location.href='Inventory.html'">📦 Inventory</div>
+    <div class="menu-item" onclick="location.href='History.html'">📜 History</div>
+    <div class="menu-item" onclick="location.href='DailyChecks.html'">✅ Daily-checks</div>
+    <div class="menu-item" onclick="location.href='Back.html'">🔙 Back</div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="header">
+      <div class="search-box">
+        <input type="text" placeholder="Search">
+        <i>🔍</i>
+      </div>
+      <div>
+        <button class="account">Account</button>
+      </div>
+    </div>
+
+    <div class="dashboard">
+      <!-- LEFT: Product transaction -->
+      <div class="left-section">
+        <div class="transaction" id="product-transaction">
+          <h3>Product transaction: <span id="transaction-date">dd/mm/yy</span></h3>
+          <div class="bar-chart" id="bar-chart">
+            <!-- Bars will be inserted here -->
+          </div>
+          <div class="legend">
+            <span class="export-label">Export</span>
+            <span class="import-label">Import</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Running Out + Expiring -->
+      <div class="right-section">
+
+        <div class="card" id="card-expiring" onclick="navigateTo('expiring')">
+          <h3>Expiring</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Supplier</th>
+                <th>Quantity</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="card" id="card-running" onclick="navigateTo('running-out')">
+          <h3>Running out</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Supplier</th>
+                <th>Quantity</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>

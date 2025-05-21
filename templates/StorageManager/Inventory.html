@@ -2,34 +2,33 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Inventory</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='StorageManager/css/inventory.css') }}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
   <script defer src="{{ url_for('static', filename='StorageManager/js/inventory.js') }}"></script>
 </head>
 <body>
 
   <!-- Sidebar -->
   <div class="sidebar">
-    <h2>Storage Manager</h2>
-    <div class="menu-item" onclick="location.href='{{ url_for('dashboard') }}'">📊 Dashboard</div>
-    <div class="menu-item active" onclick="location.href='{{ url_for('inventory') }}'">📦 Inventory</div>
-    <div class="menu-item" onclick="location.href='{{ url_for('history') }}'">📜 History</div>
-    <div class="menu-item" onclick="location.href='{{ url_for('daily_checks') }}'">✅ Daily-checks</div>
-    <div class="menu-item" onclick="showLogoutModal()">🔙 Log out</div>
-</div>
+    <h2><i class="fas fa-warehouse"></i> Storage Manager</h2>
+    <div class="menu-item" onclick="location.href='{{ url_for('storage_ui.dashboard') }}'"><i class="fas fa-chart-line"></i> Dashboard</div>
+    <div class="menu-item active" onclick="location.href='{{ url_for('storage_ui.inventory') }}'"><i class="fas fa-boxes"></i> Inventory</div>
+    <div class="menu-item" onclick="location.href='{{ url_for('storage_ui.import') }}'"><i class="fas fa-file-import"></i> Import</div>
+    <div class="menu-item" onclick="location.href='{{ url_for('storage_ui.history') }}'"><i class="fas fa-history"></i> History</div>
+    <div class="menu-item" onclick="location.href='{{ url_for('storage_ui.daily_checks') }}'"><i class="fas fa-clipboard-check"></i> Daily Checks</div>
+    <div class="menu-item" onclick="showLogoutModal()"><i class="fas fa-sign-out-alt"></i> Log out</div>
+  </div>
 
   <!-- Main content -->
   <div class="main-content">
-
     <div class="header">
       <div class="search-box">
         <input type="text" placeholder="Search">
-        <i>🔍</i>
+        <i class="fas fa-search"></i>
       </div>
-      <div>
-        <button class="account">Account</button>
-      </div>
+      <button class="account"><i class="fas fa-user-circle"></i>Account</button>
     </div>
 
     <div class="scrollable-content">
@@ -42,10 +41,11 @@
             <table>
               <thead>
                 <tr>
-                  <th>ID</th>
-                  <th>Name</th>
-                  <th>Supplier</th>
-                  <th>Quantity</th>
+                  <th><i class="fas fa-hashtag"></i> ID</th>
+                  <th><i class="fas fa-tag"></i> Name</th>
+                  <th><i class="fas fa-truck"></i> Supplier</th>
+                  <th><i class="fas fa-cubes"></i> Quantity</th>
+                  <th><i class="fas fa-quantity"></i> Unit</th>
                 </tr>
               </thead>
               <tbody></tbody>
@@ -55,30 +55,16 @@
       
         <div class="right-column">
 
-          <div class="card" id="card-expiring" onclick="navigateTo('expiring')">
-            <h3>Expiring</h3>
-            <table>
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Name</th>
-                  <th>Supplier</th>
-                  <th>Quantity</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
-
           <div class="card" id="card-running" onclick="navigateTo('running-out')">
             <h3>Running out</h3>
             <table>
               <thead>
                 <tr>
-                  <th>ID</th>
-                  <th>Name</th>
-                  <th>Supplier</th>
-                  <th>Quantity</th>
+                  <th><i class="fas fa-hashtag"></i> ID</th>
+                  <th><i class="fas fa-tag"></i> Name</th>
+                  <th><i class="fas fa-truck"></i> Supplier</th>
+                  <th><i class="fas fa-cubes"></i> Quantity</th>
+                  <th><i class="fas fa-quantity"></i> Unit</th>
                 </tr>
               </thead>
               <tbody></tbody>
@@ -94,10 +80,11 @@
   <!-- Logout Modal -->
   <div class="modal-overlay" id="logout-modal" style="display: none;">
     <div class="modal">
+      <i class="fas fa-question-circle"></i>
       <p>Do you want to log out?</p>
       <div class="modal-actions">
-        <button id="confirm-yes">Yes</button>
-        <button id="confirm-no">No</button>
+        <button id="confirm-yes"><i class="fas fa-check"></i> Yes</button>
+        <button id="confirm-no"><i class="fas fa-times"></i> No</button>
       </div>
     </div>
   </div>
