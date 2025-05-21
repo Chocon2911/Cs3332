@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test cafe shop</title>
     <!-- CSS Chính -->
-    <link rel="stylesheet" href="main_cafetest.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='Cashier/css/main_cafetest.css') }}">
     <!-- Font chữ -->
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap" rel="stylesheet">
 </head>
@@ -119,23 +119,22 @@
     <!-- Sidebar chuyển đổi giữa các trang Map / Customer Order / History -->
     <div id="sidebar" class="hidden">
         <div class="menu-button-group">
-            <a href="cafetest.html" class="menu-button">Map</a>
-            <a href="customer_order.html" class="menu-button">Customer Order</a>
-            <a href="history.html" class="menu-button">History</a>            
+            <form action="{{ url_for('goto_cafetest') }}" method="POST">
+                <button type="submit" class="menu-button" data-page="cafetest">Map</button>
+            </form>
+            <form action="{{ url_for('goto_customer_order') }}" method="POST">
+                <button type="submit" class="menu-button" data-page="customer_order">Customer Order</button>
+            </form>
+            <form action="{{ url_for('goto_history') }}" method="POST">
+                <button type="submit" class="menu-button" data-page="history">History</button>
+            </form> 
         </div>
     </div>
 
     <!-- Javascript Chính -->
-    <script defer src="script.js"></script>
-    <script defer src="sidebar.js"></script>
-    <script src="customer_order.js"></script>
-
-    <!-- Script phụ trợ điều hướng trang -->
-    <script>
-        function goToPage(page) {
-            window.location.href = page;
-        }
-    </script>
+    <script defer src="{{ url_for('static', filename='Cashier/js/script.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='Cashier/js/sidebar.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='Cashier/js/customer_order.js') }}"></script>
 
 </body>
 </html>

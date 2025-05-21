@@ -15,9 +15,10 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // Highlight trang hiện tại
-    const path = window.location.pathname.split('/').pop();
+    const path = window.location.pathname; // eg: "/cashier/customer_order"
     document.querySelectorAll('.menu-button').forEach(button => {
-        if (button.getAttribute('href') === path) {
+        const page = button.dataset.page; // eg: "customer_order"
+        if (path.includes(page)) {
             button.classList.add('active');
         }
     });

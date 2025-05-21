@@ -32,6 +32,7 @@
                 <!--Menu Content-->
                 <div class="ms-auto" id="MenuContent">
                     <ul class="navbar-nav">
+                        <li class="nav-item"><a class="nav-link" href="/manager/new_item">Create Item</a></li>
                         <li class="nav-item"><a class="nav-link" href="/manager/storage">Storage</a></li>
                         <li class="nav-item"><a class="nav-link" href="/manager/staff_account">Staff Account</a></li>
                         <li class="nav-item"><a class="nav-link" href="/manager/sale_data">Sale Data</a></li>
@@ -48,8 +49,9 @@
                 <!--Menu Content Collapse-->
                 <div class="collapse navbar-collapse" id="MenuContentCollapse">
                     <ul class="navbar-nav">
+                        <li><a href="/manager/new_item">Create Item</a></li>
                         <li><a href="/manager/storage">Storage</a></li>
-                        <li><a href="/manager/staff_account">Staff Account</a></li>
+                        <li><a href="/manager/staff_account">Create Account</a></li>
                         <li><a href="/manager/sale_data">Sale Data</a></li>
                     </ul>
                 </div>
@@ -137,8 +139,8 @@
         </form>
     </main>
 
-    <script src="{{ url_for('static', filename='Manager/js/Header.js') }}"></script>
     <script src="{{ url_for('static', filename='Manager/js/StaffAccount.js') }}"></script>
+    <script src="{{ url_for('static', filename='Manager/js/Header.js') }}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" 
     integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" 

@@ -2,6 +2,36 @@ const accountBtn = document.getElementById("AccountButton");
 const accountPopup = document.getElementById("AccountPopup");
 const mainBody = document.getElementById("MainBody");
 
+//===========================================Class============================================
+class UserInfo_Request
+{
+    constructor(username)
+    {
+        this.username = username;
+    }
+    toJson()
+    {
+        return {
+            username: this.username
+        };
+    }
+}
+
+class UserInfo_Response
+{
+    constructor(data)
+    {
+        this.username = data['username'];
+        this.name = data['name'];
+        this.email = data['email'];
+        this.phone = data['phone'];
+        this.dateOfBirth = data['dateOfBirth'];
+        this.gender = data['gender'];
+        this.roles = data['roles'];
+    }
+}
+
+//===========================================Event============================================
 accountBtn.addEventListener("click", function (event) 
 { 
     accountPopup.classList.toggle("show"); 
@@ -25,14 +55,40 @@ mainBody.addEventListener("click", function (event)
     }
 });
 
-function managerInit() 
+window.onload = async function ()
 {
     const token = getCookie("token");
-    const role = getCookie("role");
+    const username = encodeURIComponent(getCookie("username"));
+    request = new UserInfo_Request(username);
+    const res = await fetch("/user_info", {
+        method: "POST",
+        headers:
+        {
+            "Content-Type": "application/json",
+            "Authorization": token,
+        },
+        body: JSON.stringify(request.toJson())
+    });
 
-    if (token !== "123" || role !== "manager") 
+    if (res.status == 200)
     {
-        window.location.href = "/manager/error";
+        return;
+    }
+    else if (res.status >= 400 && res.status <= 600)
+    {
+        if (res.status == 401)
+        {
+            window.location.href = "/manager/login";
+            return;
+        }
+
+        data = await res.json();
+        console.log(data["error"]);
+    }
+    else
+    {
+        data = await res.json();
+        console.log("Unexpected Error: " + data["error"]);
     }
 }
 
