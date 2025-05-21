@@ -1,6 +1,6 @@
 // Backend endpoints
-const VALIDATE_API = '/static/StorageManager/json/valid_checks.json';     // POST inputs
-const RESPONSE_JSON = '/static/StorageManager/json/daily_checks.json'; // GET matched/unmatched data
+const VALIDATE_API = 'storage_manager/valid_checks';     // POST inputs
+const RESPONSE_JSON = 'storage_manager/daily_checks'; // GET matched/unmatched data
 
 // DOM elements
 const inputButton = document.getElementById('input-button');
@@ -19,6 +19,7 @@ function addRow() {
     <td><input type="text" placeholder="ID"></td>
     <td><input type="text" placeholder="Name"></td>
     <td><input type="text" placeholder="Actual Quantity"></td>
+    <td><input type="text" placeholder="Unit"></td>
   `;
   inputTableBody.appendChild(newRow);
 }
@@ -44,7 +45,8 @@ submitButton.addEventListener('click', async () => {
   const inputs = Array.from(inputTableBody.querySelectorAll('tr')).map(row => ({
     id: row.cells[0].querySelector('input').value.trim(),
     name: row.cells[1].querySelector('input').value.trim(),
-    actual: Number(row.cells[2].querySelector('input').value.trim()) || 0
+    actual: Number(row.cells[2].querySelector('input').value.trim()) || 0,
+    unit: row.cells[3].querySelector('input').value.trim()  // Added unit extraction
   })).filter(item => item.id && item.name);
 
   try {
@@ -74,6 +76,7 @@ submitButton.addEventListener('click', async () => {
           <td>${item.used}</td>
           <td>${item.remaining}</td>
           <td>${item.actual}</td>
+          <td>${item.unit || ''}</td>
           <td>${item.warnings || ''}</td>
         </tr>
       `);

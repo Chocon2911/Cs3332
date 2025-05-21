@@ -1,0 +1,68 @@
+/*=====================================Web Role Container=====================================*/
+.WebRoleContainer
+{
+    display: none;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 400px;
+}
+
+.WebRoleContainer.show
+{
+    display: block;
+}
+
+@media screen and (max-width: 768px)
+{
+    .WebRoleContainer
+    {
+        width: 300px
+    }    
+}
+
+/*=======================================Web Role List========================================*/
+.WebRoleList
+{
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-left: 0px;
+}
+
+/*======================================Web Role Button=======================================*/
+.WebRoleButton
+{
+    display: none;
+}
+
+.WebRoleButton.show
+{
+    display: block;
+    width: 180px;
+    height: 70px;
+    background: linear-gradient(#f6ca79, #be8303);
+    box-shadow: 0px 6px 0px rgb(87, 65, 6);
+    color: #ffffff;
+    border: none;
+    border-radius: 13px;
+    cursor: pointer;
+    justify-content: center;
+    transition: all 0.3s ease-in-out;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 24px;
+}
+
+.WebRoleButton:hover
+{
+    background: linear-gradient(#4facfe, #00f2fe);
+    box-shadow: none;
+    border-width: 30px;
+    border: solid #09579c;
+}

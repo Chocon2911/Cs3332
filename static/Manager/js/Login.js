@@ -36,44 +36,57 @@ function getCookie(name)
 }
 
 //===========================================Login============================================
-loginBtn.addEventListener("click", function (event)
+loginBtn.addEventListener("click", async function (event)
 {
     username = usernameField.value;
     password = passwordField.value;
 
-    if (username == "admin" && password == "1234")
+    if (!username.trim() || !password.trim())
     {
-        setCookie("token", "1234");
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "You must fill in all fields";
+        return;
+    }
 
-        if (getCookie("token") == "1234")
+    try
+    {
+        res = await fetch("/login", {
+            method: "POST",
+            headers: 
+            { 
+                "Content-Type": "application/json" 
+            },
+            body: JSON.stringify({ 
+                username: username, 
+                password: password 
+            })
+        });
+
+        const result = await res.json();
+        if (res.status == 200)
         {
-            login(getCookie("role"));
-            return;
+            setCookie("username", username);
+            setCookie("token", result["token"]);
+            window.location.href = "/manager/tab_translation";
+        }
+        else if (res.status >= 400 && res.status <= 600)
+        {
+            ErrorMessage.classList.add("show");
+            ErrorMessage.textContent = result.error;
+        }
+        else
+        {
+            ErrorMessage.classList.add("show");
+            ErrorMessage.value = result.error;
         }
     }
-
-    ErrorMessage.classList.add("show");    
+    catch (error)
+    {
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "Unexpected Error: " + error;
+        console.log(error);
+    }
 })
-
-function login(role)
-{
-    if (role == "manager")
-    {
-        window.location.href = "../../manager/profile";
-    }
-    else if (role == "storageManager")
-    {
-        window.location.href = "../../StorageManager/html/DashBoard.html";
-    }
-    else if (role == "bartender")
-    {
-        window.location.href = "../../Bartender/html/index.html";
-    }
-    else if (role == "customerCashier")
-    {
-        window.location.href = "../../CustomerCashier/html/index.html";
-    }
-}
 
 managerBtn.addEventListener("click", function (event)
 {

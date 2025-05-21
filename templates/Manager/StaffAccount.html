@@ -32,6 +32,7 @@
                 <!--Menu Content-->
                 <div class="ms-auto" id="MenuContent">
                     <ul class="navbar-nav">
+                        <li class="nav-item"><a class="nav-link" href="/manager/new_item">Create Item</a></li>
                         <li class="nav-item"><a class="nav-link" href="/manager/storage">Storage</a></li>
                         <li class="nav-item"><a class="nav-link" href="/manager/staff_account">Staff Account</a></li>
                         <li class="nav-item"><a class="nav-link" href="/manager/sale_data">Sale Data</a></li>
@@ -48,8 +49,9 @@
                 <!--Menu Content Collapse-->
                 <div class="collapse navbar-collapse" id="MenuContentCollapse">
                     <ul class="navbar-nav">
+                        <li><a href="/manager/new_item">Create Item</a></li>
                         <li><a href="/manager/storage">Storage</a></li>
-                        <li><a href="/manager/staff_account">Staff Account</a></li>
+                        <li><a href="/manager/staff_account">Create Account</a></li>
                         <li><a href="/manager/sale_data">Sale Data</a></li>
                     </ul>
                 </div>
@@ -107,40 +109,38 @@
                 <!--Date of Birth-->
                 <div class="ContentRow">
                     <label class="RowName">Date of Birth:</label>
-                    <ul class="ListRow">
-                        <input type="number" class="InputFocus BirthInput" id="BirthDay" min="1" max="31" placeholder="DD" maxlength="2" oninput="limitInputLength(event, 2)">
-                        <input type="number" class="InputFocus BirthInput" id="BirthMonth" min="1" max="12" placeholder="MM" maxlength="2" oninput="limitInputLength(event, 2)">
-                        <input type="number" class="InputFocus BirthInput" id="BirthYear" min="1900" max="2025" placeholder="YYYY" maxlength="4" oninput="limitInputLength(event, 4)">
-                    </ul>
+                    <input class="DateInput" id="Date" type="date">
                 </div>
                 <!--Role-->
                 <div class="ContentRow">
                     <label class="RowName">Role:</label>
                     <ul class="ListRow">
                         <li>
-                            <input type="checkbox" class="RoleInput" id="Cashier">
+                            <input type="checkbox" class="RoleInput" value="CASHIER" id="Cashier">
                             <label class="RoleLabel">Cashier</label>
                         </li>
                         <li>
-                            <input type="checkbox" class="RoleInput" id="StorageManager">
+                            <input type="checkbox" class="RoleInput" value="STORAGE_MANAGER" id="StorageManager">
                             <label class="RoleLabel">Storage Manager</label>
                         </li>
                         <li>
-                            <input type="checkbox" class="RoleInput" id="Bartender">
+                            <input type="checkbox" class="RoleInput" value="BARTENDER" id="Bartender">
                             <label class="RoleLabel">Bartender</label>
                         </li>
                     </ul>
                 </div>
+                <!--Error Message-->
+                <span class="Error" id="ErrorMessage"></span>
                 <!--Button Row-->
                 <div class="ButtonRow">
-                    <button class="ContentButton" id="CreateButton">Create</button>
+                    <button type="button" class="ContentButton" id="CreateButton">Create</button>
                 </div>
             </ul>
         </form>
     </main>
 
-    <script src="{{ url_for('static', filename='Manager/js/Header.js') }}"></script>
     <script src="{{ url_for('static', filename='Manager/js/StaffAccount.js') }}"></script>
+    <script src="{{ url_for('static', filename='Manager/js/Header.js') }}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" 
     integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" 

@@ -74,11 +74,14 @@
     cursor: pointer;
     margin-bottom: 5px;
     justify-content: center;
+    transition: all 0.3s ease-in-out;
 }
 
 .WebRoleButton:hover
 {
     background: linear-gradient(#4facfe, #00f2fe);
     box-shadow: none;
+    border-width: 30px;
+    border: solid #09579c;
     margin-bottom: 0px;
 }
