@@ -1,18 +1,23 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, make_response
+import requests
 from app.controllers.DailyChecks_controller import DailyChecksController
 
 daily_checks_bp = Blueprint('daily_checks', __name__)
 controller = DailyChecksController()
+BACKEND_URL = "https://localhost:8080"
 
-@daily_checks_bp.route('/daily_checks', methods=['POST'])
-def validate_checks():
-    """API validate dữ liệu kiểm tra"""
-    items = request.get_json().get('items', [])
-    result = controller.validate_checks(items)
-    return jsonify(result)
+def forward_response(r):
+    response = make_response(r.content, r.status_code)
+    if 'Content-Type' in r.headers:
+        response.headers['Content-Type'] = r.headers['Content-Type']
+    return response
 
 @daily_checks_bp.route('/daily_checks', methods=['GET'])
 def get_checks_result():
-    """API lấy kết quả kiểm tra"""
-    result = controller.get_checks_result()
-    return jsonify(result)
+    token = request.headers.get('Authorization')
+    headers = {
+        'Authorization': token,
+        'Content-Type': 'application/json'
+    }
+    resp = requests.get(f"{BACKEND_URL}/item_list", headers=headers, params=request.args)
+    return forward_response(resp)

@@ -1,4 +1,22 @@
-import { unix2date, date2unix } from './Utils.js';
+import { unix2date, getCookie } from './Utils.js';
+
+//===================================== Class for Ingredient =====================================
+class Ingredient {
+    constructor(data){
+        this.id = data.id;
+        this.itemStackID = data.itemStackID;
+        this.itemStackName = data.ItemStackName;
+        this.unit = data.unit;
+        this.importExportTime = data.import_export_time || data.importExportTime;
+        this.expirationDate = data.expiration_date || data.expirationDate;
+        this.quantity = data.quantity;
+        this.reason = data.reason;
+        this.supplier = data.supplier;
+    }
+    formattedTime(){
+        return unix2date(this.importExportTime);
+    }
+}
 
 let inventory = [];
 let selectedItem = null;
@@ -29,13 +47,58 @@ const INVENTORY_ENDPOINT = '/storage_manager/all_ingredients';
 const CREATE_ITEM_ENDPOINT = '/storage_manager/new_ingredient';
 const UPDATE_ITEM_ENDPOINT = '/storage_manager/ingredient_import';
 
+
+async function handleResponse(res) {
+    if (res.status === 200 || res.status === 302) {
+        return await res.json();
+    } else if (res.status >= 400 && res.status < 600) {
+        if (res.status === 401) {
+            window.location.href = '/manager/login';
+            throw new Error('Unauthorized');
+        }
+        const err = await res.json();
+        console.error(err.error || 'Error');
+        throw new Error(err.error || 'Server error');
+    } else {
+        const data = await res.json();
+        console.error('Unexpected status:', res.status, data.error);
+        throw new Error(data.error || 'Unexpected error');
+    }
+}
+
 async function fetchInventory() {
     try {
-        const res = await fetch(INVENTORY_ENDPOINT);
-        if (!res.ok) throw new Error('Failed to fetch');
-        inventory = await res.json();
+        const token = getCookie('token');
+        const res = await fetch(INVENTORY_ENDPOINT, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token
+            }
+        });
+        const data = await handleResponse(res);
+        const inventoryMap = new Map();
+
+        data.forEach(item => {
+            const key = item.itemStackID;
+            if (!inventoryMap.has(key)) {
+                inventoryMap.set(key, {
+                    itemStackID: key,
+                    itemStackName: item.ItemStackName,
+                    unit: item.unit,
+                    totalQuantity: 0
+                });
+            }
+            inventoryMap.get(key).totalQuantity += item.quantity;
+        });
+        inventory = [];
+        inventoryMap.forEach(val => {
+            if (val.quantity > 0) {
+                inventory.push(val);
+            }
+        });
     } catch (err) {
-        console.error(err);
+        console.error('Failed to fetch inventory:', err);
     }
 }
 
@@ -50,20 +113,16 @@ function renderSuggestions() {
         (!name || item.name.toLowerCase().includes(name)) &&
         (!supp || item.supplier.toLowerCase().includes(supp))
     );
-    /*const matches = inventory.filter(item =>
-        item.name.toLowerCase().includes(name) &&
-        item.supplier.toLowerCase().includes(supp)
-    );*/
 
     matches.forEach(item => {
         const div = document.createElement('div');
         div.className = 'entry';
         div.innerHTML = `
-            <span>${item.id}</span>
-            <span>${item.name}</span>
+            <span>${item.itemStackID}</span>
+            <span>${item.itemStackName}</span>
             <span>${item.supplier}</span>
             <span>Quantity: ${item.quantity}</span>
-            <span>Unit: ${item.unit}</span>`;
+            <span>Import Date: ${item.formattedTime()}</span>`;
         div.addEventListener('click', () => selectSuggestion(item));
         suggestionsEl.appendChild(div);
     });
@@ -71,9 +130,9 @@ function renderSuggestions() {
 
 function selectSuggestion(item) {
     selectedItem = item;
-    itemIdInput.value = item.id;
+    itemIdInput.value = item.itemStackID;
     unitInput.value = item.unit;
-    ingredientInput.value = item.name;
+    ingredientInput.value = item.itemStackName;
     supplierInput.value = item.supplier;
     quantityInput.value = '';
     itemIdInput.style.display = 'inline-block';
@@ -112,26 +171,27 @@ confirmAddBtn.addEventListener('click', async () => {
     const newItem = { name, unit };
 
     try {
+        const token = getCookie('token');
         const res = await fetch(CREATE_ITEM_ENDPOINT, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': token
+            },
             body: JSON.stringify(newItem)
         });
-        if (!res.ok) throw new Error('Create failed');
-        
-        // Sau khi tạo thành công, cập nhật lại inventory
+        const createdData = await handleResponse(res);
+        const created = new Ingredient(createdData);
         await fetchInventory();
-        
-        // Hiển thị thông báo thành công
-        resultsEl.innerHTML = `<div class="entry success">New ingredient "${name}" has been added successfully!</div>`;
+        resultsEl.innerHTML = `<div class="entry success">New ingredient "${created.itemStackName}" (ID: ${created.id}) added successfully!</div>`;
     } catch (err) {
         console.error('Failed to create item:', err);
         resultsEl.innerHTML = `<div class="entry error">Failed to add new ingredient. Please try again.</div>`;
+    } finally {
+        addModal.style.display = 'none';
+        newNameInput.value = '';
+        newUnitInput.value = '';
     }
-
-    addModal.style.display = 'none';
-    newNameInput.value = '';
-    newUnitInput.value = '';
 });
 
 async function handleDone() {
@@ -145,28 +205,35 @@ async function handleDone() {
         return;
     }
 
-    const newQuantity = selectedItem.quantity + quantity;
-    selectedItem.quantity = newQuantity;
-    selectedItem.importDate = Date.now();
+    const payload = {
+        itemStackID: selectedItem.itemStackID,
+        quantity: quantity,
+        supplier: selectedItem.supplier,
+        reason: "Restock"
+    };
 
     try {
+        const token = getCookie('token');
         const res = await fetch(UPDATE_ITEM_ENDPOINT, {
             method: 'PUT',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(selectedItem)
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token
+            },
+            body: JSON.stringify(payload)
         });
-        
-        if (!res.ok) throw new Error('Update failed');
-        
+        const updatedData = await handleResponse(res);
+        const updated = new Ingredient(updatedData);
+
         const entry = document.createElement('div');
         entry.className = 'entry success';
         entry.innerHTML = `
-            <span><b>ID:</b> ${selectedItem.id}</span>
-            <span><b>Name:</b> ${name}</span>
-            <span><b>Supplier:</b> ${supplier}</span>
-            <span><b>Quantity:</b> ${newQuantity}</span>
-            <span><b>Unit:</b> ${unitInput.value}</span>
-            <span><b>Import Date:</b> ${unix2date(selectedItem.importDate)}</span>
+            <span><b>ID:</b> ${updated.itemStackID}</span>
+            <span><b>Name:</b> ${updated.itemStackName}</span>
+            <span><b>Supplier:</b> ${updated.supplier}</span>
+            <span><b>Quantity:</b> ${updated.quantity}</span>
+            <span><b>Unit:</b> ${updated.unit}</span>
+            <span><b>Import Date:</b> ${unix2date(updated.importExportTime)}</span>
         `;
         resultsEl.appendChild(entry);
 
@@ -189,13 +256,6 @@ async function handleDone() {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('confirm-yes').addEventListener('click', () => {
-        window.location.href = '/manager/login';
-    });
-    document.getElementById('confirm-no').addEventListener('click', () => {
-        document.getElementById('logout-modal').style.display = 'none';
-    });
-
     fetchInventory();
     
     ingredientInput.addEventListener('input', renderSuggestions);

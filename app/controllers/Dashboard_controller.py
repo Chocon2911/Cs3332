@@ -45,7 +45,7 @@ class DashboardController:
     def get_running_out_items(self, limit: int = 5) -> List[Dict]:
         """Lấy danh sách sản phẩm sắp hết hàng"""
         try:
-            file = self.data_dir/'inventory.json'
+            file = self.data_dir/'running_out.json'
             with open(file, encoding='utf-8') as f:
                 items = json.load(f)
             

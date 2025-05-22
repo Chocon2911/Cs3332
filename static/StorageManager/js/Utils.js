@@ -1,5 +1,5 @@
 // ============================= Cookie ====================================
-function getCookie(name) {
+export function getCookie(name) {
     const cookieArr = document.cookie.split(";");
     for (let i = 0; i < cookieArr.length; i++) {
       const cookiePair = cookieArr[i].split("=");
@@ -9,6 +9,17 @@ function getCookie(name) {
     }
     return null;
 }
+
+/*
+function getCookie(name) {
+    const cookieArr = document.cookie.split(";");
+    for (let pair of cookieArr) {
+        const [key, val] = pair.split("=").map(s => s.trim());
+        if (key === name) return val;
+    }
+    return null;
+}
+*/
 
 function valid() {
     const token = getCookie("token");

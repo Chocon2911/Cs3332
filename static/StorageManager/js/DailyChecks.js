@@ -1,6 +1,79 @@
+import { unix2date, getCookie } from './Utils.js';
+
 // Backend endpoints
-const VALIDATE_API = 'storage_manager/valid_checks';     // POST inputs
-const RESPONSE_JSON = 'storage_manager/daily_checks'; // GET matched/unmatched data
+const ENDPOINT = 'storage_manager/daily_checks';
+
+class IngredientCheck {
+  constructor(data) {
+    this.id = data.id;
+    this.itemStackID = data.itemStackID;
+    this.name = data.ItemStackName;
+    this.unit = data.unit;
+    this.time = data.import_export_time;
+    this.supplier = data.supplier;
+    this.reason = data.reason;
+    this.quantity = data.quantity;
+  }
+
+  isImport() {
+    return this.quantity > 0;
+  }
+
+  isExport() {
+    return this.quantity < 0;
+  }
+
+  formattedTime() {
+    return unix2date(this.time);
+  }
+}
+
+// ================================ Auth & Response handling ================================
+
+async function handleResponse(res) {
+  if (res.status === 200 || res.status === 302) {
+    return await res.json();
+  } else if (res.status >= 400 && res.status <= 600) {
+    if (res.status === 401) {
+      window.location.href = '/manager/login';
+      throw new Error('Unauthorized');
+    }
+    const err = await res.json();
+    console.error(err.error || 'Error');
+    throw new Error(err.error || 'Server error');
+  } else {
+    const data = await res.json();
+    console.error('Unexpected status:', res.status, data.error);
+    throw new Error(data.error || 'Unexpected error');
+  }
+}
+
+async function fetchInventoryTransactions() {
+  const token = getCookie('token');
+  const res = await fetch(ENDPOINT, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': token
+    }
+  });
+  const raw = await handleResponse(res);
+  const list = Array.isArray(raw) ? raw : raw.items || [];
+  return list.map(item => new IngredientCheck(item));
+}
+
+// ================================ UI / Check Logic ================================
+
+function getDayStartTimestamp(dateObj) {
+  const d = new Date(dateObj);
+  d.setHours(0, 0, 0, 0);
+  return d.getTime();
+}
+
+function getDayEndTimestamp(dateObj) {
+  const d = new Date(dateObj);
+  d.setHours(23, 59, 59, 999);
+  return d.getTime();
+}
 
 // DOM elements
 const inputButton = document.getElementById('input-button');
@@ -42,6 +115,7 @@ inputTable.addEventListener('keydown', e => {
 // Submit handler: interact with backend
 submitButton.addEventListener('click', async () => {
   // Collect inputs
+  const today = new Date();
   const inputs = Array.from(inputTableBody.querySelectorAll('tr')).map(row => ({
     id: row.cells[0].querySelector('input').value.trim(),
     name: row.cells[1].querySelector('input').value.trim(),
@@ -49,17 +123,63 @@ submitButton.addEventListener('click', async () => {
     unit: row.cells[3].querySelector('input').value.trim()  // Added unit extraction
   })).filter(item => item.id && item.name);
 
-  try {
-    // 1. Send inputs to backend
-    await fetch(VALIDATE_API, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ items: inputs })
-    });
+  if (!inputs.length) {
+    alert("Please enter at least one ingredient");
+    return;
+  }
 
-    // 2. Fetch validated response
-    const res = await fetch(RESPONSE_JSON);
-    const result = await res.json();
+  try {
+    const records = await fetchInventoryTransactions();
+    const dayStart = getDayStartTimestamp(today);
+    const dayEnd = getDayEndTimestamp(today);
+
+    const matched = [];
+    const unmatched = [];
+
+    for (const userInput of inputs) {
+      const relevant = records.filter(
+        rec => rec.name.trim().toLowerCase() === userInput.name.trim().toLowerCase()
+      );
+      
+      if (!relevant.length) {
+        unmatched.push({
+          id: userInput.id,
+          name: userInput.name,
+          warnings: 'Ingredient not found'
+        });
+        continue;
+      }
+
+      let inventoryAtStart = 0;
+      relevant.forEach(rec => {
+        if (rec.time < dayStart) inventoryAtStart += rec.quantity;
+      });
+
+      let restockToday = 0;
+      let usedToday = 0;
+      relevant.forEach(rec => {
+        if (rec.time >= dayStart && rec.time <= dayEnd) {
+          if (rec.quantity > 0) restockToday += rec.quantity;
+          else usedToday += Math.abs(rec.quantity);
+        }
+      });
+      const remaining = inventoryAtStart + restockToday - usedToday;
+      let warning = '';
+      if (remaining > userInput.actual) warning = 'Warning: Actual quantity is less than expected';
+      else if (remaining < userInput.actual) warning = 'Warning: Actual quantity is greater than expected';
+
+      matched.push({
+        id: userInput.id,
+        name: userInput.name,
+        initial: inventoryAtStart,
+        restock: restockToday,
+        used: usedToday,
+        remaining: remaining,
+        actual: userInput.actual,
+        unit: userInput.unit,
+        warnings: warning
+      });
+    }
 
     // Clear previous
     mainOutputBody.innerHTML = '';
@@ -67,12 +187,13 @@ submitButton.addEventListener('click', async () => {
     subOutputTable.classList.add('hidden');
 
     // Render matched
-    result.matched.forEach(item => {
+    matched.forEach(item => {
       mainOutputBody.insertAdjacentHTML('beforeend', `
         <tr>
           <td>${item.id}</td>
           <td>${item.name}</td>
           <td>${item.initial}</td>
+          <td>${item.restock}</td>
           <td>${item.used}</td>
           <td>${item.remaining}</td>
           <td>${item.actual}</td>
@@ -83,10 +204,10 @@ submitButton.addEventListener('click', async () => {
     });
 
     // Render unmatched if any
-    if (result.unmatched?.length) {
-      result.unmatched.forEach(item => {
+    if (unmatched.length) {
+      unmatched.forEach(item => {
         subOutputBody.insertAdjacentHTML('beforeend', `
-          <tr><td>${item.id}</td><td>${item.name}</td><td>${item.warnings || ''}</td></tr>
+          <tr><td>${item.id}</td><td>${item.name}</td><td>${item.warnings}</td></tr>
         `);
       });
       subOutputTable.classList.remove('hidden');
@@ -98,6 +219,7 @@ submitButton.addEventListener('click', async () => {
     submitButton.classList.add('hidden');
     inputButton.classList.remove('hidden');
   } catch (err) {
+    alert('An error occurred while submitting the form. Please try again.');
     console.error('Submit flow error:', err);
   }
 });
@@ -120,12 +242,11 @@ function showLogoutModal() {
 
 window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('confirm-yes').addEventListener('click', () => {
-    window.location.href = '/manager/login';  // Giao diện sau khi log out
+    window.location.href = '/manager/login';
   });
   document.getElementById('confirm-no').addEventListener('click', () => {
     document.getElementById('logout-modal').style.display = 'none';
   });
-
   // Existing initialization
   inputTableBody.innerHTML = '';
   addRow();
