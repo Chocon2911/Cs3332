@@ -18,5 +18,5 @@ register_manager_routes(app)
 register_storage_manager_routes(app)
 
 
-if __name__ == '__main__':
-    app.run(debug=True, port=port)
+# if __name__ == '__main__':
+#     app.run(debug=True, port=port)

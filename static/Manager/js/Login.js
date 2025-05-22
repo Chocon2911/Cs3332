@@ -50,7 +50,7 @@ loginBtn.addEventListener("click", async function (event)
 
     try
     {
-        res = await fetch("/login", {
+        res = await fetch("/manager_request/login", {
             method: "POST",
             headers: 
             { 
