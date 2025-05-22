@@ -135,7 +135,7 @@ document.getElementById("CreateButton").addEventListener("click", async function
     try 
     {
         const token = getCookie("token");
-        const res = await fetch("/user_create", {
+        const res = await fetch("/manager_request/user_create", {
            method: "POST",
            headers:
            {
@@ -145,7 +145,7 @@ document.getElementById("CreateButton").addEventListener("click", async function
            body: JSON.stringify(request.toJson())
         }); 
 
-        if (res.status == 200)
+        if (res.status == 201)
         {
             alert("New account has been created!");
             RealName.value = "";

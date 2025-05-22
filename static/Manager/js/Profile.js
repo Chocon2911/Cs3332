@@ -37,7 +37,7 @@ window.onload = async function ()
     const token = getCookie("token");
     const username = encodeURIComponent(getCookie("username"));
     request = new UserInfo_Request(username);
-    const res = await fetch("/user_info", {
+    const res = await fetch("/manager_request/user_info", {
         method: "POST",
         headers:
         {
@@ -47,7 +47,7 @@ window.onload = async function ()
         body: JSON.stringify(request.toJson())
     });
 
-    if (res.status == 200)
+    if (res.status == 302)
     {
         data = await res.json();
         const result = await new UserInfo_Response(data);
@@ -108,7 +108,7 @@ document.getElementById("SaveButton").addEventListener("click", async function (
         const token = getCookie("token");
         const username = encodeURIComponent(getCookie("username"));
         const request = new UserInfo_Request(username);
-        const res = await fetch("/user_info", {
+        const res = await fetch("/manager_request/user_info", {
             method: "POST",
             headers:
             {
@@ -167,7 +167,7 @@ document.getElementById("SaveButton").addEventListener("click", async function (
     try 
     {
         const token = getCookie("token");
-        const res = await fetch("/user_info_update", {
+        const res = await fetch("/manager_request/user_info_update", {
             method: "POST",
             headers: 
             {
