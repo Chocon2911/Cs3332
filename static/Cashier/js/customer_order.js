@@ -1,4 +1,4 @@
-const prices = {
+const menuPrices = {
     "Phin Coffee": 5.00,
     "Iced Latte": 4.50,
     "Green Tea": 3.50,

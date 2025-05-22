@@ -10,6 +10,35 @@ const CashierRole = document.getElementById("Cashier");
 const BartenderRole = document.getElementById("Bartender");
 
 //===========================================Class============================================
+class UserCreate_Request
+{
+    constructor(username, password, name, dateOfBirth, roles)
+    {
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.email = "abc@gmail.com";
+        this.phone = "0123456789";
+        this.dateOfBirth = dateOfBirth;
+        this.gender = "other";
+        this.roles = roles;
+    }
+
+    toJson()
+    {
+        return {
+            username: this.username,
+            password: this.password,
+            name: this.name,
+            email: this.email,
+            phone: this.phone,
+            dateOfBirth: this.dateOfBirth,
+            gender: this.gender,
+            roles: this.roles
+        };
+    }
+}
+
 class Account
 {
     constructor(name, username, rePassword, password, birthDate, roles)
@@ -97,33 +126,52 @@ document.getElementById("CreateButton").addEventListener("click", async function
     birthDate = BirthDate.value;    
     unixBirthTime = new Date(birthDate).getTime();
 
-    account = new Account(realName, username, rePassword, password, unixBirthTime, roles);
+    request = new UserCreate_Request(username, password, realName, unixBirthTime, roles);
+    
+    if (!validateData(request)) 
+    {
+        return;
+    }
     try 
     {
         const token = getCookie("token");
-        const res = await fetch("/manager/create_staff_account", {
+        const res = await fetch("/manager_request/user_create", {
            method: "POST",
            headers:
            {
                 "Content-Type": "application/json",
                 "Authorization": token
            }, 
-           body: JSON.stringify(account.toJson())
+           body: JSON.stringify(request.toJson())
         }); 
 
-        const result = await res.json();
-        if (result.status == "success")
+        if (res.status == 201)
         {
             alert("New account has been created!");
+            RealName.value = "";
+            Username.value = "";
+            Password.value = "";
+            RePassword.value = "";
+            BirthDate.value = "";
+            StorageManagerRole.checked = false;
+            CashierRole.checked = false;
+            BartenderRole.checked = false;
         }
-        else if (result.status == "no permission")
+        else if (res.status >= 400 && res.status <= 600)
         {
-            window.location.href = result.url;
+            if (res.status == 401)
+            {
+                window.location.href = "/manager/login";
+                return;
+            }
+            data = await res.json();
+            ErrorMessage.classList.add("show");
+            ErrorMessage.textContent = "Server Error: " + data["error"];
         }
         else
         {
-            ErrorMessage.classList.add("show");
-            ErrorMessage.textContent = result.errorMessage;
+            data = await res.json();
+            console.log("Unexpected Error: " + data["error"]);
         }
     }
     catch (error)
@@ -131,32 +179,6 @@ document.getElementById("CreateButton").addEventListener("click", async function
         ErrorMessage.classList.add("show");
         ErrorMessage.textContent = "Unexpected Error: " + error;
     }
-
-    // const data = 
-    // {
-    //     name: document.getElementById("Name").value,
-    //     username: document.getElementById("Username").value,
-    //     password: document.getElementById("Password").value,
-    //     birthDay: document.getElementById("BirthDay").value,
-    //     birthMonth: document.getElementById("BirthMonth").value,
-    //     birthYear: document.getElementById("BirthYear").value,
-    //     role: document.querySelector('input[name="role"]:checked').value,
-    //     id: getRandomString(10)
-    // }
-
-    // const jsonString = JSON.stringify(data);
-
-    // const blob = new Blob([jsonString], { type: "application/json" });
-    // const url = URL.createObjectURL(blob);
-
-    // const a = document.createElement("a");
-    // a.href = url;
-    // a.download = getRandomString(10) + ".json";
-    // a.click();
-
-    // URL.revokeObjectURL(url);
-
-    // alert("Account created!");
 });
 
 function validateData(data)
@@ -165,36 +187,35 @@ function validateData(data)
     {
         ErrorMessage.classList.add("show");
         ErrorMessage.textContent = "Password must be above 8 characters";
+        return false;
     }
 
     else if (data.password.length > 32)
     {
         ErrorMessage.classList.add("show");
         ErrorMessage.textContent = "Password must be below 32 characters";
+        return false;
     }
 
-    else if (data.birthDate < 0)
+    else if (data.dateOfBirth < 0)
     {
         ErrorMessage.classList.add("show");
         ErrorMessage.textContent = "Your date of birth must be later than 1970";
+        return false;
     }
 
-    else if (data.birthDate > Date.now())
+    else if (data.dateOfBirth > Date.now())
     {
         ErrorMessage.classList.add("show");
         ErrorMessage.textContent = "Your date of birth must be earlier than today";
+        return false;
     }
 
-    else if (RePassword.value != Password.value)
+    else if (RePassword.value != data.password)
     {
         ErrorMessage.classList.add("show");
         ErrorMessage.textContent = "Your passwords do not match";
-    }
-
-    else 
-    {
-        ErrorMessage.classList.remove("show");
-        ErrorMessage.textContent = "";
+        return false;
     }
 
     for (i = 0; i < data.name.length; i++)
@@ -203,8 +224,13 @@ function validateData(data)
         {
             ErrorMessage.classList.add("show");
             ErrorMessage.textContent = "Your name cannot contain numbers";
+            return false;
         }
     }
+
+    ErrorMessage.classList.remove("show");
+    ErrorMessage.textContent = "";
+    return true;
 }
 
 //===========================================Other============================================

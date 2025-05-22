@@ -6,23 +6,27 @@ const BirthDate = document.getElementById("BirthDate");
 const ErrorMessage = document.getElementById("ErrorMessage");
 
 //===========================================Class============================================
-class Profile
+class UserInformationUpdate_Request
 {
-    constructor(name, username, password, birthTime)
+    constructor(name, username, password, dateOfBirth, roles)
     {
         this.name = name;
         this.username = username;
         this.password = password;
-        this.birthTime = birthTime;
+        this.dateOfBirth = dateOfBirth;
+        this.roles = roles;
     }
 
     toJSON() 
     {
         return {
-            name: this.name,
             username: this.username,
-            password: this.password,
-            birthTime: this.birthTime
+            name: this.name,
+            email: "abc@gmail.com",
+            phone: "0123456789",
+            dateOfBirth: this.dateOfBirth,
+            gender: "male",
+            roles: this.roles
         };
     }
 }
@@ -30,42 +34,49 @@ class Profile
 //==========================================On Load===========================================
 window.onload = async function ()
 {
-    try 
+    const token = getCookie("token");
+    const username = encodeURIComponent(getCookie("username"));
+    request = new UserInfo_Request(username);
+    const res = await fetch("/manager_request/user_info", {
+        method: "POST",
+        headers:
+        {
+            "Content-Type": "application/json",
+            "Authorization": token,
+        },
+        body: JSON.stringify(request.toJson())
+    });
+
+    if (res.status == 302)
     {
-        const token = getCookie("token");
-        const username = getCookie("username");
-        const res = await fetch("/manager/get_account_profile", {
-            method: "POST",
-            headers:
-            {
-                "Content-Type": "application/json", 
-                "Authorization": token,
-            },
-            body: JSON.stringify({ username: username })
-        });
+        data = await res.json();
+        const result = await new UserInfo_Response(data);
+        RealName.value = result.name;
+        Username.value = result.username;
+        Password.value = result.password;
 
-        const result = await res.json();
-        if (result.status == "success")
-        {
-            RealName.value = result.name;
-            Username.value = result.username;
-            Password.value = result.password;
-
-            let unixTime = result.dateOfBirth; 
-            console.log(unixTime); 
-            let date = new Date(unixTime);
-            console.log(date);
-            let formattedDate = date.toISOString().split('T')[0];
-            BirthDate.value = formattedDate;
-        }
-        else if (result.status == "no permission")
-        {
-            window.location.href = result.url;
-        }
+        let unixTime = result.dateOfBirth; 
+        console.log(unixTime); 
+        let date = new Date(unixTime);
+        console.log(date);
+        let formattedDate = date.toISOString().split('T')[0];
+        BirthDate.value = formattedDate;
     }
-    catch (error)
+    else if (res.status >= 400 && res.status <= 600)
     {
-        console.log(error);
+        if (res.status == 401)
+        {
+            window.location.href = "/manager/login";
+            return;
+        }
+
+        data = await res.json();
+        console.log(data["error"]);
+    }
+    else
+    {
+        data = await res.json();
+        console.log("Unexpected Error: " + data["error"]);
     }
 };
 
@@ -90,146 +101,149 @@ document.getElementById("SaveButton").addEventListener("click", async function (
         return;
     }
 
+    //===Get Roles===
+    let roles = [];
+    try
+    {
+        const token = getCookie("token");
+        const username = encodeURIComponent(getCookie("username"));
+        const request = new UserInfo_Request(username);
+        const res = await fetch("/manager_request/user_info", {
+            method: "POST",
+            headers:
+            {
+                "Content-Type": "application/json",
+                "Authorization": token,
+            },
+            body: JSON.stringify(request.toJson())
+        });
+
+        data = await res.json();
+        if (res.status == 200)
+        {
+            const result = await new UserInfo_Response(data);
+            roles = result.roles;
+            for (let i = 0; i < roles.length; i++)
+            {
+                console.log(roles[i]);
+            }
+        }
+        else if (res.status >= 400 && res.status <= 600)
+        {
+            if (res.status == 401)
+            {
+                window.location.href = "/manager/login";
+                return;
+            }
+
+            console.log(data["error"]);
+            ErrorMessage.classList.add("show");
+            ErrorMessage.textContent = "Server Error: " + data["error"];
+            return;
+        }
+        else
+        {
+            console.log("Unexpected Error: " + data["error"]);
+            return;
+        }
+    }
+    catch (error)
+    {
+        console.log("Error: " + error);
+        return;
+    }
+
+
+    //===Save Profile===
     realName = RealName.value;
     username = Username.value;
     password = Password.value;
     birthDate = BirthDate.value;
 
     unixBirthTime = new Date(birthDate).getTime();
-    profile = new Profile(realName, username, password, unixBirthTime);
-    const token = getCookie("token");
-    const role = getCookie("role");
-
+    request = new UserInformationUpdate_Request(realName, username, password, unixBirthTime, roles);
+    
+    if (!validateData(request)) return;
     try 
     {
-        const res = await fetch("/manager/save_account_profile", {
+        const token = getCookie("token");
+        const res = await fetch("/manager_request/user_info_update", {
             method: "POST",
             headers: 
             {
                 "Content-Type": "application/json", 
                 "Authorization": token,
-                "Role": role
             },
-            body: JSON.stringify(profile.toJSON())
+            body: JSON.stringify(request.toJSON())
         });
-        const result = await res.json();
-        if (result.status == "success")
+
+        data = await res.json();
+        if (res.status == 200)
         {
             alert("New profile has been saved!");
         }
-        else if (result.status == "no permission")
+        else if (res.status >= 400 && res.status <= 600)
         {
-            window.location.href = result.url;
+            ErrorMessage.classList.add("show");
+            ErrorMessage.textContent = "Server Error: " + res["error"];
         }
         else
         {
-            ErrorMessage.classList.add("show");
-            ErrorMessage.textContent = result.errorMessage;
+            console.log("Bruh");
+            console.log("Unexpected Error: " + res["error"]);
         }
     }
-    catch (error)
+    catch (error) 
     {
-        ErrorMessage.classList.add("show");
-        ErrorMessage.textContent = "Unexpected Error: " + error;
-        console.log(error);
+        console.log("catch: " + error);
     }
-
-    // const data = 
-    // {
-    //     name: document.getElementById("Name").value,
-    //     username: document.getElementById("Username").value,
-    //     password: document.getElementById("Password").value,
-    //     birthDay: document.getElementById("BirthDay").value,
-    //     birthMonth: document.getElementById("BirthMonth").value,
-    //     birthYear: document.getElementById("BirthYear").value
-    // }
-
-    // const jsonString = JSON.stringify(data);
-
-    // const blob = new Blob([jsonString], { type: "application/json" });
-    // const url = URL.createObjectURL(blob);
-
-    // const a = document.createElement("a");
-    // a.href = url;
-    // a.download = "profile.json";
-    // a.click();
-
-    // URL.revokeObjectURL(url);
-
-    // alert("Profile Saved!");
 });
 
-// function validateData(data)
-// {
-//     if (data.password.length < 8)
-//     {
-//         ErrorMessage.classList.add("show");
-//         ErrorMessage.textContent = "Password must be above 8 characters";
-//     }
+function validateData(data)
+{
+    if (data.password.length < 8)
+    {
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "Password must be above 8 characters";
+        return false;
+    }
 
-//     else if (data.password.length > 32)
-//     {
-//         ErrorMessage.classList.add("show");
-//         ErrorMessage.textContent = "Password must be below 32 characters";
-//     }
+    else if (data.password.length > 32)
+    {
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "Password must be below 32 characters";
+        return false;
+    }
 
-//     else if (data.birthDate < 0)
-//     {
-//         ErrorMessage.classList.add("show");
-//         ErrorMessage.textContent = "Your date of birth must be later than 1970";
-//     }
+    else if (data.dateOfBirth < 0)
+    {
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "Your date of birth must be later than 1970";
+        return false;
+    }
 
-//     else if (data.birthDate > Date.now())
-//     {
-//         ErrorMessage.classList.add("show");
-//         ErrorMessage.textContent = "Your date of birth must be earlier than today";
-//     }
+    else if (data.dateOfBirth > Date.now())
+    {
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "Your date of birth must be earlier than today";
+        return false;
+    }
 
-//     else 
-//     {
-//         ErrorMessage.classList.remove("show");
-//         ErrorMessage.textContent = "";
-//     }
+    else 
+    {
+        ErrorMessage.classList.remove("show");
+        ErrorMessage.textContent = "";
+    }
 
-//     for (i = 0; i < data.name.length; i++)
-//     {
-//         if (data.name[i] == "1" || data.name[i] == "2" || data.name[i] == "3" || data.name[i] == "4" || data.name[i] == "5" || data.name[i] == "6" || data.name[i] == "7" || data.name[i] == "8" || data.name[i] == "9")
-//         {
-//             ErrorMessage.classList.add("show");
-//             ErrorMessage.textContent = "Your name cannot contain numbers";
-//         }
-//     }
-// }
+    for (i = 0; i < data.name.length; i++)
+    {
+        if (data.name[i] == "1" || data.name[i] == "2" || data.name[i] == "3" || data.name[i] == "4" || data.name[i] == "5" || data.name[i] == "6" || data.name[i] == "7" || data.name[i] == "8" || data.name[i] == "9")
+        {
+            ErrorMessage.classList.add("show");
+            ErrorMessage.textContent = "Your name cannot contain numbers";
+            return false;
+        }
+    }
 
-//=======================================Cancel Button========================================
-// document.getElementById("CancelButton").addEventListener("click", function ()
-// {
-//     defaultProfile();
-// });
-
-//==========================================On Load===========================================
-// window.onload = function()
-// {
-//     // defaultProfile();
-//     managerInit()
-// };
-
-//===========================================Method===========================================
-// function defaultProfile()
-// {
-//     fetch("../Db/profile.json")
-//     .then(response => response.json())
-//     .then(data => 
-//     {
-//         document.getElementById("Name").value = data.name;
-//         document.getElementById("Username").value = data.username;
-//         document.getElementById("Password").value = data.password;
-//         document.getElementById("BirthDay").value = data.birthDay;
-//         document.getElementById("BirthMonth").value = data.birthMonth;
-//         document.getElementById("BirthYear").value = data.birthYear;
-//     })
-//     .catch(error)
-//     {
-//         console.log(error);
-//     }
-// }
+    return true;
+}

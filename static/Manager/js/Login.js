@@ -50,7 +50,7 @@ loginBtn.addEventListener("click", async function (event)
 
     try
     {
-        res = await fetch("/manager/login", {
+        res = await fetch("/manager_request/login", {
             method: "POST",
             headers: 
             { 
@@ -63,16 +63,21 @@ loginBtn.addEventListener("click", async function (event)
         });
 
         const result = await res.json();
-        if (result.status == "success")
+        if (res.status == 200)
         {
             setCookie("username", username);
-            setCookie("token", result.token);
-            login(result.role);
+            setCookie("token", result["token"]);
+            window.location.href = "/manager/tab_translation";
+        }
+        else if (res.status >= 400 && res.status <= 600)
+        {
+            ErrorMessage.classList.add("show");
+            ErrorMessage.textContent = result.error;
         }
         else
         {
             ErrorMessage.classList.add("show");
-            ErrorMessage.value = result.message;
+            ErrorMessage.value = result.error;
         }
     }
     catch (error)
@@ -82,26 +87,6 @@ loginBtn.addEventListener("click", async function (event)
         console.log(error);
     }
 })
-
-function login(role)
-{
-    if (role == "manager")
-    {
-        window.location.href = "/manager/profile";
-    }
-    else if (role == "storageManager")
-    {
-        window.location.href = "/storage_manager/dashboard";
-    }
-    else if (role == "bartender")
-    {
-        window.location.href = "/Bartender/html/index.html";
-    }
-    else if (role == "customerCashier")
-    {
-        window.location.href = "/CustomerCashier/html/index.html";
-    }
-}
 
 managerBtn.addEventListener("click", function (event)
 {

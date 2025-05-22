@@ -422,7 +422,7 @@ function showOrderSuccessPopup() {
 
 // ----- Active link sidebar tự động -----
 document.addEventListener('DOMContentLoaded', () => {
-  const currentPath = window.location.pathname.split('/').pop(); // Lấy tên file
+  const currentPath = window.location.pathname;
   document.querySelectorAll('.sidebar a').forEach(link => {
     const linkPath = link.getAttribute('href');
     if (linkPath === currentPath) {
@@ -434,9 +434,19 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ----- Back về Map -----
-document.addEventListener("DOMContentLoaded", function() {
-  const backBtn = document.getElementById('backBtn');
-  backBtn.addEventListener('click', function() {
-    window.location.href = '../../cafetest.html'; // 🔥 Đường dẫn về lại Map (quản lý quán cà phê)
+
+
+// ----- Highlight hiện tại trong sidebar khi dùng POST (form + button)
+document.addEventListener('DOMContentLoaded', () => {
+  const pathParts = window.location.pathname.split('/');
+  const currentPage = pathParts[pathParts.length - 1]; // eg: "coffee", "tea", etc.
+
+  document.querySelectorAll('.sidebar-link').forEach(button => {
+    const page = button.dataset.page;
+    if (page === currentPage) {
+      button.classList.add('active');
+    } else {
+      button.classList.remove('active');
+    }
   });
 });
