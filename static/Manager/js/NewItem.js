@@ -82,11 +82,11 @@ class ItemStack
 //===========================================Method===========================================
 window.onload = async () => 
 {
-
+    // ===Check Token and Role valid===
     const token = getCookie("token");
     const username = encodeURIComponent(getCookie("username"));
     request = new UserInfo_Request(username);
-    res = await fetch("/user_info", {
+    res = await fetch("/manager_request/user_info", {
         method: "POST",
         headers:
         {
@@ -96,7 +96,7 @@ window.onload = async () =>
         body: JSON.stringify(request.toJson())
     });
 
-    if (res.status == 200)
+    if (res.status == 302)
     {
         return;
     }
@@ -118,7 +118,8 @@ window.onload = async () =>
     }
 
 
-    res = await fetch("/item_stack_list", {
+    // ===Get all item stacks===
+    res = await fetch("/manager_request/item_stack_list", {
         method: "POST",
         headers:
         {
@@ -127,7 +128,7 @@ window.onload = async () =>
     });
 
     data = await res.json();
-    if (res.status == 200)
+    if (res.status == 302 || res.status == 200)
     {
         const result = await new ItemStackList_Response(data);
         itemStacks = result.itemStacks;
@@ -198,7 +199,7 @@ async function submit()
     
     console.log(request.toJson());
     
-    const res = await fetch("/product_create", {
+    const res = await fetch("/manager_request/product_create", {
         method: "POST",
         headers:
         {
@@ -209,7 +210,7 @@ async function submit()
     });
 
     const result = await res.json();
-    if (res.status == 200)
+    if (res.status == 201 || res.status == 200)
     {
         alert("New item has been saved!");
     }

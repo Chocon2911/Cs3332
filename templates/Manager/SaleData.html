@@ -79,15 +79,18 @@
         <div class="Content">
             <!--Custom-->
             <div class="CustomContainer">
+                <!--Date Filter-->
                 <div class="CustomDate">
-                    <input class="DateInput" id="Date" type="date">
+                    <input class="DateInput" id="FromDate" type="date">
+                    <input class="DateInput" id="ToDate" type="date">
                 </div>
                 
+                <!--Product Filter-->
                 <div class="CustomProducts">
                     <h2>Product List</h2>
                     <h7>Uncheck to hide product in chart</h7>
-                    <div class="ScrollContainer" id="Products">
-                    </div>
+                    <div class="ScrollContainer" id="Products"></div>
+                    <div type="button" class="buttonContainer" id="SaveBtn">Save</div>
                 </div>
             </div>
 
@@ -97,7 +100,7 @@
             </div>
         </div>
 
-        <script src="{{ url_for('static', filename='Manager/js/Header.js') }}"></script>
+    <script src="{{ url_for('static', filename='Manager/js/Header.js') }}"></script>
     <script src="{{ url_for('static', filename='Manager/js/SaleData.js') }}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" 
