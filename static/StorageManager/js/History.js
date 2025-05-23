@@ -1,5 +1,3 @@
-import { unix2date, getCookie } from './Utils.js';
-
 // ================================ History Record ================================
 class HistoryRecord {
   constructor(data) {
@@ -114,13 +112,13 @@ window.addEventListener('DOMContentLoaded', () => {
   const toDateInput = document.getElementById('toDate');
   
   if (fromDateInput) {
-    fromDateInput.addEventListener('change', loadTableData);
+    fromDateInput.addEventListener('change', loadHistory);
   } else {
     console.error('fromDate input not found!');
   }
   
   if (toDateInput) {
-    toDateInput.addEventListener('change', loadTableData);
+    toDateInput.addEventListener('change', loadHistory);
   } else {
     console.error('toDate input not found!');
   }

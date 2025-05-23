@@ -12,7 +12,7 @@ def forward_response(r):
         response.headers['Content-Type'] = r.headers['Content-Type']
     return response    
 
-@dashboard_bp.route('/product_transaction', methods=['GET'])
+@dashboard_bp.route('/product_transaction', methods=['POST'])
 def product_transaction():
     token = request.headers.get('Authorization')
     
@@ -20,15 +20,15 @@ def product_transaction():
         'Authorization': token,
         'Content-Type': 'application/json',
     }
-    resp = requests.get(f"{BACKEND_URL}/product_transaction", headers=headers, params = request.args)
+    resp = requests.get(f"{BACKEND_URL}/item_list", headers=headers, params = request.args)
     return forward_response(resp)
 
-@dashboard_bp.route('/running_out', methods=['GET'])
+@dashboard_bp.route('/running_out', methods=['POST'])
 def running_out():
     token = request.headers.get('Authorization')
     headers = {
         'Authorization': token,
         'Content-Type': 'application/json'
     }
-    resp = requests.get(f"{BACKEND_URL}/item_list", headers=headers, params = request.args)
+    resp = requests.get(f"{BACKEND_URL}/item_stack_list", headers=headers, params = request.args)
     return forward_response(resp)

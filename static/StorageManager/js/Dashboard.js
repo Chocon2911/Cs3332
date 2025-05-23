@@ -1,5 +1,3 @@
-import { unix2date, getCookie } from './Utils.js';
-
 const endpoints = {
   productTransaction: '/storage_manager/product_transaction',
   runningOut: '/storage_manager/running_out'
@@ -16,6 +14,7 @@ class TransactionItem {
       this.reason = data.reason;  // e.g. "Restock" or "Sold"
       this.quantity = data.quantity;
   }
+  
 
   isImport() {
     return this.quantity > 0;
@@ -28,6 +27,15 @@ class TransactionItem {
   formattedTime() {
     return unix2date(this.time);
   }
+}
+
+class ItemStack {
+  constructor(data) {
+    this.id = data.id;
+      this.name = data.name;
+      this.unit = data.unit;
+      this.quantity = data.quantity;
+    }
 }
 
 const RUNOUT_THRESHOLD = 10;
@@ -54,6 +62,7 @@ async function fetchData(url) {
   try {
     const token = getCookie('token');
     const res = await fetch(url, {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': token
@@ -92,19 +101,18 @@ function renderCard(containerId, items) {
   const tbody = document.querySelector(`#${containerId} tbody`);
   tbody.innerHTML = '';
   items.forEach(item => {
-      const row = document.createElement('tr');
-      [
-        item.itemStackID,
-        item.name,
-        item.supplier,
-        item.quantity,
-        item.unit
-      ].forEach(text => {
-          const td = document.createElement('td');
-          td.textContent = text;
-          row.appendChild(td);
-      });
-      tbody.appendChild(row);
+    const row = document.createElement('tr');
+    [
+      item.id,
+      item.name,
+      item.quantity,
+      item.unit
+    ].forEach(text => {
+      const td = document.createElement('td');
+      td.textContent = text;
+      row.appendChild(td);
+    });
+    tbody.appendChild(row);
   });
 }
 
@@ -124,18 +132,6 @@ function renderBar(data) {
       </div>`;
     barChart.appendChild(bar);
   });
-}
-
-function aggregateTransactions(transactions) {
-  const current = {};
-  transactions.forEach(tx => {
-    const key = tx.itemStackID;
-    if (!current[key]) {
-      current[key] = { ...tx, quantity: 0 };
-    }
-    current[key].quantity += tx.quantity;
-  });
-  return Object.values(current);
 }
 
 window.onload = async () => {
@@ -172,13 +168,12 @@ window.onload = async () => {
       renderBar(barData);
 
       // Running-out card
-      const runoutTx = (rawRunout || []).map(d => new TransactionItem(d));
-      const runoutAgg = aggregateTransactions(runoutTx);
-      const runningOutList = runoutAgg.filter(item => item.quantity <= RUNOUT_THRESHOLD);
+      const stacks = (rawRunout || []).map(d => new ItemStack(d));
+      const runningOutList = stacks.filter(item => item.quantity <= RUNOUT_THRESHOLD);
       renderCard('card-running', runningOutList);
 
       // Thêm sự kiện click cho card Running out
-      document.getElementById('card-running').addEventListener('click', () => navigateTo('running'));
+      document.getElementById('card-running').addEventListener('click', () => navigateTo('running-out'));
       // Xử lý logout modal
       document.getElementById('confirm-yes').onclick = () => {
           window.location.href = 'manager/login';

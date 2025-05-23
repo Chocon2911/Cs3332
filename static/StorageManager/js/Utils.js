@@ -1,5 +1,5 @@
 // ============================= Cookie ====================================
-export function getCookie(name) {
+function getCookie(name) {
     const cookieArr = document.cookie.split(";");
     for (let i = 0; i < cookieArr.length; i++) {
       const cookiePair = cookieArr[i].split("=");
@@ -33,13 +33,13 @@ function valid() {
 }
 
 // convert Unix timestamp to human-readable date
-export function unix2date(ts) {
+function unix2date(ts) {
   // ts is in seconds; Date expects milliseconds
   const d = new Date(Number(ts));
   return d.toLocaleDateString(); // comment: converts to DD/MM/YYYY or local format
 }
 
-export function date2unix(dateStr) {
+function date2unix(dateStr) {
   const [day, month, year] = dateStr.split('/');
   const date = new Date(`${year}-${month}-${day}`);
   return date.getTime(); // Trả về timestamp dạng milliseconds

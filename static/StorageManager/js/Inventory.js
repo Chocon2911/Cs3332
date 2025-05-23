@@ -1,5 +1,3 @@
-import { unix2date, getCookie } from './Utils.js';
-
 const endpoints = [
   '/storage_manager/all_ingredients',  // all ingredients
   '/storage_manager/running_out'       // running-out

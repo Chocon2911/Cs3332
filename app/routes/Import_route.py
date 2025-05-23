@@ -11,15 +11,18 @@ def forward_response(r):
         response.headers['Content-Type'] = r.headers['Content-Type']
     return response
 
-@import_bp.route('/all_ingredients', methods=['GET'])
+@import_bp.route('/all_ingredients', methods=['POST'])
 def get_inventory():
+    print("get_inventory")
     token = request.headers.get("Authorization")
+    print("token:", token)
     headers = {
         'Authorization': token,
         'Content-Type': 'application/json'
     }
+    print("headers:", headers)
     response = requests.get(
-        f"{BACKEND_URL}/item_list",
+        f"{BACKEND_URL}/item_stack_list",
         headers=headers
     )
     return forward_response(response)
@@ -35,7 +38,7 @@ def create_item():
     resp = requests.post(f"{BACKEND_URL}/item_stack_create", json=body, headers=headers)
     return forward_response(resp)
 
-@import_bp.route('/ingredient_import', methods=['PUT'])
+@import_bp.route('/ingredient_import', methods=['POST'])
 def update_item():
     token = request.headers.get("Authorization")
     headers = {
@@ -43,5 +46,6 @@ def update_item():
         'Content-Type': 'application/json'
     }
     body = request.get_json(force=True)
-    resp = requests.put(f"{BACKEND_URL}/item_import", json=body, headers=headers)
+    print("body:", body)
+    resp = requests.post(f"{BACKEND_URL}/item_import", json=body, headers=headers)
     return forward_response(resp)

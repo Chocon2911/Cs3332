@@ -1,5 +1,3 @@
-import { unix2date, getCookie } from './Utils.js';
-
 // Backend endpoints
 const ENDPOINT = 'storage_manager/daily_checks';
 
