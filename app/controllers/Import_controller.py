@@ -29,7 +29,7 @@ class ImportController:
             json.dump([], f, indent=2)
 
     def get_inventory(self) -> List[Dict]:
-        """Lấy danh sách inventory"""
+        """Lấy danh sách inventory từ file JSON"""
         try:
             file = self.data_dir/'inventory.json'
             with open(file, encoding='utf-8') as f:
@@ -40,18 +40,13 @@ class ImportController:
             return []
 
     def create_item(self, item_data: Dict) -> Dict:
-        """Tạo item mới"""
+        """Tạo item mới và lưu vào file JSON"""
         try:
             file = self.data_dir/'NewIngredient.json'
-            self._clear_files('NewIngredient.json')
-            
+            self._clear_files(file)
             # Tạo item mới
             new_item = {
-                'id': 0,
                 'name': item_data['name'],
-                'supplier': '',
-                'quantity': 0,
-                'importDate': 0,
                 'unit': item_data['unit']
             }
             
@@ -64,14 +59,14 @@ class ImportController:
             return {}
 
     def update_item(self, item_data: Dict) -> Dict:
-        """Cập nhật item"""
+        """Cập nhật item và lưu vào file JSON"""
         try:
             file = self.data_dir/'inventory.json'
             with open(file, encoding='utf-8') as f:
                 items = json.load(f)
                 
             update_file = self.data_dir/'UpdateIngredient.json'
-            self._clear_files('UpdateIngredient.json')
+            self._clear_files(update_file)
             
             # Tìm và cập nhật item
             for item in items:
