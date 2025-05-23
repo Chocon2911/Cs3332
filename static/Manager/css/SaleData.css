@@ -186,3 +186,20 @@
         margin-bottom: 80px;
     }    
 }
+
+/*=======================================Search Button========================================*/
+.SearchButton
+{
+    padding: 15px;
+    font-size: 18px;
+    width: 200px;
+    height: 50px;
+    border-radius: 50px;
+    outline:rgba(0, 0, 0, 0.568) solid 1px;
+    border: none;
+    background: linear-gradient(#00f2fe, #4facfe);
+    box-shadow: 0px 5px 3px rgba(0, 0, 0, 0.3);
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}

@@ -149,7 +149,7 @@ def register_manager_routes(app):
             'Content-Type': 'application/json',
         }
 
-        response = requests.get(URL + "product_list", headers=header)
+        response = requests.get(URL + "/product_list", headers=header)
         print("Product List: " + str(response.status_code))
         return forward_response(response) 
 
