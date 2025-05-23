@@ -176,7 +176,7 @@ window.onload = async function ()
         console.log(data);
         const result = new ListOrders_Response();
         await result.init(data);
-        createProductCheckBoxs(result.orders);
+        // createProductCheckBoxs(result.orders);
         createChart(result.orders);
         sessionStorage.setItem("list_orders", JSON.stringify(result.orders));
     }
@@ -187,18 +187,9 @@ window.onload = async function ()
     }
 }
 
-SaveBtn.addEventListener("click", () => {
-    const fromDate = FromDate.value ? new Date(FromDate.value) : null;
-    const toDate = ToDate.value ? new Date(ToDate.value) : null;
-    const req2 = new ListOrders_Request(fromDate, toDate);
-    const res2 = fetch("/manager_request/list_orders", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(req2.toJson())
-    });
-});
+// SaveBtn.addEventListener("click", () => {
+    
+// });
 
 SearchBtn.addEventListener("click", async () => {
     //===Check token and role valid===
@@ -275,17 +266,17 @@ SearchBtn.addEventListener("click", async () => {
     }
 })
 
-async function createProductCheckBoxs(orders) {
-    let productTypes = await getProductTypes();
+// async function createProductCheckBoxs(orders) {
+//     let productTypes = await getProductTypes();
 
-    for (let product of productTypes)
-    {
-        const productDiv = document.createElement("div");
-        productDiv.classList.add("ProductItem");
-        productDiv.innerHTML = `<input type="checkbox" value="${product["id"]}"><label>${product["name"]}</label>`;
-        Products.appendChild(productDiv);
-    }
-}
+//     for (let product of productTypes)
+//     {
+//         const productDiv = document.createElement("div");
+//         productDiv.classList.add("ProductItem");
+//         productDiv.innerHTML = `<input type="checkbox" value="${product["id"]}"><label>${product["name"]}</label>`;
+//         Products.appendChild(productDiv);
+//     }
+// }
 
 async function getProductTypes()
 {
@@ -481,9 +472,9 @@ async function createChart(orders) {
 }
 
 
-SaveBtn.addEventListener("click", async () => {
-    // Save logic here
-});
+// SaveBtn.addEventListener("click", async () => {
+//     // Save logic here
+// });
 
 //==========================================Support===========================================
 function getDataSet(index, total, name, revenues) {

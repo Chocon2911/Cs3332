@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bartender Order Manager</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+    }
+    header {
+      background-color: #343a40;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    main {
+      padding: 1rem;
+      max-width: 800px;
+      margin: auto;
+    }
+    .order {
+      background: white;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+    .order h3 {
+      margin: 0 0 0.5rem 0;
+    }
+    .order-buttons button {
+      margin-right: 0.5rem;
+    }
+    .order.completed {
+      border-color: #28a745;
+      background-color: #d4edda;
+    }
+    .order.cancelled {
+      border-color: #dc3545;
+      background-color: #f8d7da;
+    }
+    .order-details {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease, padding-top 0.5s ease;
+      margin-top: 0.5rem;
+      border-top: 1px solid #ccc;
+      padding-top: 0;
+    }
+    .order.show-details .order-details {
+      max-height: 500px;
+      padding-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Bartender Order Manager</h1>
+  </header>
+  <main id="orderList"></main>
+
+  <script>
+    const orders = [
+      { id: 1, name: "Mojito", items: ["Rum", "Mint", "Sugar", "Soda"], price: 5.5 },
+      { id: 2, name: "Old Fashioned", items: ["Whiskey", "Sugar", "Angostura bitters"], price: 6.0 },
+      { id: 3, name: "Cosmopolitan", items: ["Vodka", "Triple sec", "Lime juice", "Cranberry juice"], price: 6.5 },
+    ];
+
+    const orderList = document.getElementById("orderList");
+
+    function renderOrders() {
+      orderList.innerHTML = "";
+      orders.forEach(order => {
+        const orderDiv = document.createElement("div");
+        orderDiv.classList.add("order");
+        orderDiv.id = `order-${order.id}`;
+        orderDiv.innerHTML = `
+          <h3>Order #${order.id}: ${order.name}</h3>
+          <div class="order-buttons">
+            <button onclick="event.stopPropagation(); cancelOrder(${order.id})">Cancel</button>
+            <button onclick="event.stopPropagation(); completeOrder(${order.id})">Confirm</button>
+          </div>
+          <div class="order-details">
+            <p><strong>Items:</strong> ${order.items.join(", ")}</p>
+            <p><strong>Price:</strong> $${order.price.toFixed(2)}</p>
+          </div>
+        `;
+        orderDiv.addEventListener("click", () => {
+          orderDiv.classList.toggle("show-details");
+        });
+        orderList.appendChild(orderDiv);
+      });
+    }
+
+    function cancelOrder(id) {
+      const orderDiv = document.getElementById(`order-${id}`);
+      orderDiv.classList.remove("completed");
+      orderDiv.classList.add("cancelled");
+    }
+
+    function completeOrder(id) {
+      const orderDiv = document.getElementById(`order-${id}`);
+      orderDiv.classList.remove("cancelled");
+      orderDiv.classList.add("completed");
+    }
+
+    renderOrders();
+  </script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bartender Order Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='Bartender/css/Base.css') }}">
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-md">
+            <div class="container-fluid" id="NavHeader">
+                <!--Logo-->
+                <a class="" id="Logo">
+                    <img src="{{ url_for('static', filename='Manager/Image/Coffee.png') }}" width="140" height="70">
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="OrderList">
+            <h3>Order #5: Capp</h3>
+            <div class="OrderButtons">
+                <button class="ContentButton show" id="TakeBtn">Take</button>
+                <button class="ContentButton show" id="CancelBtn">Cancel</button>
+                <button class="ContentButton show" id="ConfirmBtn">Confirm</button>
+            </div>
+
+            <br>
+
+            <div class="OrderDetail">
+                <div class="ProductList">
+                    <div class="Product">
+                        <div class="ProductRow">
+                            <label class="ProductLabel">Name: </label>
+                            <label class="ProductLabel">Quantity: </label>
+                        </div>
+                        <div class="ProductRow">
+                            <div class="IngredientList">
+                                <div class="IngredientRow">
+                                    <label class="RowName">Espresso: </label>
+                                    <label class="RowValue">1</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ProductRow">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='Bartender/js/Base.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+/*============================================Main============================================*/
+body 
+{
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+}
+header 
+{
+    background-color: #343a40;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+main 
+{
+    padding: 1rem;
+    max-width: 800px;
+    margin: auto;
+}
+
+/*===========================================Order============================================*/
+.order 
+{
+    background: white;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+}
+.order h3 
+{
+    margin: 0 0 0.5rem 0;
+}
+
+.order-buttons button 
+{
+    margin-right: 0.5rem;
+}
+.order.completed 
+{
+    border-color: #28a745;
+    background-color: #d4edda;
+}
+.order.cancelled 
+{
+    border-color: #dc3545;
+    background-color: #f8d7da;
+}
