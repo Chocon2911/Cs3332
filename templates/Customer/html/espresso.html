@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Abcxyz Coffee</title>
+  <!-- Link đến file CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='Customer/css/style.css') }}">
+</head>
+<body>
+  
+  <!-- Overlay chung cho cả 2 sidebar -->
+  <div class="overlay" id="overlay"></div>
+  
+  <!-- Header -->
+  <header class="header">
+    <!-- Nút mở menu trái -->
+    <button class="menu-btn" id="menuBtn" aria-label="Toggle menu">☰</button>
+    <!-- Logo / Tên trang -->
+    <h1 class="logo">Abcxyz Coffee</h1>
+    <!-- Các icon ở bên phải: giỏ hàng + orders -->
+    <div class="icons">
+      <button class="icon-btn" id="cartBtn" aria-label="Open cart">🛒</button>
+      <button class="icon-btn" id="orderBtn" aria-label="View orders">📦</button>
+    </div>
+  </header>
+  
+  <!-- Sidebar menu trái -->
+  <aside class="sidebar" id="sidebar">
+    <ul>
+      <form method="POST" action="{{ url_for('goto_customer_coffee') }}">
+        <button type="submit" class="sidebar-link" data-page="coffee">💖 Shop best-sellers</button>
+      </form>
+      <form method="POST" action="{{ url_for('goto_customer_espresso') }}">
+        <button type="submit" class="sidebar-link" data-page="espresso">☕ Espresso Coffee</button>
+      </form>
+      <form method="POST" action="{{ url_for('goto_customer_vietnamese_phin') }}">
+        <button type="submit" class="sidebar-link" data-page="vietnamese-phin">🥛 Vietnamese PHIN Coffee</button>
+      </form>
+      <form method="POST" action="{{ url_for('goto_customer_tea') }}">
+        <button type="submit" class="sidebar-link" data-page="tea">🍵 Tea</button>
+      </form>
+      <!-- Nút Back -->
+      <form method="POST" action="{{ url_for('goto_cashier_cafetest_from_customer') }}">
+        <button type="submit" class="back-button">Back</button>
+      </form> 
+    </ul>
+  </aside>
+
+  <!-- Cart Sidebar -->
+  <aside class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header">
+      <h3>Your Cart</h3>
+    </div>
+    <div class="cart-body" id="cartItems">
+      <p class="empty">Your cart is empty!</p>
+      <!-- Các sản phẩm trong giỏ hàng sẽ được thêm vào đây -->
+    </div>
+    <div class="cart-footer">
+      <div style="margin-bottom: 10px">Total: $<span id="cartTotal">0.00</span></div>
+      <button class="clear-cart-btn" style="margin-bottom:10px;">Clear Cart</button>
+      <button class="send-cart-btn">Send to Order</button>
+    </div>
+  </aside>
+    
+  <!-- Order Sidebar -->
+  <aside class="order-sidebar" id="orderSidebar">
+    <div class="order-header">
+      <h3>Ordered</h3>
+    </div>
+    <div class="order-body" id="orderItems">
+      <p class="empty-order">You have not ordered yet!</p>
+      <!-- Các sản phẩm trong đơn hàng sẽ được thêm vào đây -->
+    </div>
+    <div class="order-footer">
+      <button class="clear-orders-btn">Clear Orders</button>
+    </div>
+  </aside>
+  
+  <!-- Main content (dưới header) -->
+  <main class="main">
+    <div class="content">
+      <div class="text-content">
+        <p class="intro">
+          <span>Experience the intense flavor of our finest Espresso selections 🚀☕
+        </p>
+      </div>
+      <div class="image-content">
+        <img class="coffee-image"
+             src="https://png.pngtree.com/png-clipart/20230928/original/pngtree-watercolor-illustration-espresso-png-image_13010056.png"
+             alt="Coffee illustration" />
+      </div>
+    </div>
+   
+    <!-- Sản phẩm -->
+    <section class="products">
+    <h2>Espresso Coffee</h2>
+      <div class="grid">
+        <!-- Sản phẩm 1 -->
+        <div class="product-card">
+          <span class="icon">☕</span>
+          <h3>Classic Espresso</h3>
+          <div class="price">$5.00</div>
+          <div class="qty-control">
+            <button class="dec">−</button>
+            <span class="qty">1</span>
+            <button class="inc">+</button>
+          </div>
+          <button class="add-cart-btn">Add to cart</button>
+        </div>
+        
+        <!-- Sản phẩm 2 -->
+        <div class="product-card">
+          <span class="icon">☕☕</span>
+          <h3>Double Espresso</h3>
+          <div class="price">$4.50</div>
+          <div class="qty-control">
+            <button class="dec">−</button>
+            <span class="qty">1</span>
+            <button class="inc">+</button>
+          </div>
+          <button class="add-cart-btn">Add to cart</button>
+        </div>
+        
+        <!-- Sản phẩm 3 -->
+        <div class="product-card">
+          <span class="icon">🍶</span>
+          <h3>Macchiato</h3>
+          <div class="price">$3.50</div>
+          <div class="qty-control">
+            <button class="dec">−</button>
+            <span class="qty">1</span>
+            <button class="inc">+</button>
+          </div>
+          <button class="add-cart-btn">Add to cart</button>
+        </div>
+        
+        <!-- Sản phẩm 4 -->
+        <div class="product-card">
+          <span class="icon">🥤</span>
+          <h3>Americano</h3>
+          <div class="price">$6.00</div>
+          <div class="qty-control">
+            <button class="dec">−</button>
+            <span class="qty">1</span>
+            <button class="inc">+</button>
+          </div>
+          <button class="add-cart-btn">Add to cart</button>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <!-- Link tới JS -->
+  <script defer src="{{ url_for('static', filename='Customer/js/script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test cafe shop</title>
+    <!-- CSS Chính -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='Cashier/css/main_cafetest.css') }}">
+    <!-- Font chữ -->
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Background chính -->
+    <div id="background"></div>
+
+    <!-- Thanh bar trên cùng (Chứa tiêu đề + nút mở Sidebar) -->
+    <div id="white_bar">
+        <div id="Map">History</div> <!-- Tiêu đề trang -->
+        <div id="menuBtn">☰</div> <!-- Nút 3 gạch mở Sidebar -->
+    </div>
+    
+    <!-- ✅ Vùng chứa các bill đã in -->
+    <div id="history-container" style="margin-top: 120px; padding: 20px;">
+        <!-- Các Bill sẽ tự động load vào đây bằng history.js -->
+    </div>
+    
+    <!-- Sidebar chuyển đổi giữa các trang Map / Customer Order / History -->
+    <div id="sidebar" class="hidden">
+        <div class="menu-button-group">
+            <form action="{{ url_for('goto_cafetest') }}" method="POST">
+                <button type="submit" class="menu-button" data-page="cafetest">Map</button>
+            </form>
+            <form action="{{ url_for('goto_customer_order') }}" method="POST">
+                <button type="submit" class="menu-button" data-page="customer_order">Customer Order</button>
+            </form>
+            <form action="{{ url_for('goto_history') }}" method="POST">
+                <button type="submit" class="menu-button" data-page="history">History</button>
+            </form> 
+        </div>
+    </div>
+
+    <!-- Javascript Chính -->
+    <script defer src="{{ url_for('static', filename='Cashier/js/script.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='Cashier/js/sidebar.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='Cashier/js/history.js') }}"></script>    
+
+</body>
+</html>
