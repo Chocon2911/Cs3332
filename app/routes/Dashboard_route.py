@@ -1,10 +1,9 @@
 from flask import Blueprint, jsonify, request, make_response
 import requests
-from app.controllers.Dashboard_controller import DashboardController
 
 # Blueprint riêng cho Dashboard
 dashboard_bp = Blueprint('dashboard', __name__)
-BACKEND_URL = "https://localhost:8080"
+BACKEND_URL = "http://localhost:8080"
 
 def forward_response(r):
     response = make_response(r.content, r.status_code)
@@ -15,7 +14,6 @@ def forward_response(r):
 @dashboard_bp.route('/product_transaction', methods=['POST'])
 def product_transaction():
     token = request.headers.get('Authorization')
-    
     headers = {
         'Authorization': token,
         'Content-Type': 'application/json',

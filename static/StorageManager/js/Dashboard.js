@@ -1,7 +1,5 @@
-const endpoints = {
-  productTransaction: '/storage_manager/product_transaction',
-  runningOut: '/storage_manager/running_out'
-};
+const PRODUCT_TRANSACTION = '/storage_manager/product_transaction';
+const RUNNING_OUT = '/storage_manager/running_out';
 
 class TransactionItem {
   constructor(data) {
@@ -14,16 +12,12 @@ class TransactionItem {
       this.reason = data.reason;  // e.g. "Restock" or "Sold"
       this.quantity = data.quantity;
   }
-  
-
   isImport() {
     return this.quantity > 0;
   }
-
   isExport() {
     return this.quantity < 0;
   }
-
   formattedTime() {
     return unix2date(this.time);
   }
@@ -32,13 +26,11 @@ class TransactionItem {
 class ItemStack {
   constructor(data) {
     this.id = data.id;
-      this.name = data.name;
-      this.unit = data.unit;
-      this.quantity = data.quantity;
-    }
+    this.name = data.name;
+    this.unit = data.unit;
+    this.quantity = data.quantity;
+  }
 }
-
-const RUNOUT_THRESHOLD = 10;
 
 async function handleResponse(res) {
   if (res.status === 200 || res.status === 302) {
@@ -58,47 +50,46 @@ async function handleResponse(res) {
   }
 }
 
-async function fetchData(url) {
+async function fetchRunOut() {
   try {
     const token = getCookie('token');
-    const res = await fetch(url, {
+    const res = await fetch(RUNNING_OUT, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': token
       }
     });
-    return await handleResponse(res);
+    const data = await handleResponse(res);
+    const stacks = data.itemStacks.map(item => new ItemStack(item));
+    return stacks.filter(item => item.quantity <= 0);
   } catch (e) {
     console.error('Error fetching data:', e);
     return [];
   }
 }
 
-function renderTransactionList(containerId, transactions) {
-  const tbody = document.querySelector(`#${containerId} tbody`);
-  tbody.innerHTML = '';
-  transactions.forEach(tx => {
-    const row = document.createElement('tr');
-    [
-      tx.id,
-      tx.name,
-      tx.supplier,
-      tx.quantity > 0 ? 'Import' : 'Export',
-      Math.abs(tx.quantity),
-      tx.unit,
-      tx.formattedTime()
-    ].forEach(text => {
-      const td = document.createElement('td');
-      td.textContent = text;
-      row.appendChild(td);
+async function fetchTransaction() {
+  try {
+    const token = getCookie('token')
+    const res = await fetch(PRODUCT_TRANSACTION, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
     });
-    tbody.appendChild(row);
-  });
+    const data = await handleResponse(res);
+    return data.items.map(item => new TransactionItem(item));
+  } catch (e) {
+    console.error('Error fetching data:', e);
+    return [];
+  }
 }
 
 function renderCard(containerId, items) {
   const tbody = document.querySelector(`#${containerId} tbody`);
+  if (!tbody) return;
   tbody.innerHTML = '';
   items.forEach(item => {
     const row = document.createElement('tr');
@@ -136,23 +127,11 @@ function renderBar(data) {
 
 window.onload = async () => {
   try {
-      // Fetch data từ các endpoint mới
-      const [rawTrans, rawRunout] = await Promise.all([
-          fetchData(endpoints.productTransaction),
-          fetchData(endpoints.runningOut + '?limit=8')
-      ]);
-
-      // Process transaction data
-      const transactions = (rawTrans || []).map(d => new TransactionItem(d));
-      renderTransactionList('product_transaction', transactions);
-
-      //Aggregate by itemStackId for bar chart
+      const transactions = await fetchTransaction();
       const agg = {};
       transactions.forEach(tx => {
         const key = tx.itemStackID;
-        if (!agg[key]) {
-          agg[key] = { name: tx.name, import: 0, export: 0 };
-        }
+        if (!agg[key]) agg[key] = { name: tx.name, import: 0, export: 0 };
         if (tx.isImport()) agg[key].import += tx.quantity;
         if (tx.isExport()) agg[key].export += Math.abs(tx.quantity);
       });
@@ -167,12 +146,8 @@ window.onload = async () => {
       });
       renderBar(barData);
 
-      // Running-out card
-      const stacks = (rawRunout || []).map(d => new ItemStack(d));
-      const runningOutList = stacks.filter(item => item.quantity <= RUNOUT_THRESHOLD);
-      renderCard('card-running', runningOutList);
-
-      // Thêm sự kiện click cho card Running out
+      const runningOut = await fetchRunOut();
+      renderCard('card-running', runningOut);
       document.getElementById('card-running').addEventListener('click', () => navigateTo('running-out'));
       // Xử lý logout modal
       document.getElementById('confirm-yes').onclick = () => {

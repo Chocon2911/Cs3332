@@ -1,10 +1,8 @@
 from flask import Blueprint, jsonify, request, make_response
 import requests
-from app.controllers.DailyChecks_controller import DailyChecksController
 
 daily_checks_bp = Blueprint('daily_checks', __name__)
-controller = DailyChecksController()
-BACKEND_URL = "https://localhost:8080"
+BACKEND_URL = "http://localhost:8080"
 
 def forward_response(r):
     response = make_response(r.content, r.status_code)
@@ -16,8 +14,7 @@ def forward_response(r):
 def get_checks_result():
     token = request.headers.get('Authorization')
     headers = {
-        'Authorization': token,
         'Content-Type': 'application/json'
     }
-    resp = requests.get(f"{BACKEND_URL}/item_list", headers=headers, params=request.args)
+    resp = requests.get(f"{BACKEND_URL}/item_list", headers=headers)
     return forward_response(resp)
