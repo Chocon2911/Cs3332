@@ -71,9 +71,7 @@
     <div class="order-body" id="orderItems">
       <p class="empty-order">You have not ordered yet!</p>
       <!-- Các sản phẩm trong đơn hàng sẽ được thêm vào đây -->
-    </div>
-    <div class="order-footer">
-      <button class="clear-orders-btn">Clear Orders</button>
+      <div id="listOrdered"></div>
     </div>
   </aside>
   
@@ -94,64 +92,20 @@
    
     <!-- Sản phẩm -->
     <section class="products">
-      <h2>Shop best-sellers</h2>
-      <div class="grid">
-        <!-- Sản phẩm 1 -->
-        <div class="product-card">
-          <span class="icon">☕</span>
-          <h3>Phin Coffee</h3>
-          <div class="price">$5.00</div>
-          <div class="qty-control">
-            <button class="dec">−</button>
-            <span class="qty">1</span>
-            <button class="inc">+</button>
-          </div>
-          <button class="add-cart-btn">Add to cart</button>
-        </div>
-        
-        <!-- Sản phẩm 2 -->
-        <div class="product-card">
-          <span class="icon">🥤</span>
-          <h3>Iced Latte</h3>
-          <div class="price">$4.50</div>
-          <div class="qty-control">
-            <button class="dec">−</button>
-            <span class="qty">1</span>
-            <button class="inc">+</button>
-          </div>
-          <button class="add-cart-btn">Add to cart</button>
-        </div>
-        
-        <!-- Sản phẩm 3 -->
-        <div class="product-card">
-          <span class="icon">🍵</span>
-          <h3>Green Tea</h3>
-          <div class="price">$3.50</div>
-          <div class="qty-control">
-            <button class="dec">−</button>
-            <span class="qty">1</span>
-            <button class="inc">+</button>
-          </div>
-          <button class="add-cart-btn">Add to cart</button>
-        </div>
-        
-        <!-- Sản phẩm 4 -->
-        <div class="product-card">
-          <span class="icon">🧋</span>
-          <h3>Bubble Tea</h3>
-          <div class="price">$6.00</div>
-          <div class="qty-control">
-            <button class="dec">−</button>
-            <span class="qty">1</span>
-            <button class="inc">+</button>
-          </div>
-          <button class="add-cart-btn">Add to cart</button>
-        </div>
+      <!-- <h2>Shop best-sellers</h2>
+      <div id="productList" class="grid"></div> -->
+
+      <div class="products-scroll-wrapper">
+        <div id="productList" class="grid"></div>
       </div>
     </section>
+
+<!-- 
+<div id="errorMessage" style="color:red; display: none;"></div> -->
+
   </main>
   
   <!-- Link tới JS -->
-  <script defer src="{{ url_for('static', filename='Customer/js/script.js') }}"></script>
+  <script src="{{ url_for('static', filename='Customer/js/script.js') }}"></script>
 </body>
 </html>
