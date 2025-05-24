@@ -93,121 +93,213 @@
     background-color: #eee;
     border-radius: 6px;
   }
-  
-/* =============== Cart Sidebar =============== */
-.cart-sidebar {
+
+  .cart-sidebar {
     position: fixed;
     top: 60px;
-    right: -280px;
-    width: 280px;
+    right: -350px;
+    width: 350px;
     height: calc(100% - 60px);
-    background: white;
-    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-    transition: right 0.3s ease;
+    background-color: #fff;
+    box-shadow: -2px 0 12px rgba(0, 0, 0, 0.15);
+    border-radius: 0 0 0 12px; /* 👈 bo tròn góc dưới trái */
     display: flex;
     flex-direction: column;
+    transition: right 0.3s ease;
     z-index: 1002;
-    border-radius: 8px 0 0 8px;
+    overflow: hidden;
   }
-  
+
   .cart-sidebar.active {
     right: 0;
   }
-  
+
   .cart-header {
-    background: #0d2644;
+    background-color: #0d2644;
     color: white;
     padding: 1rem;
     text-align: center;
+    font-weight: bold;
     font-style: italic;
-    border-radius: 8px 0 0 0;
+    font-size: 1.1rem;
+    border-radius: 0 0 0 0;
   }
-  
+
   .cart-body {
     flex: 1;
     overflow-y: auto;
-    padding: 1rem;
+    padding: 0.75rem 1rem;
   }
-  
+
+  /* ================== ITEM ================== */
+  .cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+  }
+
+  .cart-item .item-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+  }
+
+  .cart-item .item-icon {
+    font-size: 1.2rem;
+  }
+
+  .cart-item .item-name {
+    font-weight: bold;
+    font-size: 0.95rem;
+    color: #333;
+  }
+
+  .cart-item .item-qty-price {
+    font-size: 0.9rem;
+    color: #666;
+  }
+
+  .cart-item .remove-btn {
+    background-color: #ffebeb;
+    border: 1px solid #f44336;
+    color: #f44336;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .cart-item .remove-btn:hover {
+    background-color: #f44336;
+    color: white;
+  }
+
   .cart-footer {
     border-top: 1px solid #eee;
     padding: 1rem;
     text-align: right;
+    background-color: #f6f6f6;
   }
-  
+
   .send-cart-btn {
-    background: #8fb3f4;
+    background: #0087FF;
+    color: white;
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 6px;
     cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+
+  .send-cart-btn:hover {
+    background: #006fd6;
   }
 
   .clear-cart-btn {
-    background: #f44336;
-    color: white;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-bottom: 0.5rem;
-  }
-  
-  /* =============== Order Sidebar =============== */
-  .order-sidebar {
-    position: fixed;
-    top: 60px;
-    right: -280px;
-    width: 280px;
-    height: calc(100% - 60px);
     background: white;
-    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-    transition: right 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    z-index: 1002;
-    border-radius: 8px 0 0 8px;
-  }
-  
-  .order-sidebar.active {
-    right: 0;
-  }
-  
-  .order-header {
-    background: #0d2644;
-    color: white;
-    padding: 1rem;
-    text-align: center;
-    font-style: italic;
-    border-radius: 8px 0 0 0;
-  }
-  
-  .order-body {
-    flex: 1;
-    overflow-y: auto;
-    padding: 1rem;
-  }
-  
-  .order-footer {
-    border-top: 1px solid #eee;
-    padding: 1rem;
-    text-align: center;
-  }
-  
-  .empty-order {
-    text-align: center;
-    color: #555;
-  }
-  
-  .clear-orders-btn {
-    background: #f44336;
-    color: white;
+    color: #f44336;
+    border: 1px solid #f44336;
     padding: 0.5rem 1rem;
     border-radius: 6px;
     cursor: pointer;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
   }
-  
-  
+
+  .clear-cart-btn:hover {
+    background: #f44336;
+    color: white;
+  } 
+
+  /* =============== Order Sidebar =============== */
+.order-sidebar {
+  position: fixed;
+  top: 60px;
+  right: -350px;
+  width: 350px;
+  height: calc(100% - 60px);
+  background: #ffffff;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  transition: right 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  z-index: 1002;
+  border-radius: 8px 0 0 8px;
+  overflow: hidden;
+}
+
+.order-sidebar.active {
+  right: 0;
+}
+
+/* PHẦN HEADER */
+.order-header {
+  background: #0d2644;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  font-style: italic;
+  border-radius: 8px 0 0 0;
+  flex-shrink: 0;
+}
+
+/* PHẦN BODY DANH SÁCH */
+.order-body {
+  background: #f5f5f5;
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+/* EMPTY TEXT */
+.empty-order {
+  text-align: center;
+  color: #555;
+}
+
+/* MỖI ĐƠN HÀNG */
+.order-block {
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
+  font-size: 14px;
+  color: #000;
+  border: 1px solid #ddd;
+}
+
+/* Header thời gian */
+.order-header-time {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #000;
+  text-align: left;
+}
+
+/* Mỗi item */
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.3rem;
+  padding-left: 10px;
+  color: #000;
+}
+
+/* Tổng */
+.order-total {
+  margin-top: 0.5rem;
+  text-align: right;
+  font-weight: bold;
+  color: #000;
+}
+
   /* =============== Main content =============== */
   .main {
     padding-top: 60px;  /* tránh che header */
@@ -226,12 +318,13 @@
     flex: 1; display: flex; justify-content: flex-end;
   }
   .coffee-image {
-    max-width: 300px;
+    max-width: 45%;
     width: 100%;
     height: auto;
+    padding: 50px 0 0 50px;
   }
   .intro {
-    font-size: 1.5rem;
+    font-size: 2rem;
     line-height: 1.6;
     font-style: italic;
   }
@@ -239,52 +332,96 @@
     font-weight: bold;
   }
   
-  /* =============== Products Grid =============== */
-  .products {
-    padding: 0 2rem 2rem;
+  .products-scroll-wrapper {
+    max-height: 70vh; /* Chiều cao tối đa của vùng sản phẩm */
+    overflow-y: auto;
+    padding-right: 10px; /* chừa không gian cho thanh cuộn */
   }
-  .products h2 {
-    margin-bottom: 1rem;
-    font-style: italic;
-  }
+
+  /* Grid chuẩn chia nhiều cột, responsive tự co */
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill,minmax(180px,1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem;
   }
+
+  /* Hiệu chỉnh thẻ sản phẩm cho đẹp và tách biệt */
   .product-card {
+    flex: 0 0 calc(25% - 20px);
+    box-sizing: border-box;
     background: white;
     border-radius: 8px;
-    padding: 1rem;
-    box-shadow: 0 0 8px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    padding: 15px;
     text-align: center;
-    display: flex; flex-direction: column;
-    gap: 0.5rem;
-    font-style: italic;
+    font-family: Arial, sans-serif;
+    min-width: 200px;
+    max-width: 250px;
+    margin-bottom: 20px; /* 💡 cách các hàng ra */
+    transition: transform 0.2s ease;
   }
-  .product-card .icon {
-    font-style: normal;
-    font-size: 2rem;
+
+  .product-card:hover {
+    transform: translateY(-5px); /* ✨ Hover nhẹ */
   }
-  .price { font-weight: bold; }
-  .qty-control {
-    display: flex; justify-content: center; align-items: center; gap: 0.5rem;
+
+  /* Ảnh sản phẩm */
+  .product-card img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border-radius: 8px;
   }
-  .qty-control button {
-    border: 1px solid #ccc;
-    background: none;
-    width: 24px; height: 24px;
-    cursor: pointer;
-    font-size: 1rem;
+
+  /* Thông tin sản phẩm */
+  .product-card h3 {
+    font-size: 18px;
+    margin: 10px 0 5px;
   }
-  .add-cart-btn {
-    margin-top: auto;
-    background: #4caf50;
-    color: white;
+
+  .product-card .price {
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  /* Nút và số lượng */
+  .quantity-control {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 10px;
+  }
+
+  .quantity-control button {
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+    background: #eee;
     border: none;
-    padding: 0.5rem;
+    cursor: pointer;
+  }
+
+  .quantity-control span {
+    font-weight: bold;
+  }
+
+  /* Nút thêm vào giỏ */
+  .add-to-cart {
+    background-color: #28a745;
+    color: white;
+    padding: 8px;
+    width: 100%;
+    border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-weight: bold;
+  }
+
+  .add-to-cart:hover {
+    background-color: #218838;
   }
   
   /* =============== Responsive =============== */
@@ -392,3 +529,76 @@
 }
   
   /* Thêm vào cuối file CSS */
+.product-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center; /* Căn giữa hàng ngang */
+  padding: 20px;
+  max-width: 1200px; /* Giới hạn chiều ngang để wrap */
+  margin: 0 auto;
+}
+
+.product-card {
+  flex: 0 0 calc(25% - 20px); /* Mỗi dòng 4 card, trừ gap */
+  box-sizing: border-box;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  padding: 15px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  min-width: 200px;
+  max-width: 250px;
+}
+
+.product-card img {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 10px;
+}
+
+.product-card h3 {
+  font-size: 18px;
+  margin: 10px 0 5px;
+}
+
+.product-card .price {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.quantity-control {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.quantity-control button {
+  width: 30px;
+  height: 30px;
+  font-size: 18px;
+  background: #eee;
+  border: none;
+  cursor: pointer;
+}
+
+.quantity-control span {
+  margin: 0 10px;
+  font-weight: bold;
+}
+
+.add-to-cart {
+  background-color: #28a745;
+  color: white;
+  padding: 8px;
+  width: 100%;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-to-cart:hover {
+  background-color: #218838;
+}

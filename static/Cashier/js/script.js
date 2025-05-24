@@ -1,9 +1,23 @@
-const prices = {
-    "Phin Coffee": 5.00,
-    "Iced Latte": 4.50,
-    "Green Tea": 3.50,
-    "Bubble Tea": 6.00
-};
+//===========================================Cookie===========================================
+function setCookie(name, value) 
+{
+    document.cookie = name + "=" + value + ";path=/";
+}
+
+function getCookie(name) 
+{
+    const cookieArr = document.cookie.split(";");
+
+    for (let i = 0; i < cookieArr.length; i++) 
+        {
+        const cookiePair = cookieArr[i].split("=");
+        if (name == cookiePair[0].trim()) 
+            {
+            return cookiePair[1];
+        }
+    }
+    return null;
+}
 
 let areas = {};
 let currentArea = "Inside";
@@ -25,10 +39,6 @@ if (Object.keys(areas).length === 0) {
 
 function saveAreasToLocalStorage() {
     localStorage.setItem('areas', JSON.stringify(areas));
-}
-
-function saveHistoryBillsToLocalStorage(historyBills) {
-    localStorage.setItem('historyBills', JSON.stringify(historyBills));
 }
 
 function loadAreasFromLocalStorage() {
@@ -110,7 +120,7 @@ function renderAreas() {
         areaList.appendChild(div);
     });
 
-    document.querySelectorAll(".area-btn").forEach(btn => {
+    document.querySelectorAll('.area-btn').forEach(btn => {
         if (btn.getAttribute("data-area") === currentArea) {
             btn.classList.add("active");
         }
@@ -169,6 +179,15 @@ function addTable() {
     }
 }
 
+function generateUUID() {
+    // Fallback UUID generator (RFC4122 version 4 compliant)
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
+
 function createTable(shape) {
     const tableArea = document.getElementById("tables");
     if (!areas[currentArea]) areas[currentArea] = [];
@@ -178,13 +197,16 @@ function createTable(shape) {
     const left = tableArea.offsetWidth / 2 - 75;
     const top = tableArea.offsetHeight / 2 - 50;
 
+    const tableID = generateUUID();
+
     areas[currentArea].push({
         status: 0, // 0 = empty
         left,
         top,
         shape,
         name: `Table ${newTableIndex}`,
-        bill: []
+        bill: [],
+        tableID
     });
 
     renderTables();
@@ -239,6 +261,8 @@ function openPopup(id) {
     const popup = document.getElementById("tablePopup");
     const tableData = areas[currentArea][id];
 
+    const tableID = tableData["tableID"];
+    setCookie("TableID", tableID);
     document.getElementById("popupTitle").textContent = tableData.name || `Table ${id + 1}`;
 
     popup.style.display = "block";
@@ -246,6 +270,7 @@ function openPopup(id) {
 
     // 🔥 Cập nhật enable / disable nút
     updateButtonStates(tableData.status);
+    fetchOrders();
 }
 
 function updateButtonStates(status) {
@@ -253,23 +278,26 @@ function updateButtonStates(status) {
     const forceEmptyBtn = document.getElementById("forceEmptyBtn");
     const billBtn = document.getElementById("billBtn");
     const orderBtn = document.getElementById("orderBtn");
+    const cancelBtn = document.getElementById("cancelBtn");
 
-    if (!deleteBtn || !forceEmptyBtn || !billBtn || !orderBtn) return;
+    if (!deleteBtn || !forceEmptyBtn || !billBtn || !orderBtn || !cancelBtn) return;
 
     if (status === 0) { // empty
         deleteBtn.disabled = false;
         orderBtn.disabled = false;
-        billBtn.disabled = false;
+        billBtn.disabled = true;
         forceEmptyBtn.disabled = true;
+        cancelBtn.disabled = true;
     } else { // in_service
         deleteBtn.disabled = true;
         orderBtn.disabled = false;
         billBtn.disabled = false;
         forceEmptyBtn.disabled = false;
+        cancelBtn.disabled = false;
     }
 
     // 🛠 Thêm hoặc gỡ class mờ
-    [deleteBtn, forceEmptyBtn, billBtn, orderBtn].forEach(btn => {
+    [deleteBtn, forceEmptyBtn, billBtn, orderBtn, cancelBtn].forEach(btn => {
         if (btn.disabled) {
             btn.classList.add('disabled-button');
         } else {
@@ -278,102 +306,6 @@ function updateButtonStates(status) {
     });
 }
 
-function handleBill() {
-    const billData = areas[currentArea][currentTableId]?.bill || [];
-
-    if (billData.length === 0) {
-        showToast("No bill for this table!");
-        return;
-    }
-
-    const tablePopup = document.getElementById("tablePopup");
-    const overlay = document.getElementById("popupOverlay");
-    const billPopup = document.getElementById("billPopup");
-    const billContent = document.getElementById("billContent");
-    const billTotal = document.getElementById("billTotal");
-
-    if (tablePopup) tablePopup.style.display = "none";
-    if (overlay) overlay.style.display = "block";
-
-    // Xóa nội dung cũ
-    billContent.innerHTML = "";
-    billTotal.innerHTML = "";
-
-    // Tạo nội dung mới
-    let totalPrice = 0;
-    billData.forEach(item => {
-        const itemTotal = (prices[item.name] || 0) * item.quantity;
-        const itemDiv = document.createElement('div');
-        itemDiv.className = 'bill-item';
-        itemDiv.innerHTML = `
-            <span>${item.name} x${item.quantity}</span>
-            <span>$${itemTotal.toFixed(2)}</span>
-        `;
-        billContent.appendChild(itemDiv);
-        totalPrice += itemTotal;
-    });
-
-    billTotal.innerHTML = `<strong>Total:</strong> $${totalPrice.toFixed(2)}`;
-
-    // Lưu để print dùng lại
-    billPopup.dataset.total = totalPrice;
-    billPopup.style.display = "block";
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-    const backBtn = document.getElementById("backBtn");
-    if (backBtn) {
-        backBtn.addEventListener("click", function () {
-            document.getElementById("billPopup").style.display = "none";
-
-            const tablePopup = document.getElementById("tablePopup");
-            const overlay = document.getElementById("popupOverlay");
-
-            if (tablePopup) tablePopup.style.display = "block";
-            if (overlay) overlay.style.display = "block";
-        });
-    }
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-    const printBtn = document.getElementById("printBtn");
-    if (printBtn) {
-        printBtn.addEventListener("click", function () {
-            const billPopup = document.getElementById("billPopup");
-            const billData = areas[currentArea][currentTableId]?.bill || [];
-            const totalPrice = parseFloat(billPopup.dataset.total || "0");
-
-            let historyBills = JSON.parse(localStorage.getItem('historyBills')) || [];
-            if (!Array.isArray(historyBills)) {
-                historyBills = [];
-            }
-
-            const newBill = {
-                tableName: areas[currentArea][currentTableId]?.name || `Table ${currentTableId + 1}`,
-                items: Array.isArray(billData) ? billData.map(item => ({
-                    name: item.name,
-                    quantity: item.quantity
-                })) : [],
-                total: totalPrice,
-                timestamp: new Date().toISOString()
-            };
-
-            historyBills.push(newBill);
-            saveHistoryBillsToLocalStorage(historyBills);
-
-            areas[currentArea][currentTableId].bill = [];
-            areas[currentArea][currentTableId].status = "empty";
-            saveAreasToLocalStorage();
-
-            showToast('Done!!! ✅');
-
-            setTimeout(() => {
-                postRedirect("/cashier/goto_history");
-            }, 1500);
-        });
-    }
-});
-
 function handleOrder() {
     if (areas[currentArea] && areas[currentArea][currentTableId]) {
         areas[currentArea][currentTableId].status = 1; // Đổi trạng thái bàn sang in_service
@@ -381,15 +313,50 @@ function handleOrder() {
         renderTables(); // Cập nhật lại màu bàn
     }
     postRedirect("/customer/goto_coffee");
+    localStorage.removeItem("cart");
 }
 
-function handleForceEmpty() {
+async function handleComplete() {
+    const orders = await fetchOrders();
+
+    if (orders.length > 0) {
+        for (const order of orders) {
+            await completedOrder(order.orderID, true); // Hoàn tất từng đơn hàng
+        }
+        alert("✔️ Order Completed Successfully!");
+        window.location.reload();
+    }
+
     if (areas[currentArea] && areas[currentArea][currentTableId]) {
         areas[currentArea][currentTableId].status = 0; // Đổi trạng thái bàn về empty
         areas[currentArea][currentTableId].bill = [];
         saveAreasToLocalStorage();
         renderTables();
     }
+    const overlay = document.getElementById("popupOverlay");
+    const popup = document.getElementById("tablePopup");
+    if (overlay) overlay.style.display = "none";
+    if (popup) popup.style.display = "none";
+}
+
+async function handleCancel() {
+    const orders = await fetchOrders();
+
+    if (orders.length > 0) {
+        for (const order of orders) {
+            await cancelOrder(order.orderID, true); // Hoàn tất từng đơn hàng
+        }
+        alert("✔️ Order Cancelled!");
+        window.location.reload();
+    }
+
+    if (areas[currentArea] && areas[currentArea][currentTableId]) {
+        areas[currentArea][currentTableId].status = 0; // Đổi trạng thái bàn về empty
+        areas[currentArea][currentTableId].bill = [];
+        saveAreasToLocalStorage();
+        renderTables();
+    }
+
     const overlay = document.getElementById("popupOverlay");
     const popup = document.getElementById("tablePopup");
     if (overlay) overlay.style.display = "none";
@@ -440,4 +407,279 @@ if (popupOverlay) {
         const tablePopup = document.getElementById("tablePopup");
         if (tablePopup) tablePopup.style.display = "none";
     });
+}
+
+///////////////////////////////////////Gọi để hiển thị Order/Bill/////////////////////////////////////
+//===========================================Class============================================
+class UserInfo_Request {
+    constructor(username) {
+        this.username = username;
+    }
+    toJson() {
+        return {
+            username: this.username
+        };
+    }
+}
+
+class ListOrders_Request {
+    constructor(orderstatus, tableID) {
+        this.orderstatus = orderstatus;
+        this.tableID = tableID;
+    }
+    toJson() {
+        return {
+            orderStatus: this.orderstatus,
+            tableID: this.tableID
+        };
+    }
+}
+
+class UserInfo_Response {
+    constructor(data) {
+        this.username = data['username'];
+        this.name = data['name'];
+        this.email = data['email'];
+        this.phone = data['phone'];
+        this.dateOfBirth = data['dateOfBirth'];
+        this.gender = data['gender'];
+        this.roles = data['roles'];
+    }
+}
+
+////////////////////////////////////////////Lấy thông tin bill theo bàn////////////////////////////////////////////////
+let lastOrderBillData = "";
+
+document.getElementById('billBtn').addEventListener("click", async function () {
+    const orderList = document.getElementById("listOrderBills");
+    if (!orderList) {
+        console.error("listOrderBills not found in DOM!");
+        return;
+    }
+
+    const request1 = new ListOrders_Request("PENDING_PAYMENT", areas[currentArea][currentTableId].tableID);
+    const res1 = await fetch("/order_list", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(request1.toJson())
+    });
+
+    const result = await res1.json();
+
+    if (res1.status === 302) {
+        if (!result.orders || result.orders.length === 0) {
+            showToast("No bill for this table!");
+            return;
+        }
+
+        const ordersString = JSON.stringify(result.orders);
+        if (ordersString === lastOrderBillData) return;
+        lastOrderBillData = ordersString;
+
+        // Xóa nội dung cũ
+        orderList.innerHTML = "";
+
+        // Render từng đơn hàng
+        result.orders.forEach(ord => {
+            const orderContainer = document.createElement("div");
+            orderContainer.classList.add("orderbill-container");
+
+            ord.items.forEach(item => {
+                const itemDiv = document.createElement("div");
+                itemDiv.classList.add("orderbill-item-flex");
+                itemDiv.innerHTML = `
+                    <span class="item-name">${item.productName}</span>
+                    <span class="item-qty">x${item.quantity}</span>
+                `;
+                orderContainer.appendChild(itemDiv);
+            });
+
+            const totalDiv = document.createElement("div");
+            totalDiv.classList.add("order-total");
+            totalDiv.textContent = `Total: $${ord.total}`;
+            orderContainer.appendChild(totalDiv);
+
+            orderList.appendChild(orderContainer);
+        });
+
+        // Thêm nút điều khiển: Back và Pay
+        const buttonContainer = document.createElement("div");
+        buttonContainer.classList.add("orderbill-button-group");
+
+        buttonContainer.innerHTML = `
+            <button id="backBtn" class="btn-red">Back</button>
+            <button id="payBtn" class="btn-green">Pay</button>
+        `;
+
+        orderList.appendChild(buttonContainer);
+
+        // Sự kiện nút Back
+        document.getElementById("backBtn").addEventListener("click", function () {
+            document.getElementById("billPopup").style.display = "none";
+            document.getElementById("tablePopup").style.display = "block";
+            document.getElementById("popupOverlay").style.display = "block";
+        });
+
+        // Sự kiện nút Pay (bạn có thể thay đổi để gọi API thật)
+        document.getElementById("payBtn").addEventListener("click",async function () {
+        for (const ord of result.orders) {
+            await payOrder(ord.orderID, true);
+        }
+            alert("✔️ Order Paid!");
+            window.location.reload();
+        });
+
+        // Hiển thị popup
+        document.getElementById("tablePopup").style.display = "none";
+        document.getElementById("billPopup").style.display = "block";
+        document.getElementById("popupOverlay").style.display = "block";
+
+        lastOrderBillData = "";
+    } else {
+        showToast(result.error || "Unable to fetch bill!");
+    }
+});
+
+////////////////////////////////////////////Fetch orderlist////////////////////////////////////////////////
+async function fetchOrders() {
+    const request = new ListOrders_Request("PENDING_PAYMENT", areas[currentArea][currentTableId].tableID);
+
+    try {
+        const res = await fetch("/order_list", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(request.toJson())
+        });
+
+        const result = await res.json();
+
+        if (res.status === 302) {
+            return result.orders;  // Trả về danh sách đơn hàng
+        } else {
+            // Nếu có lỗi thì ném ra exception để xử lý bên ngoài
+            throw new Error(result.error || `Request failed with status ${res.status}`);
+        }
+    } catch (err) {
+        console.error("Fetch orders failed:", err);
+        throw err;
+    }
+}
+
+////////////////////////////////////////////Pay Order////////////////////////////////////////////////
+class OrderUpdateStatus_Request
+{
+    constructor(orderId, newStatus)
+    {
+        this.orderId = orderId;
+        this.newStatus = newStatus;
+    }
+
+    toJson()
+    {
+        return {
+            orderID: this.orderId,
+            newStatus: this.newStatus
+        }
+    }
+}
+
+async function payOrder(id, skipReload = false) {
+    const token = getCookie("token");
+    const req = new OrderUpdateStatus_Request(id, "PAID");
+    const res = await fetch("/update_order_status", {
+        method: "POST",
+        headers: {
+            "Authorization": token,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(req.toJson())
+    });
+
+    if (res.status == 200)
+    {
+        if (!skipReload) {
+            window.location.reload();
+        }
+    }
+    else if (res.status >= 400 && res.status <= 600) {
+        if (res.status === 401) {
+            window.location.href = '/manager/login';
+            throw new Error('Unauthorized');
+        }
+        const err = await res.json();
+        console.error("Server error: " + err['error']);
+    }
+    else 
+    {
+        const data = await res.json();
+        console.error("Unexpected error: " + data['error']);
+    }
+}
+
+////////////////////////////////////////////Order Complete//////////////////////////////////////////////////
+async function completedOrder(id, skipReload = false) {
+    const token = getCookie("token");
+    const req = new OrderUpdateStatus_Request(id, "COMPLETED");
+    const res = await fetch("/update_order_status", {
+        method: "POST",
+        headers: {
+            "Authorization": token,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(req.toJson())
+    });
+
+    if (res.status == 200)
+    {
+        if (!skipReload) {
+            window.location.reload();
+        }
+    }
+    else if (res.status >= 400 && res.status <= 600) {
+        if (res.status === 401) {
+            window.location.href = '/manager/login';
+            throw new Error('Unauthorized');
+        }
+        const err = await res.json();
+        console.error("Server error: " + err['error']);
+    }
+    else 
+    {
+        const data = await res.json();
+        console.error("Unexpected error: " + data['error']);
+    }
+}
+
+////////////////////////////////////////////Order Cancel////////////////////////////////////////////////
+async function cancelOrder(id, skipReload = false) {
+    const token = getCookie("token");
+    const req = new OrderUpdateStatus_Request(id, "CANCELLED");
+    const res = await fetch("/update_order_status", {
+        method: "POST",
+        headers: {
+            "Authorization": token,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(req.toJson())
+    });
+
+    if (res.status == 200)
+    {
+        if (!skipReload) {
+            window.location.reload();
+        }
+    }
+    else if (res.status >= 400 && res.status <= 600) {
+        if (res.status === 401) {
+            window.location.href = '/manager/login';
+            throw new Error('Unauthorized');
+        }
+        const err = await res.json();
+        console.error("Server error: " + err['error']);
+    }
+    else 
+    {
+        const data = await res.json();
+        console.error("Unexpected error: " + data['error']);
+    }
 }

@@ -13,6 +13,7 @@ html, body {
     background-color: #e4eff5; /* giữ màu nền */
 }
 
+/* ------------------------------------Nền-------------------------------- */
 body {
     margin: 0;
     padding: 0;
@@ -27,6 +28,7 @@ body {
     background-color: var(--backgroundcolor);
     width: 100%;
     height: 100%;
+    z-index: -1;
 }
 
 #white_bar {
@@ -42,6 +44,7 @@ body {
     font-size: 2.5rem;
     font-weight: bold;
     font-family: "Caveat", cursive;
+    z-index: 1;
 }
 
 #menuBtn {
@@ -49,9 +52,30 @@ body {
     left: 2%; top: 25%;
     font-size: 24px;
     cursor: pointer;
-  }
+}
 
-/* Phần chứa khu vực */
+#logoutBtn {
+    position: absolute;
+    right: 2%;
+    top: 25%;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 10px 18px; 
+    background-color: #f44336;
+    color: white;
+    border-radius: 8px;
+    border-width: 0;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    height: 40px;              /* 👈 Cố định chiều cao nếu cần */
+    box-sizing: border-box;
+}
+
+#logoutBtn:hover {
+    background-color: #d32f2f;
+}
+
+/* ------------------------------------Area-------------------------------- */
 #Area {
     position: fixed;
     top: 12%;
@@ -128,14 +152,6 @@ body {
     color: red;
 }
 
-/* .area-btn.active + .delete-area {
-    color: white;
-} */
-
-/* .area-item:hover {
-    background-color: #f0f0f0;
-} */
-
 /* ✅ Nút thêm khu vực có chiều ngang bằng các khu vực */
 #Add_area {
     position: fixed;
@@ -165,8 +181,15 @@ body {
     cursor: pointer;
     border-radius: 5px;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease;
 }
 
+.add-table-btn:hover {
+    background-color: #218838; /* Màu đậm hơn của #28a745 */
+    color: white;
+}
+
+/* ------------------------------------Table-------------------------------- */
 #table-container {
     position: fixed;
     top: 12%;
@@ -199,12 +222,14 @@ body {
 }
 
 .table:hover {
-    background-color: rgba(49, 111, 206, 0.1) !important; /* Hover bình thường */
+    background-color: #a9a9a9 !important; /* Màu xám đậm hơn */
+    color: white;
 }
 
 /* Hover riêng cho bàn đang phục vụ */
 .table.in-service:hover {
-    background-color: rgba(0, 123, 255, 0.8) !important;
+    background-color: #0056b3 !important; /* đậm hơn */
+    color: white;
 }
 
 .disabled-button {
@@ -267,9 +292,9 @@ body {
 .square { width: 100px; height: 100px; }
 .rectangle { width: 150px; height: 80px; }
 
-/* Side bar chuyển trang */
+/* ------------------------------------Side bar-------------------------------- */
 #sidebar {
-  position: absolute;
+  position: fixed;
   left: -100%; 
   bottom: 0;
   height: 87.7%;
@@ -305,7 +330,7 @@ body {
 }
 
 .menu-button-group {
-    margin-top: 25%; /* Điều chỉnh số này theo ý bạn */
+    margin-top: 25%; 
 }
   
 /* Khi active */
@@ -319,6 +344,7 @@ body {
     background-color: #b1b4b8;
 }
 
+/* ------------------------------------Pop up gray-------------------------------- */
 #popupOverlay {
     position: fixed;
     top: 0;
@@ -327,9 +353,10 @@ body {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     display: none;
-    z-index: 998;
+    z-index: 2;
 }
 
+/* ------------------------------------Pop up table-------------------------------- */
 #tablePopup {
     width: 420px;
     height: auto;
@@ -342,7 +369,7 @@ body {
     border-radius: 20px;
     padding: 30px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    z-index: 999;
+    z-index: 3;
     font-family: 'Caveat', sans-serif;
     text-align: center;
 }
@@ -379,188 +406,113 @@ body {
     background-color: #c0c0c0;
 }
 
-#order-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 40px;
-    margin-top: -50px;
-    margin-left: -102px;
-    padding: 0 30px;
-}
-
-
-.order-card {
-    border: 2px solid #102341;
-    border-radius: 15px;
+/* ------------------------------------Pop up bill-------------------------------- */
+#billPopup {
+    width: 420px;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     background-color: white;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 180px;
-    width: 250px;
-    justify-content: space-between;
+    border: 2px solid black;
+    border-radius: 20px;
+    padding: 30px 30px 60px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    z-index: 4;
+    font-family: 'Caveat', sans-serif;
+    text-align: center;
+    display: none;
+    box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: #aaa transparent;
 }
 
-.order-table {
-    font-weight: bold;
-    font-size: 24px;
-    margin-bottom: 10px;
+#billPopup h3 
+{
+    margin: 0 0 20px 0; /* top 5px, bottom 10px */
+    font-size: 1.1rem;
     text-align: center;
 }
 
-.order-items {
-    width: 100%;
-    font-size: 18px;
-    padding: 0 10px;
-    flex-grow: 1; /* chiếm phần còn lại */
-    overflow-y: auto; /* scroll khi nhiều món */
-    margin: 10px 0; /* thêm khoảng cách */
-    max-height: 100px; /* cố định chiều cao */
+#billPopup::-webkit-scrollbar {
+    width: 8px;
 }
 
-.item-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+#billPopup::-webkit-scrollbar-thumb {
+    background-color: #aaa;
+    border-radius: 6px;
 }
-.item-name {
+
+.orderbill-container {
+    border: 2px solid #ccc;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
     text-align: left;
-}
-.item-quantity {
-    text-align: right;
-}
-
-.confirm-btn {
-    margin-top: auto;
-    margin-bottom: 10px;
-    padding: 6px 10px;
-    font-size: 14px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    align-self: center;
-    width: 70%; /* nhỏ hơn */
-    max-width: 120px; /* không dài quá */
-}
-
-.confirm-btn:hover {
-    background-color: #45a049;
-}
-
-#history-container {
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     position: relative;
-    margin-top: 120px;
-    padding: 20px;
-    min-height: calc(100vh - 120px); /* Chiều cao tự tính trừ khoảng header */
-    overflow-y: auto;
-    display: grid;
-    grid-template-columns: repeat(1, minmax(300px, 1fr));
-    gap: 20px;
 }
 
-.bill {
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    padding: 20px;
-    transition: 0.3s;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.bill:hover {
-    transform: scale(1.02);
-}
-
-.bill h2 {
-    margin-bottom: 10px;
-    color: #333;
-    font-size: 20px;
-}
-
-.bill-content {
-    margin: 20px 0;
-}
-
-.bill-item {
+.orderbill-item-flex {
     display: flex;
     justify-content: space-between;
     margin-bottom: 8px;
-    font-size: 16px;
 }
 
-.bill-total {
-    margin-top: 12px;
-    font-size: 18px;
+.order-total {
+    position: absolute;
+    bottom: 2px;
+    right: 15px;
     font-weight: bold;
-    text-align: right;
-}
-
-.price {
-    color: green;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-.bill-popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #fff;
-    border: 2px solid #ccc;
-    padding: 20px;
-    z-index: 1000;
-    width: 300px;
-    max-height: 90vh;
-    overflow-y: auto;
-    border-radius: 10px;
-}
-
-.back-btn, .print-btn {
-    margin: 10px 5px;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.back-btn {
-    background-color: #f44336;
-    color: white;
-    margin: 10px 5px;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
     font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
 }
 
-.back-btn:hover {
-    background-color: #d32f2f;
+.orderbill-button-group {
+    position: absolute;
+    bottom: 20px;
+    left: 30px;
+    right: 30px;
+    display: flex;
+    justify-content: space-between;
 }
 
-.print-btn {
-    background-color: #4CAF50;
+.btn-red {
+    background-color: #e74c3c;
     color: white;
-    margin: 10px 5px;
-    padding: 8px 12px;
     border: none;
-    border-radius: 5px;
-    font-size: 16px;
+    padding: 10px 18px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    font-family: inherit;
 }
 
-.print-btn:hover {
-    background-color: #45a049;
+.btn-red:hover {
+    background-color: #c0392b;
 }
 
+.btn-green {
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.btn-green:hover {
+    background-color: #27ae60;
+}
+
+
+
+
+
+
+/* ------------------------------------Toast-------------------------------- */
 #toast-container {
     position: fixed;
     bottom: 30px;
@@ -583,6 +535,161 @@ body {
     10% { opacity: 1; transform: translateX(0); }
     90% { opacity: 1; transform: translateX(0); }
     100% { opacity: 0; transform: translateX(100px); }
+}
+
+/* -------------------- Giao diện confirm đơn hàng ---------------------*/
+#listOrders {
+    display: grid;
+    display: flex;
+    padding: 200px 0px 90px 0px;
+    background-color: #e6f0f5;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 80px;
+}
+
+/* Khung của mỗi đơn hàng */
+.order-box {
+    width: 300px;
+    height: 200px;
+    background-color: white;
+    border: 2px solid #1a1a1a;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    font-family: "Caveat", cursive;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.order-box h3 {
+    margin: 5px 0 5px 0; /* top 5px, bottom 10px */
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+/* Danh sách item có thể scroll nếu quá dài */
+.order-items {
+    max-height: 200px;
+    overflow-y: auto;
+    width: 100%;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    padding: 0 10px;
+    flex-grow: 1; 
+}
+
+/* Dòng của mỗi sản phẩm */
+.order-grid {
+    font-size: 1.2rem;
+    display: grid;
+    grid-template-columns: 1fr auto; /* tên sản phẩm và số lượng */
+    gap: 5px 15px; /* dọc 8px, ngang 16px */
+    width: 100%;
+    padding: 1px 0 ;
+}
+/* Tên sản phẩm */
+.product-name {
+    text-align: left;
+    flex: 1;
+}
+
+/* Số lượng */
+.product-quantity {
+    text-align: right;
+    flex-shrink: 0;
+    margin-left: 10px;
+}
+
+/* Nút xác nhận */
+.confirm-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.confirm-btn:hover {
+    background-color: #218838;
+}
+
+/* -------------------- Giao diện bill history ---------------------*/
+#listBills {
+    display: grid;
+    display: flex;
+    padding: 180px 100px 90px 100px;
+    background-color: #e6f0f5;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 50px;
+}
+
+.bill-card {
+    background-color: white;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 250px;
+    height: 300px; /* 🔸 Cố định chiều cao */
+    font-family: 'Segoe UI', sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* 🔸 Đảm bảo phần trên cùng và dưới cùng cố định */
+    font-family: "Caveat", cursive;
+    position: relative;
+    overflow: hidden;
+}
+
+.bill-card h3 {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.bill-item {
+    margin: 6px 0;
+    font-size: 1.15rem;
+}
+
+.bill-total {
+    font-weight: bold;
+    margin-top: 5px;
+    font-size: 1.1rem;
+    color: black;
+    padding-bottom: 10px;
+}
+
+.bill-time {
+    font-style: italic;
+    font-size: 0.8rem;
+    color: gray;
+    padding-top: 10px;
+}
+
+.bill-header {
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 8px;
+    font-size: 18px;
+}
+
+.bill-body {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 4px; /* tránh che mất scrollbar */
+    margin-bottom: 8px;
+}
+
+.bill-footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: gray;
 }
 
 

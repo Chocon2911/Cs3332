@@ -1,0 +1,41 @@
+name: Run Cs3332 Python Backend with Ngrok
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-backend:
+    runs-on: self-hosted
+    timeout-minutes: 1440  # 24 giờ
+
+    env:
+      NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
+      NGROK_DOMAIN: ${{ secrets.NGROK_DOMAIN }}
+
+    steps:
+      - name: Remove old repo folder if exists and clone fresh
+        run: |
+          rm -rf app
+          mkdir -p app
+          git clone https://github.com/Chocon2911/Cs3332.git app
+
+      - name: Install Python dependencies
+        working-directory: ./app
+        run: |
+          if [ -f requirements.txt ]; then
+            python3 -m pip install --upgrade pip
+            python3 -m pip install -r requirements.txt
+          fi
+
+      - name: Start Python backend
+        working-directory: ./app
+        run: |
+          nohup python3 Main.py > backend.log 2>&1 &
+
+      - name: Wait for server to start
+        run: sleep 5
+
+      - name: Stream backend logs live for 24 hours (86400 seconds)
+        run: |
+          echo "Streaming backend logs for 24 hours. Press Ctrl+C to stop."
+          timeout 86400 tail -f app/backend.log || true

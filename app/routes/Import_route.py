@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request, current_app, Response, make_respo
 import requests
 
 import_bp = Blueprint('import', __name__)
-BACKEND_URL = 'http://localhost:8080'
+BACKEND_URL = 'natsu-dev.space:8080'
 
 def forward_response(r):
     response = make_response(r.content, r.status_code)

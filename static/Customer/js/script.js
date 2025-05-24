@@ -8,13 +8,31 @@ const orderSidebar = document.getElementById('orderSidebar');
 const overlay      = document.getElementById('overlay');
 const cartItems    = document.getElementById('cartItems');
 const cartTotal    = document.getElementById('cartTotal');
-const orderItems   = document.getElementById('orderItems');
 const sendCartBtn  = document.querySelector('.send-cart-btn');
-const clearOrdersBtn = document.querySelector('.clear-orders-btn');
 const clearCartBtn = document.querySelector('.clear-cart-btn');
 
-loadCartFromLocalStorage();
-loadOrdersFromLocalStorage();
+//===========================================Cookie===========================================
+function setCookie(name, value) 
+{
+    document.cookie = name + "=" + value + ";path=/";
+}
+
+function getCookie(name) 
+{
+    const cookieArr = document.cookie.split(";");
+
+    for (let i = 0; i < cookieArr.length; i++) 
+        {
+        const cookiePair = cookieArr[i].split("=");
+        if (name == cookiePair[0].trim()) 
+            {
+            return cookiePair[1];
+        }
+    }
+
+    return null;
+}
+//===========================================================================================
 
 // ----- Hàm bật/tắt sidebar trái ----- 
 menuBtn.addEventListener('click', () => {
@@ -49,83 +67,6 @@ overlay.addEventListener('click', () => {
   overlay.classList.remove('active');
 });
 
-// ----- Hàm thêm sản phẩm vào giỏ ----- 
-function addToCart(name, price, icon = '☕', quantity = 1) {
-  let item = cartItems.querySelector(`[data-name="${name}"]`);
-  if (item) {
-    const qtyEl = item.querySelector('.qty');
-    qtyEl.textContent = +qtyEl.textContent + quantity;
-  } else {
-    item = document.createElement('div');
-    item.className = 'item';
-    item.setAttribute('data-name', name);
-    item.innerHTML = `
-      <div><span class="icon">${icon}</span> ${name}</div>
-      <div>
-        <span class="qty">${quantity}</span> × $${price.toFixed(2)}
-        <button class="remove-item-btn" style="margin-left: 8px; background: #f44336; color: white; border: none; border-radius: 4px; padding: 2px 6px; cursor: pointer;">X</button>
-      </div>
-    `;
-    cartItems.appendChild(item);
-
-    // Gắn sự kiện cho nút "X" (xóa từng món)
-    item.querySelector('.remove-item-btn').addEventListener('click', () => {
-      item.remove();
-      updateTotal();
-      if (!cartItems.querySelector('.item')) {
-        const emptyCart = document.createElement('p');
-        emptyCart.className = 'empty';
-        emptyCart.textContent = 'Your cart is empty!';
-        cartItems.appendChild(emptyCart);
-      }
-      saveCartToLocalStorage();
-    });
-  }
-
-  const emptyP = cartItems.querySelector('.empty');
-  if (emptyP) emptyP.remove();
-
-  updateTotal();
-  showSuccessPopup();
-  saveCartToLocalStorage(); // 🔥 thêm dòng này trong hàm đúng!
-}
-
-// ----- Xóa toàn bộ giỏ hàng -----
-clearCartBtn.addEventListener('click', () => {
-  if (confirm('Are you sure you want to clear the cart?')) {
-    while (cartItems.firstChild) {
-      cartItems.removeChild(cartItems.firstChild);
-    }
-    const emptyCart = document.createElement('p');
-    emptyCart.className = 'empty';
-    emptyCart.textContent = 'Your cart is empty!';
-    cartItems.appendChild(emptyCart);
-
-    if (cartTotal) {
-      cartTotal.textContent = '0.00';
-    }
-    saveCartToLocalStorage();
-  }
-});
-
-// ----- Cập nhật tổng tiền ----- 
-function updateTotal() {
-  let total = 0;
-  cartItems.querySelectorAll('.item').forEach(item => {
-    const [qtyPart, pricePart] = item.querySelector('div:last-child').textContent.split('×');
-    const qty   = parseInt(qtyPart);
-    const price = parseFloat(pricePart.replace('$',''));
-    total += qty * price;
-  });
-  
-  // Kiểm tra xem cartTotal có tồn tại
-  if (cartTotal) {
-    cartTotal.textContent = total.toFixed(2);
-  } else {
-    console.log('Cart total element not found!');
-  }
-}
-
 // ----- Popup "Add successfully!" ----- 
 function showSuccessPopup() {
   const popup = document.createElement('div');
@@ -146,256 +87,6 @@ function showSuccessPopup() {
   `;
   document.body.appendChild(popup);
   setTimeout(() => popup.remove(), 1500);
-}
-
-// ----- Gắn sự kiện cho các nút "Add to cart" tự động (nếu có) ----- 
-document.querySelectorAll('.add-cart-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      // Tìm card cha để lấy tên + giá
-      const card = btn.closest('.product-card');
-      const name = card.querySelector('h3').textContent;
-      const price = parseFloat(card.querySelector('.price').textContent.replace('$',''));
-      const qty = parseInt(card.querySelector('.qty').textContent);  // Lấy số lượng từ input
-      
-      // Thêm vào giỏ với số lượng đã chọn
-      addToCart(name, price, card.querySelector('.icon').textContent, qty);
-
-      // Reset về 1 sau khi cho vào giỏ
-      card.querySelector('.qty').textContent = '1';
-    });
-  });
-
-// ----- Xử lý các nút tăng/giảm số lượng ----- 
-document.querySelectorAll('.product-card').forEach(card => {
-  const incBtn = card.querySelector('.inc');
-  const decBtn = card.querySelector('.dec');
-  const qtySpan = card.querySelector('.qty');
-  
-  incBtn.addEventListener('click', () => {
-    qtySpan.textContent = parseInt(qtySpan.textContent) + 1;
-  });
-  
-  decBtn.addEventListener('click', () => {
-    if (parseInt(qtySpan.textContent) > 1) {
-      qtySpan.textContent = parseInt(qtySpan.textContent) - 1;
-    }
-  });
-});
-
-// ----- Gửi giỏ hàng sang Orders ----- 
-sendCartBtn.addEventListener('click', () => {
-  // Kiểm tra xem giỏ hàng có trống không
-  if (!cartItems.querySelector('.item')) {
-    alert('Your cart is empty!');
-    return;
-  }
-  
-  // Tạo thẻ đơn hàng mới
-  const orderDiv = document.createElement('div');
-  orderDiv.className = 'order-group';
-  
-  // Tạo phần header đơn hàng với thời gian đặt hàng
-  const orderHeader = document.createElement('div');
-  orderHeader.className = 'order-header-item';
-  const now = new Date();
-  orderHeader.innerHTML = `
-    <div style="font-weight: bold; padding: 8px 0;">
-      Order at: ${now.toLocaleTimeString()} - ${now.toLocaleDateString()}
-    </div>
-  `;
-  orderDiv.appendChild(orderHeader);
-  
-  // Copy các sản phẩm từ giỏ hàng sang
-  cartItems.querySelectorAll('.item').forEach(item => {
-    const orderItem = item.cloneNode(true);
-    orderItem.className = 'order-item';
-    orderItem.style.padding = '5px 0';
-    orderItem.style.borderBottom = '1px solid #eee';
-
-    // Xóa nút X 
-    const removeBtn = orderItem.querySelector('.remove-item-btn');
-    if (removeBtn) removeBtn.remove();
-    
-    orderDiv.appendChild(orderItem);
-  });
-  
-  // Thêm tổng tiền
-  const total = document.createElement('div');
-  total.className = 'order-total';
-  total.style.textAlign = 'right';
-  total.style.fontWeight = 'bold';
-  total.style.marginTop = '8px';
-  total.textContent = `Total: $${cartTotal ? cartTotal.textContent : '0.00'}`;
-  orderDiv.appendChild(total);
-  
-  // Xóa thông báo empty nếu có
-  const emptyOrder = orderItems.querySelector('.empty-order');
-  if (emptyOrder) {
-    emptyOrder.remove();
-  }
-  
-  // Thêm đơn hàng vào danh sách đơn
-  orderItems.prepend(orderDiv);
-  
-  // Xóa sạch giỏ hàng
-  while (cartItems.firstChild) {
-    cartItems.removeChild(cartItems.firstChild);
-  }
-  
-  // Thêm lại thông báo giỏ trống
-  const emptyCart = document.createElement('p');
-  emptyCart.className = 'empty';
-  emptyCart.textContent = 'Your cart is empty!';
-  cartItems.appendChild(emptyCart);
-  
-  // Cập nhật tổng tiền về 0
-  if (cartTotal) {
-    cartTotal.textContent = '0.00';
-  }
-  
-  // Thông báo thành công
-  showOrderSuccessPopup();
-  
-  // Tự động chuyển sang trang Order
-  cartSidebar.classList.remove('active');
-  orderSidebar.classList.add('active');
-
-  saveOrdersToLocalStorage();
-});
-
-// ----- Xóa tất cả đơn hàng ----- 
-clearOrdersBtn.addEventListener('click', () => {
-  // Xác nhận trước khi xóa
-  if (confirm('Are you sure you want to clear all orders?')) {
-    // Xóa tất cả các đơn
-    while (orderItems.firstChild) {
-      orderItems.removeChild(orderItems.firstChild);
-    }
-    
-    // Thêm lại thông báo không có đơn
-    const emptyOrder = document.createElement('p');
-    emptyOrder.className = 'empty-order';
-    emptyOrder.textContent = 'You have not ordered yet!';
-    orderItems.appendChild(emptyOrder);
-
-    localStorage.removeItem('orders');
-  }
-});
-
-// Lưu cart vào LocalStorage để không mất khi chuyển hướng
-function saveCartToLocalStorage() {
-  const items = [];
-  cartItems.querySelectorAll('.item').forEach(item => {
-    items.push({
-      name: item.getAttribute('data-name'),
-      qty: parseInt(item.querySelector('.qty').textContent),
-      price: parseFloat(item.querySelector('div:last-child').textContent.split('×')[1].replace('$', '').trim()),
-      icon: item.querySelector('.icon').textContent
-    });
-  });
-  localStorage.setItem('cart', JSON.stringify(items));
-}
-
-function loadCartFromLocalStorage() {
-  const items = JSON.parse(localStorage.getItem('cart'));
-  if (items && items.length > 0) {
-    cartItems.innerHTML = ''; // clear trước
-    items.forEach(item => {
-      const div = document.createElement('div');
-      div.className = 'item';
-      div.setAttribute('data-name', item.name);
-      div.innerHTML = `
-        <div><span class="icon">${item.icon}</span> ${item.name}</div>
-        <div>
-          <span class="qty">${item.qty}</span> × $${item.price.toFixed(2)}
-          <button class="remove-item-btn" style="margin-left: 8px; background: #f44336; color: white; border: none; border-radius: 4px; padding: 2px 6px; cursor: pointer;">X</button>
-        </div>
-      `;
-      cartItems.appendChild(div);
-
-      // Gắn sự kiện xóa cho nút X
-      div.querySelector('.remove-item-btn').addEventListener('click', () => {
-        div.remove();
-        updateTotal();
-        if (!cartItems.querySelector('.item')) {
-          const emptyCart = document.createElement('p');
-          emptyCart.className = 'empty';
-          emptyCart.textContent = 'Your cart is empty!';
-          cartItems.appendChild(emptyCart);
-        }
-        saveCartToLocalStorage();
-      });
-    });
-    updateTotal();
-  }
-}
-
-
-// Lưu Order vào LocalStorage để không mất khi chuyển hướng
-function saveOrdersToLocalStorage() {
-  const orders = [];
-  orderItems.querySelectorAll('.order-group').forEach(group => {
-    const order = {
-      time: group.querySelector('.order-header-item div').textContent.replace('Order at: ', '').trim(),
-      items: []
-    };
-    group.querySelectorAll('.order-item').forEach(item => {
-      order.items.push({
-        name: item.getAttribute('data-name'),
-        qty: parseInt(item.querySelector('.qty').textContent),
-        price: parseFloat(item.querySelector('div:last-child').textContent.split('×')[1].replace('$', '').trim()),
-        icon: item.querySelector('.icon').textContent
-      });
-    });
-    order.total = group.querySelector('.order-total').textContent.replace('Total: $', '').trim();
-    orders.push(order);
-  });
-  localStorage.setItem('orders', JSON.stringify(orders));
-}
-
-function loadOrdersFromLocalStorage() {
-  const orders = JSON.parse(localStorage.getItem('orders'));
-  if (orders && orders.length > 0) {
-    orderItems.innerHTML = ''; // Xoá hết cũ
-    orders.forEach(order => {
-      const orderDiv = document.createElement('div');
-      orderDiv.className = 'order-group';
-
-      const orderHeader = document.createElement('div');
-      orderHeader.className = 'order-header-item';
-      orderHeader.innerHTML = `
-        <div style="font-weight: bold; padding: 8px 0;">
-          Order at: ${order.time}
-        </div>
-      `;
-      orderDiv.appendChild(orderHeader);
-
-      order.items.forEach(item => {
-        const orderItem = document.createElement('div');
-        orderItem.className = 'order-item';
-        orderItem.setAttribute('data-name', item.name);
-        orderItem.style.padding = '5px 0';
-        orderItem.style.borderBottom = '1px solid #eee';
-        orderItem.innerHTML = `
-          <div><span class="icon">${item.icon}</span> ${item.name}</div>
-          <div>
-            <span class="qty">${item.qty}</span> × $${item.price.toFixed(2)}
-          </div>
-        `;
-        orderDiv.appendChild(orderItem);
-      });
-
-      const total = document.createElement('div');
-      total.className = 'order-total';
-      total.style.textAlign = 'right';
-      total.style.fontWeight = 'bold';
-      total.style.marginTop = '8px';
-      total.textContent = `Total: $${order.total}`;
-      orderDiv.appendChild(total);
-
-      orderItems.appendChild(orderDiv);
-    });
-  }
 }
 
 // ----- Popup "Order successfully!" ----- 
@@ -433,9 +124,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// ----- Back về Map -----
-
-
 // ----- Highlight hiện tại trong sidebar khi dùng POST (form + button)
 document.addEventListener('DOMContentLoaded', () => {
   const pathParts = window.location.pathname.split('/');
@@ -450,3 +138,372 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+/////////////////////////////////////////////////// Hiển thị sản phẩm và xử lí giỏ hàng ////////////////////////////////////////////////
+  window.onload = async function () {
+  const productList = document.getElementById("productList");
+  const res = await fetch("/product_list", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  });
+
+  const result = await res.json();
+
+  if (res.status === 302) {
+    productList.innerHTML = "";
+
+    result.products.forEach(product => {
+      const item = document.createElement("div");
+      item.className = "product-card";
+      item.setAttribute("data-id", product.id);
+
+      item.innerHTML = `
+        <img src="https://static.vecteezy.com/system/resources/previews/010/856/650/non_2x/a-cup-of-coffee-with-coffee-beans-free-png.png" alt="${product.name}">
+        <h3>${product.name}</h3>
+        <div class="price">$${product.price}</div>
+        <div class="quantity-control">
+          <button onclick="decreaseQty(this)">−</button>
+          <span>0</span>
+          <button onclick="increaseQty(this)">+</button>
+        </div>
+        <button class="add-to-cart">Add to cart</button>
+      `;
+
+      // Gán sự kiện Add to cart
+      const addToCartBtn = item.querySelector(".add-to-cart");
+      addToCartBtn.addEventListener("click", () => {
+        const qtySpan = item.querySelector(".quantity-control span");
+        const quantity = parseInt(qtySpan.textContent);
+
+        if (quantity > 0) {
+          updateCart(product.id, quantity, product.name);
+
+          // Reset số lượng về 0 sau khi thêm vào giỏ
+          qtySpan.textContent = "0";
+        }
+      });
+
+      productList.appendChild(item);
+    });
+  } else if (res.status >= 400 && res.status <= 600) {
+    const errorMessage = document.getElementById("errorMessage");
+    if (errorMessage) {
+      errorMessage.classList.add("show");
+      errorMessage.textContent = result.error;
+    }
+  }
+};
+
+// Quantity functions
+function increaseQty(btn) {
+  const span = btn.previousElementSibling;
+  span.textContent = parseInt(span.textContent) + 1;
+}
+
+function decreaseQty(btn) {
+  const span = btn.nextElementSibling;
+  const current = parseInt(span.textContent);
+  if (current > 1) span.textContent = current - 1;
+}
+
+// ✅ Hàm updateCart lưu vào localStorage
+function updateCart(productId, quantity, productName) {
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  const existing = cart.find(item => item.id === productId);
+  if (existing) {
+    existing.quantity += quantity; // tăng số lượng nếu đã có
+  } else {
+    cart.push({ id: productId, name: productName, quantity });
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+  console.log("Cart updated:", cart);
+  showSuccessPopup("Add successfully!");
+}
+
+//Hiển thị cart
+cartBtn.addEventListener("click", () => {
+  showCartItems();  // thêm dòng này vào sự kiện mở cart
+});
+
+function showCartItems() {
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  cartItems.innerHTML = "";
+
+  if (cart.length === 0) {
+    cartItems.innerHTML = `<p class="empty">Your cart is empty!</p>`;
+    cartTotal.textContent = "0.00";
+    return;
+  }
+
+  let total = 0;
+
+  cart.forEach((item, index) => {
+    const itemEl = document.createElement("div");
+    itemEl.className = "cart-item";
+    itemEl.style.position = "relative";
+    itemEl.innerHTML = `
+      <span>${item.name}</span>
+      <span>x${item.quantity}</span>
+      <button class="remove-btn" onclick="removeCartItem(${index})">X</button>
+    `;
+    cartItems.appendChild(itemEl);
+    total += item.quantity * 5; // cần thay bằng giá thực tế nếu có
+  });
+
+  cartTotal.textContent = total.toFixed(2);
+}
+
+//Xóa từng item
+function removeCartItem(index) {
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  cart.splice(index, 1);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  showCartItems();
+}
+
+//xóa giỏ hàng
+clearCartBtn.addEventListener('click', () => {
+  localStorage.removeItem("cart");
+  showCartItems();
+});
+
+/////////////////////////////////////////////Tạo order//////////////////////////////////////////////////
+class OrderCreate_Request
+{
+    constructor(items, tableID, approved) 
+    {
+        this.items = items;
+        this.tableID = tableID;
+        this.approved = approved;
+    }
+
+    toJson()
+    {
+        let tempProducts = [];
+
+	for (let i = 0; i < this.items.length; i++) {
+   	 	tempProducts[i] = this.items[i].toJson();
+  	}
+        return {
+            items: tempProducts,
+            tableID: this.tableID,  
+            approved: this.approved,
+        };
+    }
+}
+
+class Product {
+    constructor(id, quantity) {
+        this.id = id;
+        this.quantity = quantity;
+    }
+
+    toJson() {
+        return {
+            productID: this.id,
+            quantity: this.quantity
+        };
+    }
+}
+
+function addProduct()
+{
+    const ingredientsContainer = document.getElementById("IngredientsContainer");
+    const div = document.createElement("div");
+    optionValues = getIngredientNames();
+    div.className = "Ingredient";
+    div.innerHTML = `
+        <select class="IngredientSelect" id="IngredientName${ingredientIndex}" placeholder="-- Select Ingredient --">
+            <option value="1">-- Select Ingredient --</option>
+            ${optionValues}
+        </select>
+        <input type="number" min="1" class="QuantityInput InputFocus" placeholder="Amount (e.g., 200 ml)" id="Quantity${ingredientIndex}">
+        <button class="RemoveButton" onclick="removeIngredient(this)">−</button>
+        `;
+    ingredientIndex++;
+    ingredientsContainer.appendChild(div);
+}
+
+document.querySelector('.send-cart-btn').addEventListener("click", async function ()
+{
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const productIndex = cart.length;
+    items = [];
+    for (i = 0; i < productIndex; i++)
+    {
+        const id = cart[i].id;
+        
+        if (id == null) continue;
+        const quantity = cart[i].quantity;
+        
+        if (!id || !quantity) continue
+        items.push(new Product(id, quantity));
+    }
+
+	  const tableID = encodeURIComponent(getCookie("TableID"));
+    console.log(tableID)
+    const request = new OrderCreate_Request(items, tableID, false);
+    
+    console.log(request.toJson());
+
+        const res = await fetch("/order_create", {
+            method: "POST",
+            headers: 
+            {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(request.toJson())
+        });
+
+        const result = await res.json();
+    	if (res.status == 201)
+    	{
+        	alert("Order Send !!!");
+          localStorage.removeItem("cart");
+          showCartItems();
+    	}
+    	else if (res.status >= 400 && res.status <= 600)
+    	{
+        	if (result["error"] == "Unauthorized")
+        	{
+          	 	window.location.href = "/manager/login";
+            		return;
+        	}
+        	console.log("Server Error: " + result["error"]);
+    	}
+    	else
+    	{
+       		console.log("Unexpected Error: " + result["error"]);
+    	}
+
+});
+
+///////////////////////////////////////Gọi để hiển thị List Order/////////////////////////////////////
+//===========================================Class============================================
+class UserInfo_Request {
+    constructor(username) {
+        this.username = username;
+    }
+    toJson() {
+        return {
+            username: this.username
+        };
+    }
+}
+
+class ListOrders_Request {
+    constructor(tableID) {
+        // this.orderstatus = orderstatus;
+        this.tableID = tableID;
+    }
+    toJson() {
+        return {
+            // orderStatus: this.orderstatus,
+            tableID: this.tableID
+        };
+    }
+}
+
+class UserInfo_Response {
+    constructor(data) {
+        this.username = data['username'];
+        this.name = data['name'];
+        this.email = data['email'];
+        this.phone = data['phone'];
+        this.dateOfBirth = data['dateOfBirth'];
+        this.gender = data['gender'];
+        this.roles = data['roles'];
+    }
+}
+
+////////////////////////////////////////////Lấy thông tin các order////////////////////////////////////////////////
+let lastOrderBillData = "";
+
+document.getElementById('orderBtn').addEventListener("click", async function () {
+    const orderList = document.getElementById("listOrdered");
+    const tableID = encodeURIComponent(getCookie("TableID"));
+    const request1 = new ListOrders_Request(tableID);
+
+    try {
+        const res1 = await fetch("/order_list", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(request1.toJson())
+        });
+
+        const result = await res1.json();
+
+        if (res1.status === 302) {
+            const ordersString = JSON.stringify(result.orders);
+            if (ordersString === lastOrderBillData) return;
+
+            lastOrderBillData = ordersString;
+            orderList.innerHTML = "";
+
+            result.orders.forEach(order => {
+                const orderDiv = document.createElement("div");
+                orderDiv.classList.add("order-block");
+
+                // ✅ Format thời gian từ timestamp dạng milliseconds
+                let orderTime = "Unknown time";
+                if (order.orderTimestamp) {
+                    const dateObj = new Date(order.orderTimestamp);
+                    const hours = String(dateObj.getHours()).padStart(2, '0');
+                    const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+                    const seconds = String(dateObj.getSeconds()).padStart(2, '0');
+                    const day = String(dateObj.getDate()).padStart(2, '0');
+                    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                    const year = dateObj.getFullYear();
+                    orderTime = `${hours}:${minutes}:${seconds} - ${day}/${month}/${year}`;
+                }
+
+                // Header thời gian
+                const header = document.createElement("div");
+                header.classList.add("order-header-time");
+                header.innerHTML = `<strong>Order at:</strong> ${orderTime}`;
+                orderDiv.appendChild(header);
+
+                // Sản phẩm trong đơn hàng
+                order.items.forEach(item => {
+                    const itemDiv = document.createElement("div");
+                    itemDiv.classList.add("order-item");
+
+                    const price = item.priceAtOrder !== undefined ? item.priceAtOrder : 0;
+
+                    itemDiv.innerHTML = `
+                        <span>${item.productName}</span>
+                        <span>${item.quantity} × $${price.toFixed(2)}</span>
+                    `;
+                    orderDiv.appendChild(itemDiv);
+                });
+
+                // Tổng tiền
+                const totalDiv = document.createElement("div");
+                totalDiv.classList.add("order-total");
+                const total = order.total !== undefined ? order.total : 0;
+                totalDiv.innerHTML = `<strong>Total:</strong> $${total.toFixed(2)}`;
+                orderDiv.appendChild(totalDiv);
+
+                // Append vào danh sách
+                orderList.appendChild(orderDiv);
+            });
+
+        } else if (res1.status >= 400 && res1.status <= 600) {
+            if (ErrorMessage) {
+                ErrorMessage.classList.add("show");
+                ErrorMessage.textContent = result.error;
+            }
+        }
+    } catch (err) {
+        console.error("Error fetching orders:", err);
+        if (ErrorMessage) {
+            ErrorMessage.classList.add("show");
+            ErrorMessage.textContent = "Something went wrong while loading orders.";
+        }
+    }
+});
+
