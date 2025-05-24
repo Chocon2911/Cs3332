@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bartender Order Manager</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+    }
+    header {
+      background-color: #343a40;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    main {
+      padding: 1rem;
+      max-width: 800px;
+      margin: auto;
+    }
+    .order {
+      background: white;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+    .order h3 {
+      margin: 0 0 0.5rem 0;
+    }
+    .order-buttons button {
+      margin-right: 0.5rem;
+    }
+    .order.completed {
+      border-color: #28a745;
+      background-color: #d4edda;
+    }
+    .order.cancelled {
+      border-color: #dc3545;
+      background-color: #f8d7da;
+    }
+    .order-details {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease, padding-top 0.5s ease;
+      margin-top: 0.5rem;
+      border-top: 1px solid #ccc;
+      padding-top: 0;
+    }
+    .order.show-details .order-details {
+      max-height: 500px;
+      padding-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Bartender Order Manager</h1>
+  </header>
+  <main id="orderList"></main>
+
+  <script>
+    const productMap = {
+      "9a6c9f1d-189f-49ee-b76f-66b6a792f309": "Espresso",
+      "74ac8a01-9607-49f5-b389-e7466813d9e2": "Cappuccino",
+      "c7f0450f-3a41-4b4d-b487-5a4a18b9bb1b": "Latte"
+    };
+
+    const orders = [
+      {
+        tableID: "Table-1",
+        orderID: "c90ae3e1-3ac9-4cb1-ae84-fae9e57cc703",
+        items: [
+          {
+            productID: "9a6c9f1d-189f-49ee-b76f-66b6a792f309",
+            quantity: 1,
+            priceAtOrder: 4.25
+          },
+          {
+            productID: "74ac8a01-9607-49f5-b389-e7466813d9e2",
+            quantity: 1,
+            priceAtOrder: 5
+          },
+          {
+            productID: "c7f0450f-3a41-4b4d-b487-5a4a18b9bb1b",
+            quantity: 2,
+            priceAtOrder: 4.5
+          }
+        ],
+        orderTimestamp: 1747993105501,
+        status: "COMPLETED",
+        userID: "admin",
+        paymentTimestamp: 0,
+        readyTimestamp: 0,
+        preparedBy: "",
+        total: 18.25
+      }
+    ];
+
+    const orderList = document.getElementById("orderList");
+
+    function renderOrders() {
+      orderList.innerHTML = "";
+      orders.forEach(order => {
+        const orderDiv = document.createElement("div");
+        orderDiv.classList.add("order");
+        orderDiv.id = `order-${order.orderID}`;
+
+        if (order.status === "COMPLETED") orderDiv.classList.add("completed");
+
+        const itemDetails = order.items.map(item => {
+          const name = productMap[item.productID] || item.productID;
+          return `<li>${name} - x${item.quantity} ($${item.priceAtOrder.toFixed(2)})</li>`;
+        }).join("");
+
+        orderDiv.innerHTML = `
+          <h3>${order.tableID} - Order #${order.orderID.slice(0, 8)}</h3>
+          <div class="order-buttons">
+            <button onclick="event.stopPropagation(); cancelOrder('${order.orderID}')">Cancel</button>
+            <button onclick="event.stopPropagation(); completeOrder('${order.orderID}')">Confirm</button>
+          </div>
+          <div class="order-details">
+            <ul>${itemDetails}</ul>
+            <p><strong>Total:</strong> $${order.total.toFixed(2)}</p>
+            <p><strong>Status:</strong> ${order.status}</p>
+          </div>
+        `;
+        orderDiv.addEventListener("click", () => {
+          orderDiv.classList.toggle("show-details");
+        });
+        orderList.appendChild(orderDiv);
+      });
+    }
+
+    function cancelOrder(orderID) {
+      const orderDiv = document.getElementById(`order-${orderID}`);
+      orderDiv.classList.remove("completed");
+      orderDiv.classList.add("cancelled");
+    }
+
+    function completeOrder(orderID) {
+      const orderDiv = document.getElementById(`order-${orderID}`);
+      orderDiv.classList.remove("cancelled");
+      orderDiv.classList.add("completed");
+    }
+
+    renderOrders();
+  </script>
+</body>
+</html>

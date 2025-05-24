@@ -16,12 +16,12 @@ port = 5000
 
 # Lấy IP nội bộ của máy (để dùng cho truy cập LAN)
 host_ip = socket.gethostbyname(socket.gethostname())
-url = f"http://natsu-dev.space:{port}/manager/login"
+url = f"http://{host_ip}:{port}/manager/login"
 
 #====================== ROUTES =====================
 register_manager_routes(app)
 # register_storage_manager_routes(app)
-# register_bartender_routes(app)
+register_bartender_routes(app)
 
 #====================== QR & BROWSER =====================
 def open_browser():
@@ -31,8 +31,6 @@ def open_browser():
     qr.add_data(url)
     qr.make(fit=True)
     qr.print_ascii(invert=True)
-    
-    webbrowser.open(url)
 
 #====================== MAIN =====================
 if __name__ == '__main__':

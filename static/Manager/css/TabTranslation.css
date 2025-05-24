@@ -4,12 +4,12 @@
     display: none;
     margin-left: auto;
     margin-right: auto;
-    background-color: #ffffff;
+    background-color: #e8e9eb;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     text-align: center;
-    width: 400px;
+    width: 300px;
 }
 
 .WebRoleContainer.show
@@ -44,8 +44,8 @@
 .WebRoleButton.show
 {
     display: block;
-    width: 180px;
-    height: 70px;
+    width: 200px;
+    height: 40px;
     background: linear-gradient(#f6ca79, #be8303);
     box-shadow: 0px 6px 0px rgb(87, 65, 6);
     color: #ffffff;

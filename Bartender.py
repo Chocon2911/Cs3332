@@ -27,5 +27,17 @@ def register_bartender_routes(app):
         response = requests.get(URL + "/user_info", params=request.get_json(), headers=header)
         print("User Information: " + str(response.status_code))
         return forward_response(response)
+
+    @app.route('/bartender_request/update_order_status', methods=['POST'])
+    def bartender_update_order_status():
+        token = request.headers.get("Authorization")
+        header = {
+            'Content-Type': 'application/json',
+            'Authorization': token
+        }
+
+        response = requests.post(URL + "/order_update_status", json=request.get_json(), headers=header)
+        print("Update Order Status: " + str(response.status_code))
+        return forward_response(response)
     
     return app

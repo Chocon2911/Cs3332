@@ -20,33 +20,58 @@
     </header>
 
     <main>
-        <div class="OrderList">
-            <h3>Order #5: Capp</h3>
-            <div class="OrderButtons">
-                <button class="ContentButton show" id="TakeBtn">Take</button>
-                <button class="ContentButton show" id="CancelBtn">Cancel</button>
-                <button class="ContentButton show" id="ConfirmBtn">Confirm</button>
-            </div>
+        <div class="OrderList" id="OrderList">
+            <div class="Order">
+                <!--Title-->
+                <div class="OrderTitle">
+                    <div class="LeftOrderTitle">
+                        <span class="OrderNumber">Order #5: </span>
+                        <span class="OrderId">47ecfa5a-5a8f-4095-8463-55a917b30df8</span>
+                    </div>
+                    <div class="RightOrderTitle">
+                        <span class="OrderStatus">Preparing</span>
+                    </div>
+                </div>
+                <!--Buttons-->
+                <div class="OrderButtons">
+                    <button type="button" class="ContentButton TakeBtn">Take</button>
+                    <button type="button" class="ContentButton CancelBtn">Cancel</button>
+                    <button type="button" class="ContentButton ConfirmBtn">Complete</button>
+                </div>
 
-            <br>
-
-            <div class="OrderDetail">
-                <div class="ProductList">
+                <!--Detail-->
+                <div class="OrderDetail">
+                    <div class="DetailTitleContainer">
+                        <label class="DetailTitle">Products</label>
+                    </div>
+                    <!--Product-->
                     <div class="Product">
-                        <div class="ProductRow">
-                            <label class="ProductLabel">Name: </label>
-                            <label class="ProductLabel">Quantity: </label>
+                        <!--Basic Info-->
+                        <div class="ProductInfo">
+                            <label class="ProductLabel">Ice Coffee</label>
+                            <label class="ProductLabel"> - </label>
+                            <label class="ProductLabel">20 cup</label>
                         </div>
-                        <div class="ProductRow">
-                            <div class="IngredientList">
-                                <div class="IngredientRow">
-                                    <label class="RowName">Espresso: </label>
-                                    <label class="RowValue">1</label>
-                                </div>
+                        <!--Formula-->
+                        <div class="FormulaList">
+                            <!--1-->
+                            <div class="FormulaRow">
+                                <label class="IngredientLabel">Milk</label>
+                                <label class="IngredientLabel"> - </label>
+                                <label class="IngredientLabel">200ml</label>
                             </div>
-                        </div>
-                        <div class="ProductRow">
-
+                            <!--2-->
+                            <div class="FormulaRow">
+                                <label class="IngredientLabel">Milk</label>
+                                <label class="IngredientLabel"> - </label>
+                                <label class="IngredientLabel">200ml</label>
+                            </div>
+                            <!--3-->
+                            <div class="FormulaRow">
+                                <label class="IngredientLabel">Milk</label>
+                                <label class="IngredientLabel"> - </label>
+                                <label class="IngredientLabel">200ml</label>
+                            </div>
                         </div>
                     </div>
                 </div>
