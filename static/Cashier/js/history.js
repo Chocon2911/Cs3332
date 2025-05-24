@@ -1,6 +1,49 @@
 ////////////////////////////////////////////Lấy thông tin các bill////////////////////////////////////////////////
 let lastBillData = "";
 
+function getTableNameByIdNew(tableId) {
+  if (!tableId) {
+    console.warn("Vui lòng truyền vào tableID");
+    return null;
+  }
+
+  const areasStr = localStorage.getItem("areas");
+
+  if (!areasStr) {
+    console.warn("Không tìm thấy dữ liệu 'areas' trong localStorage");
+    return null;
+  }
+
+  try {
+    const areas = JSON.parse(areasStr);
+
+    if (typeof areas !== "object" || areas === null) {
+      console.warn("'areas' không phải là một object hợp lệ");
+      return null;
+    }
+
+    // Duyệt qua từng khu vực (Inside, Outside, v.v.)
+    for (const areaName in areas) {
+      const tables = areas[areaName];
+
+      if (!Array.isArray(tables)) continue;
+
+      const foundTable = tables.find(table => table.tableID === tableId);
+
+      if (foundTable) {
+        return foundTable.name || null;
+      }
+    }
+
+    console.warn(`Không tìm thấy tableID: ${tableId} trong bất kỳ khu vực nào`);
+    return null;
+
+  } catch (error) {
+    console.error("Lỗi khi parse JSON từ 'areas':", error);
+    return null;
+  }
+}
+
 async function fetchBills() {
     const orderList = document.getElementById("listBills");
     const request1 = new ListOrders_Request("COMPLETED");
@@ -34,7 +77,7 @@ async function fetchBills() {
         // Tiêu đề trên cùng
         const header = document.createElement("div");
         header.classList.add("bill-header");
-        header.textContent = `Table ${ord.tableID}`;
+        header.textContent = `${getTableNameByIdNew(ord.tableID)}`;
         orderDiv.appendChild(header);
 
         // Vùng scroll cho danh sách món

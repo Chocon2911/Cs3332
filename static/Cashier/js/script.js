@@ -305,6 +305,20 @@ function updateButtonStates(status) {
         }
     });
 }
+ 
+function deleteAllCookies() {
+    document.cookie.split(";").forEach(cookie => {
+        const eqPos = cookie.indexOf("=");
+        const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+    });
+}
+
+function handleLogout()
+{
+    deleteAllCookies();
+    window.location.href = '/manager/login';
+}
 
 function handleOrder() {
     if (areas[currentArea] && areas[currentArea][currentTableId]) {
@@ -450,6 +464,35 @@ class UserInfo_Response {
 ////////////////////////////////////////////Lấy thông tin bill theo bàn////////////////////////////////////////////////
 let lastOrderBillData = "";
 
+document.addEventListener("DOMContentLoaded", () => {
+    // Gán sự kiện cho Back và Pay ngay khi DOM sẵn sàng
+    const backBtn = document.getElementById("backBtn");
+    const payBtn = document.getElementById("payBtn");
+
+    if (backBtn && payBtn) {
+        backBtn.addEventListener("click", function () {
+            document.getElementById("billPopup").style.display = "none";
+            document.getElementById("tablePopup").style.display = "block";
+            document.getElementById("popupOverlay").style.display = "block";
+        });
+
+        payBtn.addEventListener("click", async function () {
+            if (!window._latestOrderResult || !Array.isArray(window._latestOrderResult.orders)) {
+                showToast("No orders to pay!");
+                return;
+            }
+
+            for (const ord of window._latestOrderResult.orders) {
+                await payOrder(ord.orderID, true);
+            }
+            alert("✔️ Order Paid!");
+            window.location.reload();
+        });
+    } else {
+        console.error("❗ Buttons not found: backBtn or payBtn");
+    }
+});
+
 document.getElementById('billBtn').addEventListener("click", async function () {
     const orderList = document.getElementById("listOrderBills");
     if (!orderList) {
@@ -476,6 +519,9 @@ document.getElementById('billBtn').addEventListener("click", async function () {
         if (ordersString === lastOrderBillData) return;
         lastOrderBillData = ordersString;
 
+        // Lưu tạm để nút Pay dùng
+        window._latestOrderResult = result;
+
         // Xóa nội dung cũ
         orderList.innerHTML = "";
 
@@ -500,33 +546,6 @@ document.getElementById('billBtn').addEventListener("click", async function () {
             orderContainer.appendChild(totalDiv);
 
             orderList.appendChild(orderContainer);
-        });
-
-        // Thêm nút điều khiển: Back và Pay
-        const buttonContainer = document.createElement("div");
-        buttonContainer.classList.add("orderbill-button-group");
-
-        buttonContainer.innerHTML = `
-            <button id="backBtn" class="btn-red">Back</button>
-            <button id="payBtn" class="btn-green">Pay</button>
-        `;
-
-        orderList.appendChild(buttonContainer);
-
-        // Sự kiện nút Back
-        document.getElementById("backBtn").addEventListener("click", function () {
-            document.getElementById("billPopup").style.display = "none";
-            document.getElementById("tablePopup").style.display = "block";
-            document.getElementById("popupOverlay").style.display = "block";
-        });
-
-        // Sự kiện nút Pay (bạn có thể thay đổi để gọi API thật)
-        document.getElementById("payBtn").addEventListener("click",async function () {
-        for (const ord of result.orders) {
-            await payOrder(ord.orderID, true);
-        }
-            alert("✔️ Order Paid!");
-            window.location.reload();
         });
 
         // Hiển thị popup
