@@ -1,19 +1,19 @@
 const endpoints = [
-    '/static/StorageManager/json/TestData.json', // all ingredients
-    '/static/StorageManager/json/TestData.json', // expiring
-    '/static/StorageManager/json/TestData.json'  // running-out
-];
+    '../json/TestData.json', // all ingredients
+    '../json/TestData.json', // expiring
+    '../json/TestData.json'  // running-out
+  ];
   
-async function fetchData(url) {
+  async function fetchData(url) {
     try {
-        const res = await fetch(url);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return await res.json();
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
     } catch (e) {
-        console.error('Fetch error:', e);
-        return [];
+      console.error('Fetch error:', e);
+      return [];
     }
-}
+  }
   
   function renderTable(data, table) {
     const tbody = table.querySelector('tbody');
@@ -59,16 +59,4 @@ async function fetchData(url) {
     if (tab === 'expiring') idx = 1;
     else if (tab === 'running') idx = 2;
     showTable(idx);
-
-    document.getElementById('confirm-yes').onclick = () => {
-      window.location.href = 'manager/login';            // Giao diện sau khi log out
-    };
-
-    document.getElementById('confirm-no').onclick = () => {
-      document.getElementById('logout-modal').style.display = 'none';
-    };
   };
-
-  function showLogoutModal() {
-    document.getElementById('logout-modal').style.display = 'flex';
-  }

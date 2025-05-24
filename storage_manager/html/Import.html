@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Storage Manager</title>
+  <link rel = "stylesheet" href="../css/Import.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <script defer src="../js/import.js"></script>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Storage Manager</h2>
+    <div class="menu-item" onclick="location.href='Dashboard.html'">📊 Dashboard</div>
+    <div class="menu-item active" onclick="location.href='Inventory.html'">📦 Inventory</div>
+    <div class="menu-item" onclick="location.href='History.html'">📜 History</div>
+    <div class="menu-item" onclick="location.href='DailyChecks.html'">✅ Daily-checks</div>
+    <div class="menu-item" onclick="location.href='Back.html'">🔙 Back</div>
+  </div>
+
+  <div class="sidebar">
+    <h2>Storage Manager</h2>
+    <div class="menu-item" onclick="location.href='Dashboard.html'">
+      <i class="fas fa-chart-line"></i> Dashboard
+    </div>
+    <div class="menu-item" onclick="location.href='Inventory.html'">
+      <i class="fas fa-box"></i> Inventory
+    </div>
+    <div class="menu-item active" onclick="location.href='Import.html'">
+      <i class="fas fa-file-import"></i> Import
+    </div>
+    <div class="menu-item" onclick="location.href='History.html'">
+      <i class="fas fa-history"></i> History
+    </div>
+    <div class="menu-item" onclick="location.href='DailyChecks.html'">
+      <i class="fas fa-check-circle"></i> Daily-checks
+    </div>
+    <div class="menu-item" onclick="showLogoutModal()">
+      <i class="fas fa-sign-out-alt"></i> Log out
+    </div>
+  </div>
+  
+  <!-- Main content -->
+  <div class="main-content">
+    <!-- Header -->
+    <div class="header">
+      <div class="search-box">
+        <input type="text" placeholder="Search">
+        <i>🔍</i>
+      </div>
+      <div>
+        <button class="account">Account</button>
+      </div>
+    </div>
+
+
+    <div class="scrollable-content">
+      <div class="dashboard-content">
+        <div class="card">
+          <h3>Import</h3>
+          <div class="form-row">
+            <input type="text" id="ingredient" placeholder="Ingredients" />
+            <input type="text" id="supplier" placeholder="Supplier" />
+            <input type="number" id="quantity" placeholder="Quantity (kg)" />
+            <button class="done-btn" onclick="handleDone()">Done</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3><i class="fas fa-list"></i> Search Results</h3>
+          <div class="suggestions" id="results"></div>
+        </div>
+
+        <div class="card">
+          <h3><i class="fas fa-lightbulb"></i> Suggestions</h3>
+          <div class="suggestions" id="suggestions"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

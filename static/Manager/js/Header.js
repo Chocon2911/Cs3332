@@ -60,7 +60,7 @@ window.onload = async function ()
     const token = getCookie("token");
     const username = encodeURIComponent(getCookie("username"));
     request = new UserInfo_Request(username);
-    const res = await fetch("/user_info", {
+    const res = await fetch("/manager_request/user_info", {
         method: "POST",
         headers:
         {
@@ -70,9 +70,17 @@ window.onload = async function ()
         body: JSON.stringify(request.toJson())
     });
 
-    if (res.status == 200)
+    if (res.status == 302 || res.status == 200)
     {
-        return;
+        data = await res.json();
+        const result = await new UserInfo_Response(data);
+        for (let role of result.roles)
+        {
+            if (role == "MANAGER" || role == "ADMIN") return;
+        }
+
+        window.location.href = "/manager/login";
+
     }
     else if (res.status >= 400 && res.status <= 600)
     {
@@ -112,4 +120,4 @@ function getCookie(name)
     }
 
     return null;
-}   
+}

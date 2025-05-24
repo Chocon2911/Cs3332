@@ -32,7 +32,7 @@ window.onload = async function ()
     {
         const token = getCookie("token");
         const username = getCookie("username");
-        const res = await fetch("/user_info", {
+        const res = await fetch("/manager_request/user_info", {
             method: "POST",
             headers:
             {
@@ -48,7 +48,7 @@ window.onload = async function ()
             return;
         }
 
-        else if (res.status == 200)
+        else if (res.status == 302)
         {
             const result = await res.json();
             roles = result["roles"];

@@ -3,8 +3,15 @@ const RealName = document.getElementById("Name");
 const Username = document.getElementById("Username");
 const Password = document.getElementById("Password");
 const RePassword = document.getElementById("RePassword");
+const Email = document.getElementById("Email");
+const Phone = document.getElementById("Phone");
 const BirthDate = document.getElementById("Date");
 const ErrorMessage = document.getElementById("ErrorMessage");
+
+const MaleRadio = document.getElementById("Male");
+const FemaleRadio = document.getElementById("Female");
+const OtherRadio = document.getElementById("Other");
+
 const StorageManagerRole = document.getElementById("StorageManager");
 const CashierRole = document.getElementById("Cashier");
 const BartenderRole = document.getElementById("Bartender");
@@ -12,15 +19,15 @@ const BartenderRole = document.getElementById("Bartender");
 //===========================================Class============================================
 class UserCreate_Request
 {
-    constructor(username, password, name, dateOfBirth, roles)
+    constructor(username, password, name, email, phone, dateOfBirth, gender, roles)
     {
         this.username = username;
         this.password = password;
         this.name = name;
-        this.email = "abc@gmail.com";
-        this.phone = "0123456789";
+        this.email = email;
+        this.phone = phone;
         this.dateOfBirth = dateOfBirth;
-        this.gender = "other";
+        this.gender = gender;
         this.roles = roles;
     }
 
@@ -112,7 +119,8 @@ document.getElementById("CreateButton").addEventListener("click", async function
         roles.push(BartenderRole.value);
 
     if (!RealName.value.trim() || !Username.value.trim() || !Password.value.trim() 
-        || !RePassword.value.trim() || !BirthDate.value.trim() || roles.length == 0)
+        || !RePassword.value.trim() || !Email.value.trim() || !Phone.value.trim()
+        || !BirthDate.value.trim() || roles.length == 0)
     {
         ErrorMessage.classList.add("show");
         ErrorMessage.textContent = "You must fill in all fields and choose at least one role";
@@ -121,21 +129,25 @@ document.getElementById("CreateButton").addEventListener("click", async function
 
     realName = RealName.value;
     username = Username.value;
+    phone = Phone.value;
+    email = Email.value;
     rePassword = RePassword.value;
     password = Password.value;
     birthDate = BirthDate.value;    
     unixBirthTime = new Date(birthDate).getTime();
 
-    request = new UserCreate_Request(username, password, realName, unixBirthTime, roles);
+    gender = null;
+    if (MaleRadio.checked) gender = "male";
+    else if (FemaleRadio.checked) gender = "female";
+    else if (OtherRadio.checked) gender = "other";
+
+    request = new UserCreate_Request(username, password, realName, email, phone, unixBirthTime, gender, roles);
     
-    if (!validateData(request)) 
-    {
-        return;
-    }
+    if (!validateData(request)) return;
     try 
     {
         const token = getCookie("token");
-        const res = await fetch("/user_create", {
+        const res = await fetch("/manager_request/user_create", {
            method: "POST",
            headers:
            {
@@ -145,11 +157,13 @@ document.getElementById("CreateButton").addEventListener("click", async function
            body: JSON.stringify(request.toJson())
         }); 
 
-        if (res.status == 200)
+        if (res.status == 201)
         {
             alert("New account has been created!");
             RealName.value = "";
             Username.value = "";
+            Email.value = "";
+            Phone.value = "";
             Password.value = "";
             RePassword.value = "";
             BirthDate.value = "";

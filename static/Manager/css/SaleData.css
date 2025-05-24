@@ -2,7 +2,8 @@
 .Content
 {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    align-items: center;
     gap: 50px;
 }
 
@@ -36,13 +37,19 @@
 }
 
 /*========================================Custom Date=========================================*/
+.CustomDate
+{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
 
 /*=========================================Date Input=========================================*/
 .DateInput 
 {
     padding: 15px;
     font-size: 18px;
-    width: 300px;
+    width: 200px;
     height: 50px;
     border-radius: 50px;
     outline:rgba(0, 0, 0, 0.568) solid 1px;
@@ -55,12 +62,12 @@
     {
         padding: 10px;
         font-size: 15px;
-        width: 200px;
+        width: 150px;
         height: 40px;
         border-radius: 50px;
         outline:rgba(0, 0, 0, 0.5) solid 1px;
         border: none
-    }    
+    }
 }
 
 /*=========================================Date Label=========================================*/
@@ -155,7 +162,8 @@
 .ChartContainer
 {
     margin-top: 30px;
-    width: 100%;
+    width: 80%;
+    height: 100%;
     max-width: 100%;
     position: relative;
     box-sizing: border-box;
@@ -175,8 +183,82 @@
     .ChartContainer
     {
         margin-right: 0;
-        align-self: center;
         width: 90% !important;
+        align-self: center;
         margin-bottom: 80px;
     }    
+}
+
+/*=======================================Search Button========================================*/
+.SearchButton
+{
+    padding: 15px;
+    font-size: 18px;
+    width: 200px;
+    height: 50px;
+    border-radius: 50px;
+    outline:rgba(0, 0, 0, 0.568) solid 1px;
+    border: none;
+    background: linear-gradient(#00f2fe, #4facfe);
+    box-shadow: 0px 5px 3px rgba(0, 0, 0, 0.3);
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.SearchButton:hover
+{
+    background: linear-gradient(#4facfe, #00f2fe);
+    box-shadow: none;
+    border-width: 30px;
+    border: solid #09579c;
+}
+
+.SearchButton2
+{
+    display: none;
+    padding: 15px;
+    font-size: 18px;
+    width: 200px;
+    height: 50px;
+    border-radius: 50px;
+    outline:rgba(0, 0, 0, 0.568) solid 1px;
+    border: none;
+    background: linear-gradient(#00f2fe, #4facfe);
+    box-shadow: 0px 5px 3px rgba(0, 0, 0, 0.3);
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+@media screen and (max-width: 768px)
+{
+    .SearchButton
+    {
+        display: none;
+        padding: 10px;
+        font-size: 15px;
+        width: 150px;
+        height: 40px;
+        border-radius: 50px;
+        outline:rgba(0, 0, 0, 0.5) solid 1px;
+        border: none
+    }
+    
+}
+
+@media screen and (max-width: 768px)
+{
+    .SearchButton2
+    {
+        display: block;
+        padding: 10px;
+        font-size: 15px;
+        width: 150px;
+        height: 40px;
+        border-radius: 50px;
+        outline:rgba(0, 0, 0, 0.5) solid 1px;
+        border: none
+    }
+    
 }

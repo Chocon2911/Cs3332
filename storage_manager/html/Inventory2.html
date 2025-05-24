@@ -1,22 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Inventory</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='StorageManager/css/inventory2.css') }}" />
-  <script defer src="{{ url_for('static', filename='StorageManager/js/inventory2.js') }}"></script>
+  <link rel="stylesheet" href="../css/Inventory2.css" />
+  <script defer src="../js/inventory2.js"></script>
 </head>
 <body>
-
   <!-- Sidebar -->
   <div class="sidebar">
     <h2>Storage Manager</h2>
-    <div class="menu-item" onclick="location.href='{{ url_for('dashboard') }}'">📊 Dashboard</div>
-    <div class="menu-item active" onclick="location.href='{{ url_for('inventory') }}'">📦 Inventory</div>
-    <div class="menu-item" onclick="location.href='{{ url_for('history') }}'">📜 History</div>
-    <div class="menu-item" onclick="location.href='{{ url_for('daily_checks') }}'">✅ Daily-checks</div>
-    <div class="menu-item" onclick="showLogoutModal()">🔙 Log out</div>
+    <div class="menu-item" onclick="location.href='Dashboard.html'">📊 Dashboard</div>
+    <div class="menu-item active" onclick="location.href='Inventory.html'">📦 Inventory</div>
+    <div class="menu-item" onclick="location.href='History.html'">📜 History</div>
+    <div class="menu-item" onclick="location.href='DailyChecks.html'">✅ Daily-checks</div>
+    <div class="menu-item" onclick="location.href='Back.html'">🔙 Back</div>
   </div>
 
   <!-- Main content -->
@@ -86,17 +85,7 @@
 
   </div>
 
-  <button class="import-btn" onclick="location.href='{{ url_for('_import') }}'">Import</button>
+  <button class="import-btn" onclick="location.href='../html/import.html'">Import</button>
 
-  <!-- Logout Modal -->
-  <div class="modal-overlay" id="logout-modal" style="display: none;">
-    <div class="modal">
-      <p>Do you want to log out?</p>
-      <div class="modal-actions">
-        <button id="confirm-yes">Yes</button>
-        <button id="confirm-no">No</button>
-      </div>
-    </div>
-  </div>
 </body>
 </html>

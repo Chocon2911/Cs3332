@@ -5,72 +5,80 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>History</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='StorageManager/css/history.css') }}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
   <script defer src="{{ url_for('static', filename='StorageManager/js/history.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='StorageManager/js/Utils.js') }}"></script>
 </head>
 <body>
 
   <!-- Sidebar -->
   <div class="sidebar">
-    <h2>Storage Manager</h2>
-    <div class="menu-item" onclick="location.href='{{ url_for('dashboard') }}'">📊 Dashboard</div>
-    <div class="menu-item" onclick="location.href='{{ url_for('inventory') }}'">📦 Inventory</div>
-    <div class="menu-item active" onclick="location.href='{{ url_for('history') }}'">📜 History</div>
-    <div class="menu-item" onclick="location.href='{{ url_for('daily_checks') }}'">✅ Daily-checks</div>
-    <div class="menu-item" onclick="showLogoutModal()">🔙 Log out</div>
+    <h2><i class="fas fa-warehouse"></i> Storage Manager</h2>
+    <div class="menu-item" onclick="location.href='{{ url_for('storage_ui.dashboard') }}'"><i class="fas fa-chart-line"></i> Dashboard</div>
+    <div class="menu-item" onclick="location.href='{{ url_for('storage_ui.inventory') }}'"><i class="fas fa-boxes"></i> Inventory</div>
+    <div class="menu-item" onclick="location.href='{{ url_for('storage_ui.import') }}'"><i class="fas fa-file-import"></i> Import</div>
+    <div class="menu-item active" onclick="location.href='{{ url_for('storage_ui.history') }}'"><i class="fas fa-history"></i> History</div>
+    <div class="menu-item" onclick="location.href='{{ url_for('storage_ui.daily_checks') }}'"><i class="fas fa-clipboard-check"></i> Daily Checks</div>
+    <div class="menu-item" onclick="showLogoutModal()"><i class="fas fa-sign-out-alt"></i> Log out</div>
   </div>
 
   <!-- Main content -->
   <div class="main-content">
     <!-- Header -->
     <div class="header">
-      <div class="search-box">
-        <input type="text" placeholder="Search" id="searchBox" />
-        <i>🔍</i>
-      </div>
-      <div>
-        <button class="account">Account</button>
-      </div>
+      <button class="account" id="accountBtn"><i class="fas fa-user-circle"></i> Account</button>
     </div>
 
     <div class="scrollable-content">
-          <!-- Filter section -->
-    <div class="filter-section">
-      <input type="date" id="fromDate" placeholder="From:" />
-      <input type="date" id="toDate" placeholder="To:" />
-    </div>
+      <!-- Filter section -->
+      <div class="filter-section">
+        <div class="date-filter">
+          <i class="fas fa-calendar-alt"></i>
+          <input type="date" id="fromDate" placeholder="From:" />
+        </div>
+        <div class="date-filter">
+          <i class="fas fa-calendar-alt"></i>
+          <input type="date" id="toDate" placeholder="To:" />
+        </div>
+      </div>
 
-    <!-- Table Container -->
-    <div class="table-container">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Supplier</th>
-            <th>Import</th>
-            <th>Export</th>
-          </tr>
-        </thead>
-        <tbody id="historyTableBody">
-          <!-- Rows will be injected here -->
-        </tbody>
-      </table>
+      <!-- Table Container -->
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th><i class="fas fa-calendar"></i> Date</th>
+              <th><i class="fas fa-hashtag"></i> ID</th>
+              <th><i class="fas fa-tag"></i> Name</th>
+              <th><i class="fas fa-truck"></i> Supplier</th>
+              <th><i class="fas fa-arrow-down"></i> Import</th>
+              <th><i class="fas fa-arrow-up"></i> Export</th>
+              <th><i class="fas fa-ruler"></i> Unit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Data will be injected here -->
+          </tbody>
+        </table>
+      </div>
     </div>
-    </div>
-
   </div>
 
   <!-- Logout Modal -->
   <div class="modal-overlay" id="logout-modal" style="display: none;">
     <div class="modal">
+      <i class="fas fa-question-circle"></i>
       <p>Do you want to log out?</p>
       <div class="modal-actions">
-        <button id="confirm-yes">Yes</button>
-        <button id="confirm-no">No</button>
+        <button id="confirm-yes">
+          <i class="fas fa-check"></i> Yes
+        </button>
+        <button id="confirm-no">
+          <i class="fas fa-times"></i> No
+        </button>
       </div>
     </div>
   </div>
-
 </body>
 </html>

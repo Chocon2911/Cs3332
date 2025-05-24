@@ -7,6 +7,7 @@
         "used": 20,
         "remaining": 80,
         "actual": 80,
+        "unit": "kg",
         "warnings": ""
       },
       {
@@ -16,6 +17,7 @@
         "used": 50,
         "remaining": 100,
         "actual": 95,
+        "unit": "kg",
         "warnings": "Thất thoát tồn kho"
       }
     ],

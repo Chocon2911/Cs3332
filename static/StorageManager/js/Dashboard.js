@@ -1,94 +1,175 @@
-const endpoints = [
-    '/static/StorageManager/json/product_transaction.json', // product transaction
-    '/static/StorageManager/json/TestData.json',            // expiring
-    '/static/StorageManager/json/TestData.json'             // running-out
-  ];
-  
-  async function fetchData(url) {
-    try {
-      const res = await fetch(url);
-      if (!res.ok) throw new Error('Fetch failed');
-      return await res.json();
-    } catch (e) {
-      console.error('Error fetching inventory:', e);
-      return [];
+const PRODUCT_TRANSACTION = '/storage_manager/product_transaction';
+const RUNNING_OUT = '/storage_manager/running_out';
+
+class TransactionItem {
+  constructor(data) {
+      this.id = data.id;
+      this.itemStackID = data.itemStackID;
+      this.name = data.ItemStackName;
+      this.unit = data.unit;
+      this.time = data.import_export_time;
+      this.supplier = data.supplier;
+      this.reason = data.reason;  // e.g. "Restock" or "Sold"
+      this.quantity = data.quantity;
+  }
+  isImport() {
+    return this.quantity > 0;
+  }
+  isExport() {
+    return this.quantity < 0;
+  }
+  formattedTime() {
+    return unix2date(this.time);
+  }
+}
+
+class ItemStack {
+  constructor(data) {
+    this.id = data.id;
+    this.name = data.name;
+    this.unit = data.unit;
+    this.quantity = data.quantity;
+  }
+}
+
+async function handleResponse(res) {
+  if (res.status === 200 || res.status === 302) {
+    return await res.json();
+  } else if (res.status >= 400 && res.status <= 600) {
+    if (res.status === 401) {
+      window.location.href = '/manager/login';
+      throw new Error('Unauthorized');
     }
+    const err = await res.json();
+    console.error(err.error || 'Error');
+    throw new Error(err.error || 'Server error');
+  } else {
+    const data = await res.json();
+    console.error('Unexpected status:', res.status, data.error);
+    throw new Error(data.error || 'Unexpected error');
   }
-  
-  function renderCard(containerId, items) {
-    const tbody = document.querySelector(`#${containerId} tbody`);
-    tbody.innerHTML = '';
-    items.forEach(item => {
-      const row = document.createElement('tr');
-      [item.id, item.name, item.supplier, item.quantity].forEach(text => {
-        const td = document.createElement('td');
-        td.textContent = text;
-        row.appendChild(td);
+}
+
+async function fetchRunOut() {
+  try {
+    const token = getCookie('token');
+    const res = await fetch(RUNNING_OUT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+    });
+    const data = await handleResponse(res);
+    const stacks = data.itemStacks.map(item => new ItemStack(item));
+    return stacks.filter(item => item.quantity <= 0);
+  } catch (e) {
+    console.error('Error fetching data:', e);
+    return [];
+  }
+}
+
+async function fetchTransaction() {
+  try {
+    const token = getCookie('token')
+    const res = await fetch(PRODUCT_TRANSACTION, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+    });
+    const data = await handleResponse(res);
+    return data.items.map(item => new TransactionItem(item));
+  } catch (e) {
+    console.error('Error fetching data:', e);
+    return [];
+  }
+}
+
+function renderCard(containerId, items) {
+  const tbody = document.querySelector(`#${containerId} tbody`);
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  items.forEach(item => {
+    const row = document.createElement('tr');
+    [
+      item.id,
+      item.name,
+      item.quantity,
+      item.unit
+    ].forEach(text => {
+      const td = document.createElement('td');
+      td.textContent = text;
+      row.appendChild(td);
+    });
+    tbody.appendChild(row);
+  });
+}
+
+function renderBar(data) {
+  const barChart = document.getElementById('bar-chart');
+  barChart.innerHTML = '';
+
+  data.forEach(item => {
+    const { name, import_percent, export_percent } = item;
+    const bar = document.createElement('div');
+    bar.className = 'bar';
+    bar.innerHTML = `
+      <div class="bar-label">${name}</div>
+      <div class="bar-container">
+        <div class="bar-export" style="width:${export_percent}%"></div>
+        <div class="bar-import" style="width:${import_percent}%"></div>
+      </div>`;
+    barChart.appendChild(bar);
+  });
+}
+
+window.onload = async () => {
+  const username = encodeURIComponent(getCookie("username"));
+  const accountBtn = document.querySelector('.account');
+  if (username) {
+    accountBtn.innerHTML = `<i class="fas fa-user-circle"></i> ${username}`;
+  }
+  try {
+      const transactions = await fetchTransaction();
+      const agg = {};
+      transactions.forEach(tx => {
+        const key = tx.itemStackID;
+        if (!agg[key]) agg[key] = { name: tx.name, import: 0, export: 0 };
+        if (tx.isImport()) agg[key].import += tx.quantity;
+        if (tx.isExport()) agg[key].export += Math.abs(tx.quantity);
       });
-      tbody.appendChild(row);
-    });
-  }
-  
-  function renderBar(data) {
-    const barChart = document.getElementById('bar-chart');
-    barChart.innerHTML = '';
-  
-    data.forEach(item => {
-      const { name, import_quantity, export_quantity } = item;
-      const total = import_quantity + export_quantity;
-      const exportPercent = ((export_quantity / total) * 100).toFixed(0);
-      const importPercent = 100 - exportPercent;
-  
-      const bar = document.createElement('div');
-      bar.className = 'bar';
-  
-      const label = document.createElement('div');
-      label.className = 'bar-label';
-      label.textContent = name;
-  
-      const container = document.createElement('div');
-      container.className = 'bar-container';
-  
-      const exportDiv = document.createElement('div');
-      exportDiv.className = 'bar-export';
-      exportDiv.style.width = `${exportPercent}%`;
-  
-      const importDiv = document.createElement('div');
-      importDiv.className = 'bar-import';
-      importDiv.style.width = `${importPercent}%`;
-  
-      container.append(exportDiv, importDiv);
-      bar.append(label, container);
-      barChart.appendChild(bar);
-    });
-  }
-  
-  window.onload = async () => {
-    // prodData để render bar-chart; expData & runData để render hai card
-    const [prodData, expData, runData] = await Promise.all(
-      endpoints.map(url => fetchData(url))
-    );
-  
-    // Render bar-chart “Product transaction”
-    renderBar(prodData);
-  
-    // Render hai bảng Expiring & Running-out (lấy 5 bản ghi đầu)
-    renderCard('card-expiring', expData.slice(0, 5));
-    renderCard('card-running', runData.slice(0, 5));
 
-    document.getElementById('confirm-yes').onclick = () => {
-      window.location.href = 'manager/login';            // Giao diện sau khi log out
-    };
+      const barData = Object.values(agg).map(item => {
+        const total = item.import + item.export || 1;
+        return {
+          name: item.name,
+          import_percent: Math.round((item.import / total) * 100),
+          export_percent: Math.round((item.export / total) * 100)
+        };
+      });
+      renderBar(barData);
 
-    document.getElementById('confirm-no').onclick = () => {
-      document.getElementById('logout-modal').style.display = 'none';
-    };
-  };
-  
-  function navigateTo(tab) {
-    window.location.href = `/storage_manager/inventory2?tab=` + tab;
+      const runningOut = await fetchRunOut();
+      renderCard('card-running', runningOut);
+      document.getElementById('card-running').addEventListener('click', () => navigateTo('running-out'));
+      // Xử lý logout modal
+      document.getElementById('confirm-yes').onclick = () => {
+          window.location.href = 'manager/login';
+      };
+      document.getElementById('confirm-no').onclick = () => {
+          document.getElementById('logout-modal').style.display = 'none';
+      };
+  } catch (error) {
+      console.error('Error initializing dashboard:', error);
   }
-  
-  function showLogoutModal() {
-    document.getElementById('logout-modal').style.display = 'flex';
-  }
+};
+
+function navigateTo(tab) {
+  window.location.href = `/storage_manager/inventory?tab=${tab}`;
+}
+
+function showLogoutModal() {
+  document.getElementById('logout-modal').style.display = 'flex';
+}

@@ -8,28 +8,9 @@
     font-family: Arial, sans-serif;
     display: flex;
     background-color: #dff6fd;
-    height: 100vh;
-    overflow: hidden;
+    height: 100vh; /*fix*/
+    overflow: hidden; /*fix*/
   }
-  
-.import-btn {
-  position: fixed;
-  bottom: 20px;
-  right: 30px;
-  z-index: 10;
-  padding: 15px 25px;
-  background-color: #0b3b69;
-  color: white;
-  border: none;
-  border-radius: 15px;
-  cursor: pointer;
-  box-shadow: 0 8px 10px rgba(0,0,0,0.2);
-  font-size: 15px;
-  transition: background-color 0.2s ease;
-}
-.import-btn:hover {
-  background-color: #145a92;
-}
 
   /* Sidebar */
   .sidebar {
@@ -69,7 +50,7 @@
   }
 
   .menu-item:last-child {
-      margin-top:auto;
+    margin-top: auto;
   }
 
   .back-btn {
@@ -85,7 +66,7 @@
     background-color: #1b6bb0;
   }
 
-  /* Main content */
+  /* Main Content */
   .main-content {
     margin-left: 250px; /*fix*/
     margin-top: 70px; /*fix*/
@@ -118,13 +99,6 @@
     z-index: 1000; /*fix*/
   }
 
-  .header .search-box input{
-    border: none;
-    background: none;
-    outline: none;
-    padding: 5px;
-  }
-
   .header .search-box {
     display: flex;
     align-items: center;
@@ -134,7 +108,14 @@
     border-radius: 20px;
   }
 
-  .header .search-box i{
+  .header .search-box input {
+    border: none;
+    background: none;
+    outline: none;
+    padding: 5px;
+  }
+
+  .header .search-box i {
     margin-left: 5px;
     cursor: pointer;
   }
@@ -151,101 +132,70 @@
     text-align: center;
   }
 
-  /* Tab navigation */
-  .tabs {
+  /* Filter Section */
+  .filter-section {
     display: flex;
     gap: 10px;
     padding: 20px;
-    padding-bottom: 0;
   }
 
-  .tab {
+  .filter-section button {
     padding: 10px 20px;
+    background-color: white;
+    color: #000;
+    border: none;
     border-radius: 5px;
-    background-color: #81aed8;
-    color: #1e3a8a;
     cursor: pointer;
-    text-align: center;
   }
 
-  .tab.active {
-    background-color: #dbeafe;
-  }
-
-  .tab:hover {
-    background-color: #bbd6fa;
+  .filter-section button:hover {
+    background-color: #d1d5db;
   }
 
   /* Table */
   .table-container {
-    padding: 0 20px 20px 20px;
+    padding: 0 20px 20px;
   }
 
   table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 0;
+    /*margin-top: 0;*/
+    margin-bottom: 20px; /*fixed*/
     background-color: white;
-    border: 1px solid #d1d5db;
+    /*border: 1px solid #d1d5db;*/
   }
 
   th, td {
     border: 1px solid #d1d5db;
     padding: 10px;
-    text-align: left;
+    /*text-align: left;*/
     font-size: 14px;
   }
 
   th {
     background-color: #f3f4f6;
-    font-weight: bold;
+    /*font-weight: bold;*/
   }
 
   tr:nth-child(even) {
     background-color: #f9fafb;
   }
 
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
-  }
-  
-  .modal {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    max-width: 300px;
-    text-align: center;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  }
-  
-  .modal-actions {
-    margin-top: 15px;
-    display: flex;
-    justify-content: space-around;
-  }
-  
-  .modal-actions button {
-    padding: 8px 16px;
+  td input {
+    width: 100%;
     border: none;
-    border-radius: 4px;
-    cursor: pointer;
+    /*background-color: transparent;*/
+    outline: none;
+    /*font-size: 14px;*/
+    padding: 5px;
   }
-  
-  #confirm-yes {
-    background-color: #e53e3e;
-    color: white;
+
+  td input:focus {
+    background-color: #e0f7fa;
+    border-radius: 3px;
   }
-  
-  #confirm-no {
-    background-color: #718096;
-    color: white;
+
+  .hidden {
+    display: none;
   }
