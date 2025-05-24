@@ -97,5 +97,5 @@ BartenderBtn.addEventListener("click", function (event)
 
 CustomerBtn.addEventListener("click", function (event)
 {
-    window.location.href = "...";
+    window.location.href = "/cashier/cafetest";
 });

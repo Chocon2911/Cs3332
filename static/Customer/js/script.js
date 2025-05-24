@@ -32,6 +32,7 @@ function getCookie(name)
 
     return null;
 }
+//===========================================================================================
 
 // ----- Hàm bật/tắt sidebar trái ----- 
 menuBtn.addEventListener('click', () => {
@@ -255,6 +256,7 @@ function showCartItems() {
 
   cartTotal.textContent = total.toFixed(2);
 }
+
 //Xóa từng item
 function removeCartItem(index) {
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -268,7 +270,6 @@ clearCartBtn.addEventListener('click', () => {
   localStorage.removeItem("cart");
   showCartItems();
 });
-
 
 /////////////////////////////////////////////Tạo order//////////////////////////////////////////////////
 class OrderCreate_Request
@@ -420,143 +421,6 @@ class UserInfo_Response {
 }
 
 ////////////////////////////////////////////Lấy thông tin các order////////////////////////////////////////////////
-// let lastOrderBillData = "";
-
-// document.getElementById('orderBtn').addEventListener("click", async function () 
-// {
-//     const orderList = document.getElementById("listOrdered");
-//     const tableID = encodeURIComponent(getCookie("TableID"));
-//     const request1 = new ListOrders_Request(tableID);
-//     const res1 = await fetch("/order_list", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify(request1.toJson())
-//     });
-
-//     const result = await res1.json();
-
-//     if (res1.status === 302) {
-//         const ordersString = JSON.stringify(result.orders);
-
-//         // So sánh dữ liệu mới và cũ
-//         if (ordersString === lastOrderBillData) {
-//             // Dữ liệu giống → bỏ qua, không cập nhật DOM
-//             return;
-//         }
-
-//         // Cập nhật dữ liệu mới
-//         lastOrderBillData = ordersString;
-
-//         // Làm sạch danh sách cũ
-//         orderList.innerHTML = "";
-
-//         // Nhóm đơn hàng theo tableID
-//         const ordersByTable = {};
-//         result.orders.forEach(ord => {
-//             if (!ordersByTable[ord.tableID]) {
-//                 ordersByTable[ord.tableID] = [];
-//             }
-//             ordersByTable[ord.tableID].push(ord);
-//         });
-
-//         for (const tableID in ordersByTable) {
-//             const tableDiv = document.createElement("div");
-//             tableDiv.classList.add("table-group");
-//             tableDiv.innerHTML = `<h3>Table: ${tableID}</h3>`;
-
-//             ordersByTable[tableID].forEach(ord => {
-//                 const orderDiv = document.createElement("div");
-//                 orderDiv.classList.add("order-group");
-
-//                 ord.items.forEach(item => {
-//                     const itemDiv = document.createElement("div");
-//                     itemDiv.classList.add("order-item");
-//                     itemDiv.setAttribute("data-order-id", ord.total);
-//                     itemDiv.setAttribute("data-product-name", item.productName);
-//                     itemDiv.innerHTML = `<strong>Product Name:</strong> ${item.productName} <br> <strong>Quantity:</strong> x${item.quantity}`;
-//                     orderDiv.appendChild(itemDiv);
-//                 });
-
-//                 tableDiv.appendChild(orderDiv);
-//             });
-//             orderList.appendChild(tableDiv);
-//         }
-//     } else if (res1.status >= 400 && res1.status <= 600) {
-//         if (ErrorMessage) {
-//             ErrorMessage.classList.add("show");
-//             ErrorMessage.textContent = result.error;
-//         }
-//     }
-// });
-
-
-
-
-// let lastOrderBillData = "";
-
-// document.getElementById('orderBtn').addEventListener("click", async function () {
-//     const orderList = document.getElementById("listOrdered");
-//     const tableID = encodeURIComponent(getCookie("TableID"));
-//     const request1 = new ListOrders_Request(tableID);
-
-//     const res1 = await fetch("/order_list", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify(request1.toJson())
-//     });
-
-//     const result = await res1.json();
-
-//     if (res1.status === 302) {
-//         const ordersString = JSON.stringify(result.orders);
-//         if (ordersString === lastOrderBillData) return;
-
-//         lastOrderBillData = ordersString;
-//         orderList.innerHTML = "";
-
-//         result.orders.forEach(order => {
-//             const orderDiv = document.createElement("div");
-//             orderDiv.classList.add("order-block");
-
-//             // Format thời gian
-//             const orderTime = new Date(order.timestamp).toLocaleString("en-GB");
-
-//             // Header đơn hàng
-//             const header = document.createElement("div");
-//             header.classList.add("order-header-time");
-//             header.innerHTML = `<strong>Order at:</strong> ${orderTime}`;
-//             orderDiv.appendChild(header);
-
-//             // Danh sách sản phẩm
-//             order.items.forEach(item => {
-//                 const itemDiv = document.createElement("div");
-//                 itemDiv.classList.add("order-item");
-//                 itemDiv.innerHTML = `
-//                     <span>${item.productName}</span> 
-//                     <span>${item.quantity} × $${item.priceAtOrder.toFixed(2)}</span>
-//                 `;
-//                 orderDiv.appendChild(itemDiv);
-//             });
-
-//             // Tổng tiền
-//             const totalDiv = document.createElement("div");
-//             totalDiv.classList.add("order-total");
-//             totalDiv.innerHTML = `<strong>Total:</strong> $${order.total.toFixed(2)}`;
-//             orderDiv.appendChild(totalDiv);
-
-//             orderList.appendChild(orderDiv);
-//         });
-//     } else if (res1.status >= 400 && res1.status <= 600) {
-//         if (ErrorMessage) {
-//             ErrorMessage.classList.add("show");
-//             ErrorMessage.textContent = result.error;
-//         }
-//     }
-// });
-
-
-
-
 let lastOrderBillData = "";
 
 document.getElementById('orderBtn').addEventListener("click", async function () {

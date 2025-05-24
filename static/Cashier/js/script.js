@@ -179,6 +179,15 @@ function addTable() {
     }
 }
 
+function generateUUID() {
+    // Fallback UUID generator (RFC4122 version 4 compliant)
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
+
 function createTable(shape) {
     const tableArea = document.getElementById("tables");
     if (!areas[currentArea]) areas[currentArea] = [];
@@ -188,7 +197,7 @@ function createTable(shape) {
     const left = tableArea.offsetWidth / 2 - 75;
     const top = tableArea.offsetHeight / 2 - 50;
 
-    const tableID = crypto.randomUUID();
+    const tableID = generateUUID();
 
     areas[currentArea].push({
         status: 0, // 0 = empty
@@ -304,6 +313,7 @@ function handleOrder() {
         renderTables(); // Cập nhật lại màu bàn
     }
     postRedirect("/customer/goto_coffee");
+    localStorage.removeItem("cart");
 }
 
 async function handleComplete() {

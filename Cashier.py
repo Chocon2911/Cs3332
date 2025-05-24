@@ -2,7 +2,7 @@ from flask import render_template, request, jsonify, url_for, make_response, red
 from datetime import datetime
 import requests
 
-URL = "http://localhost:8080" 
+URL = "natsu-dev.space:8080" 
 
 def forward_response(r):
     response = make_response(r.content, r.status_code)
@@ -48,7 +48,7 @@ def register_cashier_routes(app):
     #======================================Request Response======================================
     #===list_orders===
     @app.route('/order_list', methods=['POST'])
-    def list_orders():
+    def cashier_list_orders():
         token = request.headers.get("Authorization")
         data = request.get_json()
 
@@ -65,13 +65,13 @@ def register_cashier_routes(app):
 
     #===update_order_status===
     @app.route('/update_order_status', methods=['POST'])
-    def update_order_status():
-            token = request.headers.get("Authorization")
-            header = {
-                'Content-Type': 'application/json',
-                'Authorization': token
-            }
+    def cashier_update_order_status():
+        token = request.headers.get("Authorization")
+        header = {
+            'Content-Type': 'application/json',
+            'Authorization': token
+        }
 
-            response = requests.post(URL + "/order_update_status", json=request.get_json(), headers=header)
-            print("Update Order Status: " + str(response.status_code))
-            return forward_response(response)
+        response = requests.post(URL + "/order_update_status", json=request.get_json(), headers=header)
+        print("Update Order Status: " + str(response.status_code))
+        return forward_response(response)
