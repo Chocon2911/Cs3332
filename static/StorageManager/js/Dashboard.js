@@ -126,6 +126,11 @@ function renderBar(data) {
 }
 
 window.onload = async () => {
+  const username = encodeURIComponent(getCookie("username"));
+  const accountBtn = document.querySelector('.account');
+  if (username) {
+    accountBtn.innerHTML = `<i class="fas fa-user-circle"></i> ${username}`;
+  }
   try {
       const transactions = await fetchTransaction();
       const agg = {};

@@ -252,6 +252,11 @@ async function handleDone() {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
+    const username = encodeURIComponent(getCookie("username"));
+    const accountBtn = document.querySelector('.account');
+    if (username) {
+      accountBtn.innerHTML = `<i class="fas fa-user-circle"></i> ${username}`;
+    }
     fetchInventory();
     
     ingredientInput.addEventListener('input', renderSuggestions);

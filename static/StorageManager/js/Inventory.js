@@ -96,6 +96,11 @@ function showTable(index) {
 }
 
 window.onload = () => {
+  const username = encodeURIComponent(getCookie("username"));
+  const accountBtn = document.querySelector('.account');
+  if (username) {
+    accountBtn.innerHTML = `<i class="fas fa-user-circle"></i> ${username}`;
+  }
   // Lấy tham số tab từ URL
   const urlParams = new URLSearchParams(window.location.search);
   const tab = urlParams.get('tab');

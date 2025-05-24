@@ -134,7 +134,11 @@ async function loadHistory() {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  console.log('DOM Content Loaded');
+  const username = encodeURIComponent(getCookie("username"));
+  const accountBtn = document.querySelector('.account');
+  if (username) {
+    accountBtn.innerHTML = `<i class="fas fa-user-circle"></i> ${username}`;
+  }
   loadHistory();
   
   const fromDateInput = document.getElementById('fromDate');

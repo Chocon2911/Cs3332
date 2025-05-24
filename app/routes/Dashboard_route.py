@@ -1,7 +1,6 @@
 from flask import Blueprint, jsonify, request, make_response
 import requests
 
-# Blueprint riêng cho Dashboard
 dashboard_bp = Blueprint('dashboard', __name__)
 BACKEND_URL = "http://localhost:8080"
 
