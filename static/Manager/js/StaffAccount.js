@@ -178,6 +178,13 @@ document.getElementById("CreateButton").addEventListener("click", async function
                 window.location.href = "/manager/login";
                 return;
             }
+            else if (res.status == 500)
+            {
+                ErrorMessage.classList.add("show");
+                ErrorMessage.textContent = "Internal Server Error";
+                return;
+            }
+
             data = await res.json();
             ErrorMessage.classList.add("show");
             ErrorMessage.textContent = "Server Error: " + data["error"];
