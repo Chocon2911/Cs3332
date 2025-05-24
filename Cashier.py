@@ -1,6 +1,20 @@
-from flask import render_template, redirect, url_for, request
+from flask import render_template, request, jsonify, url_for, make_response, redirect
+from datetime import datetime
+import requests
 
+URL = "http://localhost:8080" 
+
+def forward_response(r):
+    response = make_response(r.content, r.status_code)
+    if 'Content-Type' in r.headers:
+        response.headers['Content-Type'] = r.headers['Content-Type']
+    return response
+
+#============================================================================================
+#===========================================Route============================================
+#============================================================================================
 def register_cashier_routes(app):
+    #=======================================Tab Translate========================================    
     @app.route('/cashier/cafetest', methods=['GET'])
     def cashier_cafetest():
         return render_template('Cashier/html/cafetest.html')
@@ -11,7 +25,7 @@ def register_cashier_routes(app):
 
     @app.route('/cashier/history', methods=['GET'])
     def cashier_history():
-        return render_template('Cashier/html/history.html')
+        return render_template('Cashier/html/history.html') 
 
     # Các POST endpoint để điều hướng
     @app.route('/cashier/goto_cafetest', methods=['POST'])
@@ -30,3 +44,34 @@ def register_cashier_routes(app):
     @app.route('/customer/goto_coffee', methods=['POST'])
     def goto_customer_coffee_from_cashier():
         return redirect(url_for('customer_coffee'))
+    
+    #======================================Request Response======================================
+    #===list_orders===
+    @app.route('/order_list', methods=['POST'])
+    def list_orders():
+        token = request.headers.get("Authorization")
+        data = request.get_json()
+
+        print(data)
+        print(token)
+        header = {
+            'Authorization': token,
+            'Content-Type': 'application/json',
+        }
+
+        response = requests.get(URL + "/order_list" , headers=header, params = data)
+        print ("List Orders: " + str(response.status_code))
+        return forward_response(response)
+
+    #===update_order_status===
+    @app.route('/update_order_status', methods=['POST'])
+    def update_order_status():
+            token = request.headers.get("Authorization")
+            header = {
+                'Content-Type': 'application/json',
+                'Authorization': token
+            }
+
+            response = requests.post(URL + "/order_update_status", json=request.get_json(), headers=header)
+            print("Update Order Status: " + str(response.status_code))
+            return forward_response(response)
