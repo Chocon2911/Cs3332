@@ -188,13 +188,24 @@ confirmAddBtn.addEventListener('click', async () => {
 });
 
 async function handleDone() {
+    resultsEl.querySelectorAll('.entry[style*="color:red"]').forEach(entry => entry.remove());
     const name = ingredientInput.value.trim();
     const supplier = supplierInput.value.trim();
-    const quantity = parseInt(quantityInput.value, 10);
-    if (!name || !supplier || isNaN(quantity)) return;
+    const rawQuantity = parseInt(quantityInput.value, 10);
+    if (!name || !supplier) return;
+
+    if (rawQuantity === '' || isNaN(rawQuantity)) {
+        resultsEl.innerHTML = `<div class="entry" style="color:red">
+            Warning: Quantity must be a valid number
+        </div>`;
+        return;
+    }
+    const quantity = parseFloat(rawQuantity);
 
     if (!selectedItem) {
-        resultsEl.innerHTML = `<div class="entry">You might want to add new ingredient</div>`;
+        resultsEl.innerHTML = `<div class="entry" style="color:red">
+            You might want to add new ingredient
+        </div>`;
         return;
     }
 
