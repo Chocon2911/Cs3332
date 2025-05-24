@@ -71,6 +71,13 @@ loginBtn.addEventListener("click", async function (event)
         }
         else if (res.status >= 400 && res.status <= 600)
         {
+            if (res.status == 500)
+            {
+                ErrorMessage.classList.add("show");
+                ErrorMessage.textContent = "Internal Server Error";
+                return;
+            }
+
             ErrorMessage.classList.add("show");
             ErrorMessage.textContent = result.error;
         }
