@@ -3,6 +3,8 @@ const FromDate = document.getElementById("FromDate");
 const ToDate = document.getElementById("ToDate");
 const Products = document.getElementById("Products");
 const SaveBtn = document.getElementById("SaveBtn");
+const SearchBtn = document.getElementById("SearchBtn");
+gobalChart = null;
 
 //======================================Request Response======================================
 class ListOrders_Request {
@@ -13,9 +15,9 @@ class ListOrders_Request {
 
     toJson() {
         const data = {};
-        if (this.fromDate != null) data["fromDate"] = this.fromDate;
-        if (this.toDate != null) data["toDate"] = this.toDate;
-        data["orderStatus"] = "PENDING_CONFIRMATION";
+        if (this.fromDate != null) data["from"] = this.fromDate;
+        if (this.toDate != null) data["to"] = this.toDate;
+        data["orderStatus"] = "COMPLETED";
         return data;
     }
 }
@@ -32,11 +34,10 @@ class ListOrders_Response
             let items = [];
             for (let item of order["items"])
             {
-                console.log(item["productID"]);
-                items.push(item["productID"], item["quantity"], item["priceAtOrder"]);
+                items.push(new Item( item["productID"], item["quantity"], item["priceAtOrder"]));
             }
 
-            this.orders.push(new Order_Response(order["tableID"], order["orderID"], order["items"], 
+            this.orders.push(new Order_Response(order["tableID"], order["orderID"], items, 
                 order["orderTimestamp"], order["status"], order["userId"], order["paymentTimestamp"], 
                 order["readyTimestamp"], order["preparedBy"], order["total"]));
         }
@@ -178,7 +179,7 @@ window.onload = async function ()
         createProductCheckBoxs(result.orders);
         createChart(result.orders);
         sessionStorage.setItem("list_orders", JSON.stringify(result.orders));
-    } 
+    }
     else 
     {
         const data = await res2.json();
@@ -186,9 +187,110 @@ window.onload = async function ()
     }
 }
 
+SaveBtn.addEventListener("click", () => {
+    const fromDate = FromDate.value ? new Date(FromDate.value) : null;
+    const toDate = ToDate.value ? new Date(ToDate.value) : null;
+    const req2 = new ListOrders_Request(fromDate, toDate);
+    const res2 = fetch("/manager_request/list_orders", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(req2.toJson())
+    });
+});
+
+SearchBtn.addEventListener("click", async () => {
+    //===Check token and role valid===
+    const token = getCookie("token");
+    const username = encodeURIComponent(getCookie("username"));
+    const request = new UserInfo_Request(username);
+
+    const res = await fetch("/manager_request/user_info", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token,
+        },
+        body: JSON.stringify(request.toJson())
+    });
+
+    if (res.status == 302 || res.status == 200) {
+        const data = await res.json();
+        const result = new UserInfo_Response(data);
+        const isManager = result.roles.includes("MANAGER");
+
+        if (!isManager) 
+        {
+            window.location.href = "/manager/login";
+            return;
+        }
+    } 
+    else 
+    {
+        const data = await res.json();
+        console.error("Error:", data["error"]);
+        return;
+    }
+
+
+
+    //===get data during fromDate - toDate===
+    globalChart.destroy();
+    const fromDate = FromDate.value ? new Date(FromDate.value + 'T00:00:00Z') : null;
+    const toDate = ToDate.value ? new Date(ToDate.value + 'T23:59:59Z') : null;
+
+    const fromTimestamp = fromDate ? fromDate.getTime() : null;
+    const toTimestamp = toDate ? toDate.getTime() : null;
+
+    console.log(fromTimestamp);
+    console.log(toTimestamp);
+
+    const req2 = new ListOrders_Request(fromTimestamp, toTimestamp);
+    console.log(req2.toJson());
+
+    const res2 = await fetch("/manager_request/list_orders", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token,
+        },
+        body: JSON.stringify(req2.toJson())
+    });
+
+    if (res2.status == 302) 
+    {
+        const data = await res2.json();
+        console.log(data);
+        const result = new ListOrders_Response();
+        await result.init(data);
+        // createProductCheckBoxs(result.orders);
+        await createChart(result.orders);
+        sessionStorage.setItem("list_orders", JSON.stringify(result.orders));
+    } 
+    else 
+    {
+        const data = await res2.json();
+        console.error("Server Error:", data["error"]);
+    }
+})
+
 async function createProductCheckBoxs(orders) {
+    let productTypes = await getProductTypes();
+
+    for (let product of productTypes)
+    {
+        const productDiv = document.createElement("div");
+        productDiv.classList.add("ProductItem");
+        productDiv.innerHTML = `<input type="checkbox" value="${product["id"]}"><label>${product["name"]}</label>`;
+        Products.appendChild(productDiv);
+    }
+}
+
+async function getProductTypes()
+{
     productTypes = [];
-    const res = await fetch("/manager_request/list_products", {
+    const res = await fetch("/manager_request/product_list", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -200,61 +302,152 @@ async function createProductCheckBoxs(orders) {
         const data = await res.json();
         productTypes = data["products"]
     }
-
-    for (let product of productTypes) 
+    else
     {
-        const productDiv = document.createElement("div");
-        productDiv.classList.add("ProductItem");
-        productDiv.innerHTML = `<input type="checkbox" value="${product["id"]}"><label>${product["name"]}</label>`;
-        Products.appendChild(productDiv);
+        const data = await res.json();
+        console.error("Server Error:", data["error"]);
+    }
+
+    return productTypes;
+}
+
+function getColor(index) {
+    const colors = [
+        '#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231',
+        '#911eb4', '#46f0f0', '#f032e6', '#bcf60c', '#fabebe',
+        '#008080', '#e6beff', '#9a6324', '#fffac8', '#800000',
+        '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080'
+    ];
+    return colors[index % colors.length];
+}
+
+class ProductData {
+    constructor(name) {
+        this.name = name;
+        this.quantityByTimes = [];
+        for (let i = 0; i < 21; i++) {
+            this.quantityByTimes.push(new QuantityByTimes(i, 0));
+        }
+    }
+
+    addData(time, quantity) {
+        for (let i = 0; i < this.quantityByTimes.length; i++) {
+            if (this.quantityByTimes[i].time >= time) {
+                this.quantityByTimes[i].quantity += quantity;
+                return;
+            }
+        }
+        // Nếu chưa có time >= time, có thể thêm mới hoặc bỏ qua
+    }
+
+    toJson() {
+        const quantities = [];
+        for (let i = 0; i < this.quantityByTimes.length; i++) {
+            quantities.push(this.quantityByTimes[i].quantity); // sửa đúng key quantity
+        }
+        return {
+            name: this.name,
+            quantities: quantities
+        }
     }
 }
 
-function createChart(orders) {
-    const fromDate = FromDate.value ? new Date(FromDate.value) : new Date(0);
-    const toDate = ToDate.value ? new Date(ToDate.value) : new Date();
-    const totalMilliseconds = toDate - fromDate;
+class QuantityByTimes {
+    constructor(time, quantity) {
+        this.time = time;
+        this.quantity = quantity;
+    }
+}
+
+async function createChart(orders) {
+    //===Set time range===
+    let beginDate = null;
+    let endDate = null;
+
+    for (let order of orders) {
+        const orderTime = order.orderTimestamp;
+        if (!beginDate || orderTime < beginDate) beginDate = orderTime;
+        if (!endDate || orderTime > endDate) endDate = orderTime;
+    }
+
+    console.log(beginDate, endDate);
+
+    const totalMilliseconds = endDate - beginDate;
     const bucketCount = 20;
     const bucketDuration = totalMilliseconds / bucketCount;
 
-    const productMap = new Map();
-    for (let order of orders) {
-        for (let item of order.items) {
-            if (!productMap.has(item.productId)) {
-                productMap.set(item.productId, {
-                    name: item.productName || item.productId,
-                    sales: new Array(bucketCount).fill(0)
-                });
-            }
-        }
-    }
-
-    for (let order of orders) {
-        const orderTime = new Date(order.paymentTimestamp).getTime();
-        const bucketIndex = Math.floor((orderTime - fromDate.getTime()) / bucketDuration);
-        if (bucketIndex < 0 || bucketIndex >= bucketCount) continue;
-        for (let item of order.items) {
-            const productData = productMap.get(item.productId);
-            if (productData) {
-                productData.sales[bucketIndex] += item.quantity;
-            }
-        }
-    }
-
+    //===Label===
     const labels = [];
-    for (let i = 0; i < bucketCount; i++) {
-        const labelTime = new Date(fromDate.getTime() + i * bucketDuration);
-        labels.push(labelTime.toLocaleDateString("vi-VN", { day: '2-digit', month: '2-digit' }));
+    const productTypes = await getProductTypes();
+
+    if (totalMilliseconds > 24 * 60 * 60 * 1000) {
+        for (let i = 0; i < bucketCount + 1; i++) {
+            const time = beginDate + i * bucketDuration;
+            labels.push(new Date(time).toLocaleString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" }));
+        }
+    }
+    else {
+        for (let i = 0; i < bucketCount + 1; i++) {
+            const time = beginDate + i * bucketDuration;
+            labels.push(new Date(time).toLocaleString("vi-VN", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"}));
+        }
     }
 
+    //===Data===
     const datasets = [];
-    let i = 0;
-    for (let [productId, productData] of productMap.entries()) {
-        datasets.push(getDataSet(i++, productMap.size, productData.name, productData.sales));
+    const productDatas = [];
+
+    for (let productType of productTypes) {
+        productDatas.push(new ProductData(productType.id));
     }
 
+    for (let order of orders) {
+        const orderTime = order.orderTimestamp;
+        for (let item of order.items) {
+            const itemId = item.productId;
+            console.log(itemId);
+            for (let productData of productDatas) {
+                if (productData.name == itemId) {
+                    console.log(item.quantity);
+                    for (let i = 0; i < bucketCount + 1; i++) {
+                        const time = beginDate + i * bucketDuration;
+                        if (orderTime <= time) {
+                            console.log(time);
+                            console.log(orderTime);
+                            productData.quantityByTimes[i].quantity += item.quantity;
+                            break;
+                        }
+                    };
+                    break;
+                }
+            }
+        }
+    }
+
+    for (let i = 0; i < productTypes.length; i++) {
+        productDatas[i].name = productTypes[i].name;
+    }
+
+    console.log(productDatas);
+
+    for (let productData of productDatas) {
+        quantities = [];
+        for (let i = 0; i < productData.quantityByTimes.length; i++) {
+            quantities.push(productData.quantityByTimes[i].quantity);
+        }
+        console.log(quantities)
+        datasets.push(getDataSet(productTypes.findIndex(product => product.name == productData.name), productTypes.length, productData.name, quantities));
+    }
+
+
+    //===Create Chart===
     const ctx = document.getElementById('SaleChart').getContext('2d');
-    new Chart(ctx, {
+    globalChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,
@@ -266,26 +459,27 @@ function createChart(orders) {
             plugins: {
                 title: {
                     display: true,
-                    text: 'Biểu đồ số lượng sản phẩm đã bán theo thời gian'
+                    text: 'Chart of Sold product'
                 }
             },
             scales: {
                 x: {
                     title: {
                         display: true,
-                        text: 'Thời gian'
+                        text: 'Time'
                     }
                 },
                 y: {
                     title: {
                         display: true,
-                        text: 'Số lượng'
+                        text: 'Quantity'
                     }
                 }
             }
         }
     });
 }
+
 
 SaveBtn.addEventListener("click", async () => {
     // Save logic here
@@ -300,7 +494,7 @@ function getDataSet(index, total, name, revenues) {
         backgroundColor: color.replace('50%', '80%'),
         borderColor: color,
         fill: false,
-        tension: 0.4,
+        tension: 0.2,
         borderWidth: 2
     };
 }
