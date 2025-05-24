@@ -1,34 +1,13 @@
-const endpoints = [
-  '/storage_manager/all_ingredients',  // all ingredients
-  '/storage_manager/running_out'       // running-out
-];
+const INVENTORY_ENDPOINT = '/storage_manager/all_ingredients';
 
-class TransactionItem {
-  constructor(data) {
+class Ingredient {
+  constructor(data){
       this.id = data.id;
-      this.itemStackID = data.itemStackID;
-      this.name = data.ItemStackName;
+      this.name = data.name;
       this.unit = data.unit;
-      this.time = data.import_export_time;
-      this.supplier = data.supplier;
-      this.reason = data.reason;  // e.g. "Restock" or "Sold"
       this.quantity = data.quantity;
   }
-
-  isImport() {
-      return this.quantity > 0;
-  }
-
-  isExport() {
-      return this.quantity < 0;
-  }
-
-  formattedTime(){
-    return unix2date(this.time);
-  }
 }
-
-const RUNOUT_THRESHOLD = 10;
 
 // ================================ Auth & Response handling ================================
 
@@ -54,66 +33,51 @@ async function fetchData(url) {
   try {
       const token = getCookie('token');
       const res = await fetch(url, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': token
         }
       });
       const raw = await handleResponse(res);
-      const list = Array.isArray(raw) ? raw : raw.items || [];
-      return list.map(item => new TransactionItem(item));
+      const list = raw["itemStacks"];
+      return list.map(item => new Ingredient(item));
   } catch (e) {
       console.error('Fetch error:', e);
       return [];
   }
 }
 
-// ================================ Data Processing ================================
-function aggregateTransactions(transactions) {
-  const current = {};
-  transactions.forEach(tx => {
-    const key = tx.itemStackID;
-    if (!current[key]) {
-      current[key] = { ...tx, quantity: 0};
-    }
-    current[key].quantity += tx.quantity;
-  });
-  return Object.values(current);
-}
-
 // ================================ Rendering ================================
 function renderTable(data, table) {
   const tbody = table.querySelector('tbody');
   tbody.innerHTML = '';
-
   data.forEach(item => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
-          <td>${item.itemStackID}</td>
+          <td>${item.id}</td>
           <td>${item.name}</td>
-          <td>${item.supplier}</td>
           <td>${item.quantity}</td>
-          <td>${item.formattedTime()}</td>
           <td>${item.unit}</td>
       `;
       tbody.appendChild(tr);
   });
-  console.log(`Rendered ${data.length} items in table ${table.id}`);
 }
 
 async function loadTableData(index) {
-  const table = document.getElementById('table-${index}');
-  const transactions = await fetchData(endpoints[index]);
-  const agg = aggregateTransactions(transactions);
-  let displayData = [];
+  const table = document.getElementById(`table-${index}`);
+  const ingredients = await fetchData(INVENTORY_ENDPOINT);
+
+  console.log(ingredients);
+  let displayData = ingredients;
   if (index === 0) {
     // Filter inventory
-    displayData = agg;
-  }
-  else {
+    displayData = ingredients;
+  } else {
     // Filter Running out
-    displayData = agg.filter(item => item.quantity <= RUNOUT_THRESHOLD);
+    displayData = ingredients.filter(item => item.quantity <= 0);
   }
+
   renderTable(displayData, table);
 }
 
@@ -132,6 +96,11 @@ function showTable(index) {
 }
 
 window.onload = () => {
+  const username = encodeURIComponent(getCookie("username"));
+  const accountBtn = document.querySelector('.account');
+  if (username) {
+    accountBtn.innerHTML = `<i class="fas fa-user-circle"></i> ${username}`;
+  }
   // Lấy tham số tab từ URL
   const urlParams = new URLSearchParams(window.location.search);
   const tab = urlParams.get('tab');
@@ -139,7 +108,7 @@ window.onload = () => {
   // Xác định index của tab cần hiển thị
   let tabIndex = tab === 'running' ? 1 : 0;
   // Hiển thị bảng tương ứng
-  showTable(tabIndex);
+  showTable(tabIndex); // ================== error here
 
   document.getElementById('confirm-yes').onclick = () => {
       window.location.href = 'manager/login';

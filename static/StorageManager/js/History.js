@@ -1,17 +1,17 @@
 // ================================ History Record ================================
 class HistoryRecord {
-  constructor(data) {
-    this.itemStackID = data.itemStackID;
-    this.name = data.ItemStackName;
-    this.supplier = data.supplier;
-    this.importQuantity = this.quantity > 0 ? this.quantity : 0;
-    this.exportQuantity = this.quantity < 0 ? Math.abs(this.quantity) : 0;
-    this.unit = data.unit;
-    this.time = data.import_export_time;
+  constructor({ itemStackID, name, supplier, importQuantity, exportQuantity, unit, date }) {
+    this.itemStackID = itemStackID;
+    this.name = name;
+    this.supplier = supplier;
+    this.importQuantity = importQuantity;
+    this.exportQuantity = exportQuantity;
+    this.unit = unit;
+    this.date = date; // yyyy-mm-dd
   }
 
   formattedTime() {
-    return unix2date(this.time);
+    return this.date;
   }
 }
 
@@ -36,29 +36,55 @@ async function handleResponse(res) {
   }
 }
 
-async function fetchHistory(params = {}) {
+async function fetchHistory() {
   try {
-      const qs = new URLSearchParams(params).toString();
-      const url = HISTORY_ENDPOINT + (qs ? '?${qs' : '');
       const token = getCookie('token');
-      const res = await fetch(url, {
+      const res = await fetch(HISTORY_ENDPOINT, {
         headers: {
           'Authorization': token,
           'Content-Type': 'application/json'
         }
       });
       const raw = await handleResponse(res);
-      const list = Array.isArray(raw) ? raw : raw.items || [];
-      return list.map(item => new HistoryRecord(item));
+      const list = raw["items"];
+      return list;
   } catch (e) {
       console.error('Fetch error:', e);
       return [];
   }
 }
 
+// ================================ Data Processing ================================
+
+function aggregateHistoryRecords (rawList) {
+  const grouped = {};
+
+  for (const item of rawList) {
+    const day = unix2date(item.import_export_time);
+    const key = `${item.itemStackID}|${day}`;
+    if (!grouped[key]) {
+      grouped[key] = {
+        itemStackID: item.itemStackID,
+        name: item.ItemStackName,
+        supplier: item.supplier,
+        importQuantity: 0,
+        exportQuantity: 0,
+        unit: item.unit,
+        date: day,
+      };
+    }
+    if (item.quantity > 0) {
+      grouped[key].importQuantity += item.quantity;
+    } else if (item.quantity < 0) {
+      grouped[key].exportQuantity += Math.abs(item.quantity);
+    }
+  }
+
+  return Object.values(grouped).map(g => new HistoryRecord(g))
+}
+
 // ================================ Rendering ================================
 function renderTable(records, table) {
-  console.log('Rendering table with data:', records);
   const tbody = table.querySelector('tbody');
   tbody.innerHTML = '';
 
@@ -70,10 +96,10 @@ function renderTable(records, table) {
   records.forEach(r => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
-          <td>${r.formattedTime() || ''}</td>
-          <td>${r.itemStackID || ''}</td>
-          <td>${r.name || ''}</td>
-          <td>${r.supplier || ''}</td>
+          <td>${r.date}</td>
+          <td>${r.itemStackID}</td>
+          <td>${r.name}</td>
+          <td>${r.supplier}</td>
           <td>${r.importQuantity || '0'}</td>
           <td>${r.exportQuantity || '0'}</td>
           <td>${r.unit || ''}</td>
@@ -84,7 +110,6 @@ function renderTable(records, table) {
 
 // ================================ Data Processing ================================
 async function loadHistory() {
-  console.log('Loading table data...');
   const table = document.querySelector('.table-container table');
   if (!table) {
     console.error('Table element not found!');
@@ -94,18 +119,26 @@ async function loadHistory() {
   const fromDate = document.getElementById('fromDate').value;
   const toDate = document.getElementById('toDate').value;
   
-  const params = {};
-  if (fromDate) params.from_date = fromDate;
-  if (toDate) params.to_date = toDate;
+  const rawRecords = await fetchHistory();
+  const records = aggregateHistoryRecords(rawRecords);
+
+  let filtered = records;
+  if (fromDate) {
+    filtered = filtered.filter(r => r.date >= fromDate);
+  }
+  if (toDate) {
+    filtered = filtered.filter(r => r.date <= toDate);
+  }
   
-  console.log('Date params:', params);
-  
-  const records = await fetchHistory(params);
-  renderTable(records, table);
+  renderTable(filtered, table);
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  console.log('DOM Content Loaded');
+  const username = encodeURIComponent(getCookie("username"));
+  const accountBtn = document.querySelector('.account');
+  if (username) {
+    accountBtn.innerHTML = `<i class="fas fa-user-circle"></i> ${username}`;
+  }
   loadHistory();
   
   const fromDateInput = document.getElementById('fromDate');
