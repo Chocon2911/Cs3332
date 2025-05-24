@@ -216,17 +216,16 @@ async function handleDone() {
             body: JSON.stringify(payload)
         });
         const updatedData = await handleResponse(res);
-        console.log(updatedData);
         const updated = new Ingredient(updatedData);
 
         const entry = document.createElement('div');
         entry.className = 'entry success';
         entry.innerHTML = `
-            <span><b>ID:</b> ${updated.id}</span>
-            <span><b>Name:</b> ${updated.name}</span>
-            <span><b>Supplier:</b> ${updated.supplier}</span>
-            <span><b>Quantity:</b> ${updated.quantity}</span>
-            <span><b>Unit:</b> ${updated.unit}</span>
+            <span><b>ID:</b> ${selectedItem.id}</span>
+            <span><b>Name:</b> ${selectedItem.name}</span>
+            <span><b>Supplier:</b> ${supplier}</span>
+            <span><b>Quantity:</b> ${quantity}</span>
+            <span><b>Unit:</b> ${selectedItem.unit}</span>
         `;
         resultsEl.appendChild(entry);
 
@@ -253,6 +252,11 @@ async function handleDone() {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
+    const username = encodeURIComponent(getCookie("username"));
+    const accountBtn = document.querySelector('.account');
+    if (username) {
+      accountBtn.innerHTML = `<i class="fas fa-user-circle"></i> ${username}`;
+    }
     fetchInventory();
     
     ingredientInput.addEventListener('input', renderSuggestions);

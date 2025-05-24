@@ -1,9 +1,7 @@
 from flask import Blueprint, jsonify, request, make_response
 import requests
-from app.controllers.History_controller import HistoryController
 
 history_bp = Blueprint('history', __name__)
-controller = HistoryController()
 BACKEND_URL = 'http://localhost:8080'
 
 def forward_response(r):

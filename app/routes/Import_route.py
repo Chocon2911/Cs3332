@@ -1,6 +1,5 @@
 from flask import Blueprint, jsonify, request, current_app, Response, make_response
 import requests
-from app.controllers.Import_controller import ImportController
 
 import_bp = Blueprint('import', __name__)
 BACKEND_URL = 'http://localhost:8080'

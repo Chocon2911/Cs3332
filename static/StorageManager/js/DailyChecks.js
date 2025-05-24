@@ -1,28 +1,20 @@
 // Backend endpoints
-const ENDPOINT = 'storage_manager/daily_checks';
+const CHECKS = '/storage_manager/daily_checks';
+
+let records = [];
+let isLoading = true;
 
 class IngredientCheck {
-  constructor(data) {
-    this.id = data.id;
-    this.itemStackID = data.itemStackID;
-    this.name = data.ItemStackName;
-    this.unit = data.unit;
-    this.time = data.import_export_time;
-    this.supplier = data.supplier;
-    this.reason = data.reason;
-    this.quantity = data.quantity;
-  }
-
-  isImport() {
-    return this.quantity > 0;
-  }
-
-  isExport() {
-    return this.quantity < 0;
-  }
-
-  formattedTime() {
-    return unix2date(this.time);
+  constructor({ itemStackID, name, initial, imported, used, remaining, actual, unit, warning }) {
+    this.itemStackID = itemStackID;
+    this.name = name;
+    this.initial = initial;
+    this.imported = imported
+    this.used = used;
+    this.remaining = remaining;
+    this.actual = actual;
+    this.unit = unit;
+    this.warning = warning;
   }
 }
 
@@ -46,17 +38,24 @@ async function handleResponse(res) {
   }
 }
 
-async function fetchInventoryTransactions() {
-  const token = getCookie('token');
-  const res = await fetch(ENDPOINT, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': token
-    }
-  });
-  const raw = await handleResponse(res);
-  const list = Array.isArray(raw) ? raw : raw.items || [];
-  return list.map(item => new IngredientCheck(item));
+async function fetchChecks() {
+  try {
+    const token = getCookie('token');
+    console.log(token);
+    const res = await fetch(CHECKS, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    console.log(res);
+    const raw = await handleResponse(res);
+    const list = raw["items"];
+    return list;
+  } catch (e) {
+    console.error('Fetch error:', e);
+    return [];
+  }
 }
 
 // ================================ UI / Check Logic ================================
@@ -82,6 +81,15 @@ const mainOutputTable = document.getElementById('main-output-table');
 const mainOutputBody = mainOutputTable.querySelector('tbody');
 const subOutputTable = document.getElementById('sub-output-table');
 const subOutputBody = subOutputTable.querySelector('tbody');
+
+inputButton.addEventListener('click', () => {
+  inputTable.classList.remove('hidden');
+  mainOutputTable.classList.add('hidden');
+  subOutputTable.classList.add('hidden');
+
+  submitButton.classList.remove('hidden');
+  inputButton.classList.add('hidden');
+});
 
 // Add a new input row
 function addRow() {
@@ -110,15 +118,56 @@ inputTable.addEventListener('keydown', e => {
   }
 });
 
+window.addEventListener('DOMContentLoaded', async () => {
+  const username = encodeURIComponent(getCookie("username"));
+  const accountBtn = document.querySelector('.account');
+  if (username) {
+    accountBtn.innerHTML = `<i class="fas fa-user-circle"></i> ${username}`;
+  }
+  submitButton.disabled = true;
+
+  records = await fetchChecks();
+  isLoading = false;
+  console.log('DOMContentLoaded');
+
+  submitButton.disabled = false;
+
+  // Reset to input mode
+  inputTable.classList.remove('hidden');
+  mainOutputTable.classList.add('hidden');
+  subOutputTable.classList.add('hidden');
+
+  submitButton.classList.remove('hidden');
+  inputButton.classList.add('hidden');
+
+  // Existing initialization
+  inputTableBody.innerHTML = '';
+  addRow();
+
+  document.getElementById('confirm-yes').addEventListener('click', () => {
+    window.location.href = '/manager/login';
+  });
+  document.getElementById('confirm-no').addEventListener('click', () => {
+    document.getElementById('logout-modal').style.display = 'none';
+  });
+});
+
 // Submit handler: interact with backend
 submitButton.addEventListener('click', async () => {
+  if (isLoading) {
+    alert('Loading...');
+    return;
+  }
   // Collect inputs
   const today = new Date();
+  const dayStart = getDayStartTimestamp(today);
+  const dayEnd = getDayEndTimestamp(today);
+
   const inputs = Array.from(inputTableBody.querySelectorAll('tr')).map(row => ({
-    id: row.cells[0].querySelector('input').value.trim(),
-    name: row.cells[1].querySelector('input').value.trim(),
+    id:            row.cells[0].querySelector('input').value.trim(),
+    name:          row.cells[1].querySelector('input').value.trim(),
     actual: Number(row.cells[2].querySelector('input').value.trim()) || 0,
-    unit: row.cells[3].querySelector('input').value.trim()  // Added unit extraction
+    unit:          row.cells[3].querySelector('input').value.trim()
   })).filter(item => item.id && item.name);
 
   if (!inputs.length) {
@@ -127,76 +176,71 @@ submitButton.addEventListener('click', async () => {
   }
 
   try {
-    const records = await fetchInventoryTransactions();
-    const dayStart = getDayStartTimestamp(today);
-    const dayEnd = getDayEndTimestamp(today);
-
     const matched = [];
     const unmatched = [];
 
-    for (const userInput of inputs) {
-      const relevant = records.filter(
-        rec => rec.name.trim().toLowerCase() === userInput.name.trim().toLowerCase()
-      );
-      
+    for (const input of inputs) {
+      const relevant = records.filter(rec => rec.itemStackID.trim() === input.id.trim());
+      console.log(relevant);
       if (!relevant.length) {
         unmatched.push({
-          id: userInput.id,
-          name: userInput.name,
-          warnings: 'Ingredient not found'
+          id: input.id,
+          name: input.name,
+          warning: 'Ingredient not found'
         });
         continue;
       }
 
-      let inventoryAtStart = 0;
-      relevant.forEach(rec => {
-        if (rec.time < dayStart) inventoryAtStart += rec.quantity;
-      });
+      let inventoryAtStart = 0, importedToday = 0, usedToday = 0;
 
-      let restockToday = 0;
-      let usedToday = 0;
       relevant.forEach(rec => {
-        if (rec.time >= dayStart && rec.time <= dayEnd) {
-          if (rec.quantity > 0) restockToday += rec.quantity;
+        const t = rec.import_export_time;
+        if (t < dayStart) {
+          inventoryAtStart += rec.quantity;
+        } else if (t<=dayEnd) {
+          if (rec.quantity > 0) importedToday += rec.quantity;
           else usedToday += Math.abs(rec.quantity);
         }
       });
-      const remaining = inventoryAtStart + restockToday - usedToday;
-      let warning = '';
-      if (remaining > userInput.actual) warning = 'Warning: Actual quantity is less than expected';
-      else if (remaining < userInput.actual) warning = 'Warning: Actual quantity is greater than expected';
+      console.log("Inventory at start: " + inventoryAtStart);
+      console.log("Imported today: " + importedToday);
+      console.log("Used today: " + usedToday);
 
-      matched.push({
-        id: userInput.id,
-        name: userInput.name,
+      const remaining = inventoryAtStart + importedToday - usedToday;
+      let warning = '';
+      if (remaining > input.actual) warning = 'Warning: Actual quantity is less than expected';
+      else if (remaining < input.actual) warning = 'Warning: Actual quantity is greater than expected';
+
+      matched.push(new IngredientCheck({
+        itemStackID: input.id,
+        name: input.name,
         initial: inventoryAtStart,
-        restock: restockToday,
+        imported: importedToday,
         used: usedToday,
-        remaining: remaining,
-        actual: userInput.actual,
-        unit: userInput.unit,
-        warnings: warning
-      });
+        remaining,
+        actual: input.actual,
+        unit: input.unit,
+        warning
+      }));
     }
 
     // Clear previous
     mainOutputBody.innerHTML = '';
     subOutputBody.innerHTML = '';
-    subOutputTable.classList.add('hidden');
 
     // Render matched
     matched.forEach(item => {
       mainOutputBody.insertAdjacentHTML('beforeend', `
         <tr>
-          <td>${item.id}</td>
+          <td>${item.itemStackID}</td>
           <td>${item.name}</td>
           <td>${item.initial}</td>
-          <td>${item.restock}</td>
+          <td>${item.imported}</td>
           <td>${item.used}</td>
           <td>${item.remaining}</td>
           <td>${item.actual}</td>
           <td>${item.unit || ''}</td>
-          <td>${item.warnings || ''}</td>
+          <td>${item.warning || ''}</td>
         </tr>
       `);
     });
@@ -205,7 +249,7 @@ submitButton.addEventListener('click', async () => {
     if (unmatched.length) {
       unmatched.forEach(item => {
         subOutputBody.insertAdjacentHTML('beforeend', `
-          <tr><td>${item.id}</td><td>${item.name}</td><td>${item.warnings}</td></tr>
+          <tr><td>${item.id}</td><td>${item.name}</td><td>${item.warning}</td></tr>
         `);
       });
       subOutputTable.classList.remove('hidden');
@@ -222,30 +266,7 @@ submitButton.addEventListener('click', async () => {
   }
 });
 
-// Reset to input mode
-inputButton.addEventListener('click', () => {
-  inputTable.classList.remove('hidden');
-  mainOutputTable.classList.add('hidden');
-  subOutputTable.classList.add('hidden');
-  submitButton.classList.remove('hidden');
-  inputButton.classList.add('hidden');
-  inputTableBody.innerHTML = '';
-  addRow();
-});
-
 // Logout Modal functions
 function showLogoutModal() {
   document.getElementById('logout-modal').style.display = 'flex';
 }
-
-window.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('confirm-yes').addEventListener('click', () => {
-    window.location.href = '/manager/login';
-  });
-  document.getElementById('confirm-no').addEventListener('click', () => {
-    document.getElementById('logout-modal').style.display = 'none';
-  });
-  // Existing initialization
-  inputTableBody.innerHTML = '';
-  addRow();
-});
