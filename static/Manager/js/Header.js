@@ -76,7 +76,7 @@ window.onload = async function ()
         const result = await new UserInfo_Response(data);
         for (let role of result.roles)
         {
-            if (role == "MANAGER") return;
+            if (role == "MANAGER" || role == "ADMIN") return;
         }
 
         window.location.href = "/manager/login";

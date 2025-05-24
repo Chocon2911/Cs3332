@@ -86,14 +86,26 @@
                     <label class="RowName">Username: </label>
                     <input type="Text" class="InputFocus TextInput" id="Username">
                 </div>
-                <!--Password-->
+                <!--Email-->
                 <div class="ContentRow">
-                    <label class="RowName">Password: </label>
-                    <div class="PasswordRow">
-                        <input type="password" class="InputFocus TextInput" name="Password" id="Password">
-                        <button type="button" class="TogglePasswordButton" id="TogglePassword">
-                            <img src="{{ url_for('static', filename='Manager/Image/PasswordEye.png') }}">
-                        </button>
+                    <label class="RowName">Email: </label>
+                    <input type="text" class="InputFocus TextInput" id="Email" placeholder="eg: abcd@example.com">
+                </div>
+                <!--Phone-->
+                <div class="ContentRow">
+                    <label class="RowName">Phone: </label>
+                    <input type="tel" class="InputFocus TextInput" id="Phone" placeholder="eg: 0123456789">
+                </div>
+                <!--Gender-->
+                <div class="ContentRow">
+                    <label class="RowName">Gender: </label>
+                    <div class="GenderContainer">
+                        <input type="radio" name="Gender" class="GenderInput" id="Male" value="male" checked>
+                        <label type="text" class="GenderLabel">Male</label>
+                        <input type="radio" name="Gender" class="GenderInput" id="Female" value="female">
+                        <label type="text" class="GenderLabel">Female</label>
+                        <input type="radio" name="Gender" class="GenderInput" id="Other" value="other">
+                        <label type="text" class="GenderLabel">Other</label>
                     </div>
                 </div>
                 <!--Date of Birth-->

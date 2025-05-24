@@ -91,6 +91,24 @@ def register_manager_routes(app):
         print("User Information Update: " + str(response.status_code))
         return forward_response(response)
     
+    @app.route('/manager_request/user_password_update', methods=['POST'])
+    def user_password_update():
+        token = request.headers.get("Authorization")
+        data = request.get_json()
+
+        print(data)
+        print(token)
+
+        header = {
+            'Authorization': token,
+            'Content-Type': 'application/json',
+            'User-Agent': ''
+        }
+
+        response = requests.post(URL + "/user_password_update", json=data, headers=header)
+        print("User Password Update: " + str(response.status_code))
+        return forward_response(response)
+    
     #===user_create===
     @app.route('/manager_request/user_create', methods=['POST'])
     def test_register():
