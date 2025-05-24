@@ -2,8 +2,6 @@ name: Run Cs3332 Python Backend with Ngrok
 
 on:
   workflow_dispatch:
-  release:
-    types: [published]
 
 jobs:
   run-backend:
@@ -15,8 +13,9 @@ jobs:
       NGROK_DOMAIN: ${{ secrets.NGROK_DOMAIN }}
 
     steps:
-      - name: Clone GitHub repo
+      - name: Remove old repo folder if exists and clone fresh
         run: |
+          rm -rf app
           mkdir -p app
           git clone https://github.com/Chocon2911/Cs3332.git app
 
@@ -35,8 +34,6 @@ jobs:
 
       - name: Wait for server to start
         run: sleep 5
-
-      # Nếu cần, bật lại phần ngrok ở đây
 
       - name: Stream backend logs live for 24 hours (86400 seconds)
         run: |
