@@ -2,7 +2,7 @@ from flask import render_template, request, jsonify, url_for, make_response, red
 from datetime import datetime
 import requests
 
-URL = "http://localhost:8080" 
+URL = "natsu-dev.space:8080" 
 
 def forward_response(r):
     response = make_response(r.content, r.status_code)
@@ -56,7 +56,7 @@ def register_customer_routes(app):
     #======================================Request Response======================================
     #===list_products===
     @app.route('/product_list', methods=['GET'])
-    def list_products():
+    def customer_list_products():
         header = {
             'Content-Type': 'application/json',
         }
@@ -66,7 +66,7 @@ def register_customer_routes(app):
 
     #===create_order===
     @app.route('/order_create', methods=['POST'])
-    def create_order():
+    def customer_create_order():
         header = {
             'Content-Type': 'application/json',
             'User-Agent': ''
