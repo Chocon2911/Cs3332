@@ -141,6 +141,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /////////////////////////////////////////////////// Hiển thị sản phẩm và xử lí giỏ hàng ////////////////////////////////////////////////
   window.onload = async function () {
+    getTableIDFromCurrentURL();
+    console.log(getCookie("TableID"));
+
   const productList = document.getElementById("productList");
   const res = await fetch("/customer/product_list", {
     method: "GET",
@@ -516,3 +519,9 @@ document.getElementById('orderBtn').addEventListener("click", async function () 
     }
 });
 
+///////////////////////////// Get tableID from current web href ///////////////////////////
+function getTableIDFromCurrentURL() {
+  const url = window.location.href;
+  const parsedUrl = new URL(url);
+  setCookie("TableID", parsedUrl.searchParams.get("tableID"));
+}

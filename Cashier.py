@@ -26,6 +26,10 @@ def register_cashier_routes(app):
     @app.route('/cashier/history', methods=['GET'])
     def cashier_history():
         return render_template('Cashier/html/history.html') 
+    
+    @app.route('/cashier/qrcode', methods=["GET"])
+    def qr_generator():     
+        return render_template("Cashier/html/qrcode.html")
 
     # Các POST endpoint để điều hướng
     @app.route('/cashier/goto_cafetest', methods=['POST'])

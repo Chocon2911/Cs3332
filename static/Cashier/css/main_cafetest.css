@@ -690,3 +690,39 @@ body {
     font-size: 13px;
     color: gray;
 }
+
+/* --------------------------CHỉnh giao diện trang QR code----------------------------- */
+/* main_cafetest.css */
+
+/* Toàn bộ trang */
+body {
+  background-color: #e0f7fa; /* xanh nhạt */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  font-family: 'Caveat', cursive;
+}
+
+/* Tiêu đề */
+h2 {
+  margin-bottom: 20px;
+  color: #004d40;
+}
+
+/* QR code canvas */
+canvas {
+  border: 4px solid #004d40;
+  padding: 10px;
+  background-color: white;
+  border-radius: 8px;
+}
+
+/* Link (nếu bạn muốn hiển thị link QR) */
+#linkDisplay {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #00695c;
+}

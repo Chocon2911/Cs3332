@@ -1,18 +1,14 @@
 //===========================================Cookie===========================================
-function setCookie(name, value) 
-{
+function setCookie(name, value) {
     document.cookie = name + "=" + value + ";path=/";
 }
 
-function getCookie(name) 
-{
+function getCookie(name) {
     const cookieArr = document.cookie.split(";");
 
-    for (let i = 0; i < cookieArr.length; i++) 
-        {
+    for (let i = 0; i < cookieArr.length; i++) {
         const cookiePair = cookieArr[i].split("=");
-        if (name == cookiePair[0].trim()) 
-            {
+        if (name == cookiePair[0].trim()) {
             return cookiePair[1];
         }
     }
@@ -305,7 +301,7 @@ function updateButtonStates(status) {
         }
     });
 }
- 
+
 function deleteAllCookies() {
     document.cookie.split(";").forEach(cookie => {
         const eqPos = cookie.indexOf("=");
@@ -313,9 +309,8 @@ function deleteAllCookies() {
         document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
     });
 }
-
-function handleLogout()
-{
+/////////////////////////////////////////////Handle Button//////////////////////////////////////////////////////////
+function handleLogout() {
     deleteAllCookies();
     window.location.href = '/manager/login';
 }
@@ -323,10 +318,16 @@ function handleLogout()
 function handleOrder() {
     if (areas[currentArea] && areas[currentArea][currentTableId]) {
         areas[currentArea][currentTableId].status = 1; // Đổi trạng thái bàn sang in_service
+
         saveAreasToLocalStorage();
         renderTables(); // Cập nhật lại màu bàn
     }
-    postRedirect("/customer/goto_coffee");
+    const tableID = areas[currentArea][currentTableId]?.tableID ?? '';
+    if (tableID) {
+        window.open(`/customer/coffee?tableID=${tableID}`);
+    } else {
+        postRedirect("/customer/goto_coffee");
+    }
     localStorage.removeItem("cart");
 }
 
@@ -417,7 +418,7 @@ if (popupOverlay) {
         popupOverlay.style.display = "none";
 
         const billPopup = document.getElementById('billPopup');
-        if (billPopup) billPopup.style.display = "none"; 
+        if (billPopup) billPopup.style.display = "none";
 
         const tablePopup = document.getElementById("tablePopup");
         if (tablePopup) tablePopup.style.display = "none";
@@ -561,7 +562,7 @@ document.getElementById('billBtn').addEventListener("click", async function () {
 });
 
 ////////////////////////////////////////////Fetch orderlist READY////////////////////////////////////////////////
-async function fetchOrders() { 
+async function fetchOrders() {
     const request = new ListOrders_Request("READY", areas[currentArea][currentTableId].tableID);
 
     try {
@@ -586,16 +587,13 @@ async function fetchOrders() {
 }
 
 ////////////////////////////////////////////Pay Order////////////////////////////////////////////////
-class OrderUpdateStatus_Request
-{
-    constructor(orderId, newStatus)
-    {
+class OrderUpdateStatus_Request {
+    constructor(orderId, newStatus) {
         this.orderId = orderId;
         this.newStatus = newStatus;
     }
 
-    toJson()
-    {
+    toJson() {
         return {
             orderID: this.orderId,
             newStatus: this.newStatus
@@ -615,8 +613,7 @@ async function payOrder(id, skipReload = false) {
         body: JSON.stringify(req.toJson())
     });
 
-    if (res.status == 200)
-    {
+    if (res.status == 200) {
         if (!skipReload) {
             window.location.reload();
         }
@@ -629,8 +626,7 @@ async function payOrder(id, skipReload = false) {
         const err = await res.json();
         console.error("Server error: " + err['error']);
     }
-    else 
-    {
+    else {
         const data = await res.json();
         console.error("Unexpected error: " + data['error']);
     }
@@ -650,8 +646,7 @@ async function completedOrder(id, skipReload = false) {
         body: JSON.stringify(req.toJson())
     });
 
-    if (res.status == 200)
-    {
+    if (res.status == 200) {
         if (!skipReload) {
             window.location.reload();
         }
@@ -664,8 +659,7 @@ async function completedOrder(id, skipReload = false) {
         const err = await res.json();
         console.error("Server error: " + err['error']);
     }
-    else 
-    {
+    else {
         const data = await res.json();
         console.error("Unexpected error: " + data['error']);
     }
@@ -684,8 +678,7 @@ async function cancelOrder(id, skipReload = false) {
         body: JSON.stringify(req.toJson())
     });
 
-    if (res.status == 200)
-    {
+    if (res.status == 200) {
         if (!skipReload) {
             window.location.reload();
         }
@@ -698,9 +691,32 @@ async function cancelOrder(id, skipReload = false) {
         const err = await res.json();
         console.error("Server error: " + err['error']);
     }
-    else 
-    {
+    else {
         const data = await res.json();
         console.error("Unexpected error: " + data['error']);
     }
 }
+
+document.getElementById("QRBtn").addEventListener("click", () => {
+    if (areas[currentArea] && areas[currentArea][currentTableId]) {
+        areas[currentArea][currentTableId].status = 1; // Đổi trạng thái bàn sang in_service
+
+        saveAreasToLocalStorage();
+        renderTables(); // Cập nhật lại màu bàn
+    }
+    const tableID = areas[currentArea][currentTableId].tableID;
+    if (!tableID) {
+        alert("Không tìm thấy tableID trong dữ liệu!");
+        return;
+    }
+
+    // Tạo link đầy đủ để xử lý đúng trong URL constructor
+    const fullUrl = new URL(`/customer/coffee?tableID=${encodeURIComponent(tableID)}`, window.location.origin);
+
+    // Lấy lại tableID từ URL
+    const extractedID = fullUrl.searchParams.get("tableID");
+
+    // Tạo link QR code
+    const qrPageUrl = `/cashier/qrcode?tableID=${encodeURIComponent(extractedID)}`;
+    window.open(qrPageUrl, "_blank");
+});
