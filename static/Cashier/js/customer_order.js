@@ -1,10 +1,53 @@
 ////////////////////////////////////////////Lấy thông tin các order////////////////////////////////////////////////
 let lastOrderData = "";
 
+function getTableNameById(tableId) {
+  if (!tableId) {
+    console.warn("Vui lòng truyền vào tableID");
+    return null;
+  }
+
+  const areasStr = localStorage.getItem("areas");
+
+  if (!areasStr) {
+    console.warn("Không tìm thấy dữ liệu 'areas' trong localStorage");
+    return null;
+  }
+
+  try {
+    const areas = JSON.parse(areasStr);
+
+    if (typeof areas !== "object" || areas === null) {
+      console.warn("'areas' không phải là một object hợp lệ");
+      return null;
+    }
+
+    // Duyệt qua từng khu vực (Inside, Outside, v.v.)
+    for (const areaName in areas) {
+      const tables = areas[areaName];
+
+      if (!Array.isArray(tables)) continue;
+
+      const foundTable = tables.find(table => table.tableID === tableId);
+
+      if (foundTable) {
+        return foundTable.name || null;
+      }
+    }
+
+    console.warn(`Không tìm thấy tableID: ${tableId} trong bất kỳ khu vực nào`);
+    return null;
+
+  } catch (error) {
+    console.error("Lỗi khi parse JSON từ 'areas':", error);
+    return null;
+  }
+}
+
 async function fetchOrders() {
     const orderList = document.getElementById("listOrders");
     const request1 = new ListOrders_Request("PENDING_CONFIRMATION");
-    const res1 = await fetch("/order_list", {
+    const res1 = await fetch("/cashier/order_list", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(request1.toJson())
@@ -43,7 +86,8 @@ async function fetchOrders() {
 
             // Header (Table name)
             const header = document.createElement("h3");
-            header.textContent = `Table ${tableID}`;
+            const tableName = getTableNameById(tableID);
+            header.textContent = `${tableName}`;
             orderBox.appendChild(header);
 
             // Item list container
@@ -120,7 +164,7 @@ class OrderUpdateStatus_Request1
 async function takeOrder(id) {
     const token = getCookie("token");
     const req = new OrderUpdateStatus_Request1(id, "PENDING_PAYMENT");
-    const res = await fetch("/update_order_status", {
+    const res = await fetch("/cashier/update_order_status", {
         method: "POST",
         headers: {
             "Authorization": token,
@@ -131,6 +175,7 @@ async function takeOrder(id) {
 
     if (res.status == 200)
     {
+        alert("Order Confirmed!!!");
         window.location.reload();
     }
     else if (res.status >= 400 && res.status <= 600) {

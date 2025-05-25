@@ -3,11 +3,11 @@ import threading
 import webbrowser
 import socket
 from waitress import serve
-import qrcode
+# import qrcode
 import os
 
 from Manager import register_manager_routes
-from StorageManager import register_storage_manager_routes
+# from StorageManager import register_storage_manager_routes
 from Bartender import register_bartender_routes
 from Cashier import register_cashier_routes
 from Customer import register_customer_routes

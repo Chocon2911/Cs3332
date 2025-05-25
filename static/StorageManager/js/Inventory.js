@@ -103,10 +103,24 @@ window.onload = () => {
   }
   // Lấy tham số tab từ URL
   const urlParams = new URLSearchParams(window.location.search);
-  const tab = urlParams.get('tab');
-  
-  // Xác định index của tab cần hiển thị
-  let tabIndex = tab === 'running' ? 1 : 0;
+  const tabParam = urlParams.get('tab');
+
+  // Xác định index tab: hỗ trợ cả số và chuỗi
+  let tabIndex = 0; 
+  if (tabParam !== null) {
+    const n = parseInt(tabParam, 10);
+    if (!isNaN(n) && (n === 0 || n === 1)) {
+      tabIndex = n;
+    } else {
+      // map chuỗi
+      const normalized = tabParam.toLowerCase();
+      if (normalized === 'running-out' || normalized === 'running_out') {
+        tabIndex = 1;
+      } else if (normalized === 'all-ingredients' || normalized === 'all_ingredients') {
+        tabIndex = 0;
+      }
+    }
+  }
   // Hiển thị bảng tương ứng
   showTable(tabIndex); // ================== error here
 
