@@ -19,9 +19,7 @@
         <div id="menuBtn">☰</div> <!-- Nút 3 gạch mở Sidebar -->
 
     <!-- Nút Logout-->
-      <form method="POST" action="{{ url_for('goto_customer_order') }}">
-        <button type="submit" id ="logoutBtn">Log out</button>
-      </form>     
+      <button id="logoutBtn" onclick="handleLogout()">Log out</button>   
     </div>
 
     <!-- Danh sách các khu vực (Inside, Outside, ...) -->
@@ -66,7 +64,7 @@
     <!-- Lớp phủ nền khi popup bật -->
     <div id="popupOverlay"></div>
 
-    <!-- Popup chi tiết xử lý bàn (Order / Billing / Force Empty / Delete) -->
+    <!-- Popup chi tiết xử lý bàn -->
     <div id="tablePopup" class="popup" style="display: none;">
         <div class="popup-content">
             <h3 id="popupTitle">Table</h3>
@@ -74,6 +72,7 @@
                 <button id="billBtn">Bill</button>
                 <!-- <button id="orderBtn" href="/customer/coffee">Order</button> -->
                 <button id="orderBtn" onclick="handleOrder()">Order</button>
+                <button id="QRBtn">QR code</button>  
 
             </div>
             <div class="popup-buttons">
@@ -84,11 +83,19 @@
         </div>
     </div>
 
-        <!-- Bill popup) -->
+    <!-- Bill popup -->
     <div id="billPopup" class="popup" style="display: none;">
         <div class="popup-content">
-            <h3>Order Details</h3>
-            <div id="listOrderBills"></div>
+            <div class="popup-header">
+                <h3>Order Details</h3>
+            </div>
+            <div id="listOrderBills" class="popup-body">
+                <!-- nội dung các bill sẽ render ở đây -->
+            </div>
+            <div class="popup-footer">
+                <button id="backBtn" class="btn-red">Back</button>
+                <button id="payBtn" class="btn-green">Pay</button>
+            </div>
         </div>
     </div>
 

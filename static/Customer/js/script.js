@@ -141,8 +141,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /////////////////////////////////////////////////// Hiển thị sản phẩm và xử lí giỏ hàng ////////////////////////////////////////////////
   window.onload = async function () {
+    getTableIDFromCurrentURL();
+    console.log(getCookie("TableID"));
+
   const productList = document.getElementById("productList");
-  const res = await fetch("/product_list", {
+  const res = await fetch("/customer/product_list", {
     method: "GET",
     headers: {
       "Content-Type": "application/json"
@@ -205,7 +208,7 @@ function increaseQty(btn) {
 function decreaseQty(btn) {
   const span = btn.nextElementSibling;
   const current = parseInt(span.textContent);
-  if (current > 1) span.textContent = current - 1;
+  if (current > 0) span.textContent = current - 1;
 }
 
 // ✅ Hàm updateCart lưu vào localStorage
@@ -221,7 +224,7 @@ function updateCart(productId, quantity, productName) {
 
   localStorage.setItem("cart", JSON.stringify(cart));
   console.log("Cart updated:", cart);
-  showSuccessPopup("Add successfully!");
+  showSuccessPopup("Add successfully item to cart!");
 }
 
 //Hiển thị cart
@@ -233,7 +236,7 @@ function showCartItems() {
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
   cartItems.innerHTML = "";
 
-  if (cart.length === 0) {
+  if (cart.length === 0){
     cartItems.innerHTML = `<p class="empty">Your cart is empty!</p>`;
     cartTotal.textContent = "0.00";
     return;
@@ -246,8 +249,8 @@ function showCartItems() {
     itemEl.className = "cart-item";
     itemEl.style.position = "relative";
     itemEl.innerHTML = `
-      <span>${item.name}</span>
-      <span>x${item.quantity}</span>
+      <span class="item-name">${item.name}</span>
+      <span class="item-quantity">x${item.quantity}</span>
       <button class="remove-btn" onclick="removeCartItem(${index})">X</button>
     `;
     cartItems.appendChild(itemEl);
@@ -350,7 +353,7 @@ document.querySelector('.send-cart-btn').addEventListener("click", async functio
     
     console.log(request.toJson());
 
-        const res = await fetch("/order_create", {
+        const res = await fetch("/customer/order_create", {
             method: "POST",
             headers: 
             {
@@ -429,7 +432,7 @@ document.getElementById('orderBtn').addEventListener("click", async function () 
     const request1 = new ListOrders_Request(tableID);
 
     try {
-        const res1 = await fetch("/order_list", {
+        const res1 = await fetch("/cashier/order_list", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(request1.toJson())
@@ -437,12 +440,21 @@ document.getElementById('orderBtn').addEventListener("click", async function () 
 
         const result = await res1.json();
 
+        const emptyOrderMsg = document.querySelector(".empty-order");
+
         if (res1.status === 302) {
             const ordersString = JSON.stringify(result.orders);
             if (ordersString === lastOrderBillData) return;
 
             lastOrderBillData = ordersString;
             orderList.innerHTML = "";
+
+            if (result.orders.length === 0) {
+                if (emptyOrderMsg) emptyOrderMsg.style.display = "block"; // Hiện thông báo
+                return;
+            } else {
+                if (emptyOrderMsg) emptyOrderMsg.style.display = "none"; // Ẩn thông báo
+            }
 
             result.orders.forEach(order => {
                 const orderDiv = document.createElement("div");
@@ -507,3 +519,9 @@ document.getElementById('orderBtn').addEventListener("click", async function () 
     }
 });
 
+///////////////////////////// Get tableID from current web href ///////////////////////////
+function getTableIDFromCurrentURL() {
+  const url = window.location.href;
+  const parsedUrl = new URL(url);
+  setCookie("TableID", parsedUrl.searchParams.get("tableID"));
+}

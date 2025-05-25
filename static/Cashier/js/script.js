@@ -1,18 +1,14 @@
 //===========================================Cookie===========================================
-function setCookie(name, value) 
-{
+function setCookie(name, value) {
     document.cookie = name + "=" + value + ";path=/";
 }
 
-function getCookie(name) 
-{
+function getCookie(name) {
     const cookieArr = document.cookie.split(";");
 
-    for (let i = 0; i < cookieArr.length; i++) 
-        {
+    for (let i = 0; i < cookieArr.length; i++) {
         const cookiePair = cookieArr[i].split("=");
-        if (name == cookiePair[0].trim()) 
-            {
+        if (name == cookiePair[0].trim()) {
             return cookiePair[1];
         }
     }
@@ -306,19 +302,38 @@ function updateButtonStates(status) {
     });
 }
 
+function deleteAllCookies() {
+    document.cookie.split(";").forEach(cookie => {
+        const eqPos = cookie.indexOf("=");
+        const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+    });
+}
+/////////////////////////////////////////////Handle Button//////////////////////////////////////////////////////////
+function handleLogout() {
+    deleteAllCookies();
+    window.location.href = '/manager/login';
+}
+
 function handleOrder() {
     if (areas[currentArea] && areas[currentArea][currentTableId]) {
         areas[currentArea][currentTableId].status = 1; // Đổi trạng thái bàn sang in_service
+
         saveAreasToLocalStorage();
         renderTables(); // Cập nhật lại màu bàn
     }
-    postRedirect("/customer/goto_coffee");
+    const tableID = areas[currentArea][currentTableId]?.tableID ?? '';
+    if (tableID) {
+        window.open(`/customer/coffee?tableID=${tableID}`);
+    } else {
+        postRedirect("/customer/goto_coffee");
+    }
     localStorage.removeItem("cart");
 }
 
 async function handleComplete() {
     const orders = await fetchOrders();
-
+    console.log(orders);
     if (orders.length > 0) {
         for (const order of orders) {
             await completedOrder(order.orderID, true); // Hoàn tất từng đơn hàng
@@ -346,6 +361,7 @@ async function handleCancel() {
         for (const order of orders) {
             await cancelOrder(order.orderID, true); // Hoàn tất từng đơn hàng
         }
+        isAlert = true;
         alert("✔️ Order Cancelled!");
         window.location.reload();
     }
@@ -402,7 +418,7 @@ if (popupOverlay) {
         popupOverlay.style.display = "none";
 
         const billPopup = document.getElementById('billPopup');
-        if (billPopup) billPopup.style.display = "none"; 
+        if (billPopup) billPopup.style.display = "none";
 
         const tablePopup = document.getElementById("tablePopup");
         if (tablePopup) tablePopup.style.display = "none";
@@ -450,6 +466,35 @@ class UserInfo_Response {
 ////////////////////////////////////////////Lấy thông tin bill theo bàn////////////////////////////////////////////////
 let lastOrderBillData = "";
 
+document.addEventListener("DOMContentLoaded", () => {
+    // Gán sự kiện cho Back và Pay ngay khi DOM sẵn sàng
+    const backBtn = document.getElementById("backBtn");
+    const payBtn = document.getElementById("payBtn");
+
+    if (backBtn && payBtn) {
+        backBtn.addEventListener("click", function () {
+            document.getElementById("billPopup").style.display = "none";
+            document.getElementById("tablePopup").style.display = "block";
+            document.getElementById("popupOverlay").style.display = "block";
+        });
+
+        payBtn.addEventListener("click", async function () {
+            if (!window._latestOrderResult || !Array.isArray(window._latestOrderResult.orders)) {
+                showToast("No orders to pay!");
+                return;
+            }
+
+            for (const ord of window._latestOrderResult.orders) {
+                await payOrder(ord.orderID, true);
+            }
+            alert("✔️ Order Paid!");
+            window.location.reload();
+        });
+    } else {
+        console.error("❗ Buttons not found: backBtn or payBtn");
+    }
+});
+
 document.getElementById('billBtn').addEventListener("click", async function () {
     const orderList = document.getElementById("listOrderBills");
     if (!orderList) {
@@ -458,7 +503,7 @@ document.getElementById('billBtn').addEventListener("click", async function () {
     }
 
     const request1 = new ListOrders_Request("PENDING_PAYMENT", areas[currentArea][currentTableId].tableID);
-    const res1 = await fetch("/order_list", {
+    const res1 = await fetch("/cashier/order_list", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(request1.toJson())
@@ -475,6 +520,9 @@ document.getElementById('billBtn').addEventListener("click", async function () {
         const ordersString = JSON.stringify(result.orders);
         if (ordersString === lastOrderBillData) return;
         lastOrderBillData = ordersString;
+
+        // Lưu tạm để nút Pay dùng
+        window._latestOrderResult = result;
 
         // Xóa nội dung cũ
         orderList.innerHTML = "";
@@ -502,33 +550,6 @@ document.getElementById('billBtn').addEventListener("click", async function () {
             orderList.appendChild(orderContainer);
         });
 
-        // Thêm nút điều khiển: Back và Pay
-        const buttonContainer = document.createElement("div");
-        buttonContainer.classList.add("orderbill-button-group");
-
-        buttonContainer.innerHTML = `
-            <button id="backBtn" class="btn-red">Back</button>
-            <button id="payBtn" class="btn-green">Pay</button>
-        `;
-
-        orderList.appendChild(buttonContainer);
-
-        // Sự kiện nút Back
-        document.getElementById("backBtn").addEventListener("click", function () {
-            document.getElementById("billPopup").style.display = "none";
-            document.getElementById("tablePopup").style.display = "block";
-            document.getElementById("popupOverlay").style.display = "block";
-        });
-
-        // Sự kiện nút Pay (bạn có thể thay đổi để gọi API thật)
-        document.getElementById("payBtn").addEventListener("click",async function () {
-        for (const ord of result.orders) {
-            await payOrder(ord.orderID, true);
-        }
-            alert("✔️ Order Paid!");
-            window.location.reload();
-        });
-
         // Hiển thị popup
         document.getElementById("tablePopup").style.display = "none";
         document.getElementById("billPopup").style.display = "block";
@@ -540,12 +561,12 @@ document.getElementById('billBtn').addEventListener("click", async function () {
     }
 });
 
-////////////////////////////////////////////Fetch orderlist////////////////////////////////////////////////
+////////////////////////////////////////////Fetch orderlist READY////////////////////////////////////////////////
 async function fetchOrders() {
-    const request = new ListOrders_Request("PENDING_PAYMENT", areas[currentArea][currentTableId].tableID);
+    const request = new ListOrders_Request("READY", areas[currentArea][currentTableId].tableID);
 
     try {
-        const res = await fetch("/order_list", {
+        const res = await fetch("/cashier/order_list", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(request.toJson())
@@ -566,16 +587,13 @@ async function fetchOrders() {
 }
 
 ////////////////////////////////////////////Pay Order////////////////////////////////////////////////
-class OrderUpdateStatus_Request
-{
-    constructor(orderId, newStatus)
-    {
+class OrderUpdateStatus_Request {
+    constructor(orderId, newStatus) {
         this.orderId = orderId;
         this.newStatus = newStatus;
     }
 
-    toJson()
-    {
+    toJson() {
         return {
             orderID: this.orderId,
             newStatus: this.newStatus
@@ -586,7 +604,7 @@ class OrderUpdateStatus_Request
 async function payOrder(id, skipReload = false) {
     const token = getCookie("token");
     const req = new OrderUpdateStatus_Request(id, "PAID");
-    const res = await fetch("/update_order_status", {
+    const res = await fetch("/cashier/update_order_status", {
         method: "POST",
         headers: {
             "Authorization": token,
@@ -595,8 +613,7 @@ async function payOrder(id, skipReload = false) {
         body: JSON.stringify(req.toJson())
     });
 
-    if (res.status == 200)
-    {
+    if (res.status == 200) {
         if (!skipReload) {
             window.location.reload();
         }
@@ -609,8 +626,7 @@ async function payOrder(id, skipReload = false) {
         const err = await res.json();
         console.error("Server error: " + err['error']);
     }
-    else 
-    {
+    else {
         const data = await res.json();
         console.error("Unexpected error: " + data['error']);
     }
@@ -619,8 +635,9 @@ async function payOrder(id, skipReload = false) {
 ////////////////////////////////////////////Order Complete//////////////////////////////////////////////////
 async function completedOrder(id, skipReload = false) {
     const token = getCookie("token");
+    console.log("FUCK");
     const req = new OrderUpdateStatus_Request(id, "COMPLETED");
-    const res = await fetch("/update_order_status", {
+    const res = await fetch("/cashier/update_order_status", {
         method: "POST",
         headers: {
             "Authorization": token,
@@ -629,8 +646,7 @@ async function completedOrder(id, skipReload = false) {
         body: JSON.stringify(req.toJson())
     });
 
-    if (res.status == 200)
-    {
+    if (res.status == 200) {
         if (!skipReload) {
             window.location.reload();
         }
@@ -643,8 +659,7 @@ async function completedOrder(id, skipReload = false) {
         const err = await res.json();
         console.error("Server error: " + err['error']);
     }
-    else 
-    {
+    else {
         const data = await res.json();
         console.error("Unexpected error: " + data['error']);
     }
@@ -654,7 +669,7 @@ async function completedOrder(id, skipReload = false) {
 async function cancelOrder(id, skipReload = false) {
     const token = getCookie("token");
     const req = new OrderUpdateStatus_Request(id, "CANCELLED");
-    const res = await fetch("/update_order_status", {
+    const res = await fetch("/cashier/update_order_status", {
         method: "POST",
         headers: {
             "Authorization": token,
@@ -663,8 +678,7 @@ async function cancelOrder(id, skipReload = false) {
         body: JSON.stringify(req.toJson())
     });
 
-    if (res.status == 200)
-    {
+    if (res.status == 200) {
         if (!skipReload) {
             window.location.reload();
         }
@@ -677,9 +691,32 @@ async function cancelOrder(id, skipReload = false) {
         const err = await res.json();
         console.error("Server error: " + err['error']);
     }
-    else 
-    {
+    else {
         const data = await res.json();
         console.error("Unexpected error: " + data['error']);
     }
 }
+
+document.getElementById("QRBtn").addEventListener("click", () => {
+    if (areas[currentArea] && areas[currentArea][currentTableId]) {
+        areas[currentArea][currentTableId].status = 1; // Đổi trạng thái bàn sang in_service
+
+        saveAreasToLocalStorage();
+        renderTables(); // Cập nhật lại màu bàn
+    }
+    const tableID = areas[currentArea][currentTableId].tableID;
+    if (!tableID) {
+        alert("Không tìm thấy tableID trong dữ liệu!");
+        return;
+    }
+
+    // Tạo link đầy đủ để xử lý đúng trong URL constructor
+    const fullUrl = new URL(`/customer/coffee?tableID=${encodeURIComponent(tableID)}`, window.location.origin);
+
+    // Lấy lại tableID từ URL
+    const extractedID = fullUrl.searchParams.get("tableID");
+
+    // Tạo link QR code
+    const qrPageUrl = `/cashier/qrcode?tableID=${encodeURIComponent(extractedID)}`;
+    window.open(qrPageUrl, "_blank");
+});

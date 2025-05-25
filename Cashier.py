@@ -2,7 +2,7 @@ from flask import render_template, request, jsonify, url_for, make_response, red
 from datetime import datetime
 import requests
 
-URL = "natsu-dev.space:8080" 
+URL = "http://natsu-dev.space:8080"
 
 def forward_response(r):
     response = make_response(r.content, r.status_code)
@@ -26,6 +26,10 @@ def register_cashier_routes(app):
     @app.route('/cashier/history', methods=['GET'])
     def cashier_history():
         return render_template('Cashier/html/history.html') 
+    
+    @app.route('/cashier/qrcode', methods=["GET"])
+    def qr_generator():     
+        return render_template("Cashier/html/qrcode.html")
 
     # Các POST endpoint để điều hướng
     @app.route('/cashier/goto_cafetest', methods=['POST'])
@@ -47,7 +51,7 @@ def register_cashier_routes(app):
     
     #======================================Request Response======================================
     #===list_orders===
-    @app.route('/order_list', methods=['POST'])
+    @app.route('/cashier/order_list', methods=['POST'])
     def cashier_list_orders():
         token = request.headers.get("Authorization")
         data = request.get_json()
@@ -64,7 +68,7 @@ def register_cashier_routes(app):
         return forward_response(response)
 
     #===update_order_status===
-    @app.route('/update_order_status', methods=['POST'])
+    @app.route('/cashier/update_order_status', methods=['POST'])
     def cashier_update_order_status():
         token = request.headers.get("Authorization")
         header = {

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>QR Code</title>
+  <!-- ✅ Load thư viện QR -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='Cashier/css/main_cafetest.css') }}">
+</head>
+<body>
+  <h2>QR Code for Table</h2>
+  <canvas id="qrcode"></canvas>
+  <p id="linkDisplay"></p>
+
+  <script>
+    function getBaseUrl() {
+        return new URL(window.location.href).origin;
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const url = new URL(window.location.href);
+      const tableID = url.searchParams.get("tableID");
+
+      if (!tableID) {
+        document.body.innerHTML = "<p>Không tìm thấy tableID trong URL!</p>";
+        return;
+      }
+
+      // ✅ Tạo link đến trang customer
+      const targetLink = `${getBaseUrl()}/customer/coffee?tableID=${encodeURIComponent(tableID)}`;
+      // document.getElementById("linkDisplay").textContent = `Link: ${targetLink}`;
+
+      // ✅ Tạo QR code lên canvas
+      QRCode.toCanvas(document.getElementById("qrcode"), targetLink, {
+        width: 256
+      }, function (error) {
+        if (error) console.error(error);
+      });
+    });
+  </script>
+</body>
+</html>
