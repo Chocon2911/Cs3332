@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
 /////////////////////////////////////////////////// Hiển thị sản phẩm và xử lí giỏ hàng ////////////////////////////////////////////////
   window.onload = async function () {
   const productList = document.getElementById("productList");
-  const res = await fetch("/product_list", {
+  const res = await fetch("/customer/product_list", {
     method: "GET",
     headers: {
       "Content-Type": "application/json"
@@ -350,7 +350,7 @@ document.querySelector('.send-cart-btn').addEventListener("click", async functio
     
     console.log(request.toJson());
 
-        const res = await fetch("/order_create", {
+        const res = await fetch("/customer/order_create", {
             method: "POST",
             headers: 
             {
@@ -429,7 +429,7 @@ document.getElementById('orderBtn').addEventListener("click", async function () 
     const request1 = new ListOrders_Request(tableID);
 
     try {
-        const res1 = await fetch("/order_list", {
+        const res1 = await fetch("/cashier/order_list", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(request1.toJson())

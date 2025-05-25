@@ -332,7 +332,7 @@ function handleOrder() {
 
 async function handleComplete() {
     const orders = await fetchOrders();
-
+    console.log(orders);
     if (orders.length > 0) {
         for (const order of orders) {
             await completedOrder(order.orderID, true); // Hoàn tất từng đơn hàng
@@ -354,14 +354,28 @@ async function handleComplete() {
 }
 
 async function handleCancel() {
-    const orders = await fetchOrders();
+    const orders = await fetchOrders1();
+    const orders1 = await fetchOrders2();
+    isAlert = false;
 
     if (orders.length > 0) {
         for (const order of orders) {
             await cancelOrder(order.orderID, true); // Hoàn tất từng đơn hàng
         }
+        isAlert = true;
         alert("✔️ Order Cancelled!");
         window.location.reload();
+    }
+
+    if (orders1.length > 0) {
+        for (const order of orders1) {
+            await cancelOrder(order.orderID, true); // Hoàn tất từng đơn hàng
+        }
+        if (!isAlert)
+        { 
+            alert("✔️ Order Cancelled!");
+            window.location.reload();
+        }
     }
 
     if (areas[currentArea] && areas[currentArea][currentTableId]) {
@@ -501,7 +515,7 @@ document.getElementById('billBtn').addEventListener("click", async function () {
     }
 
     const request1 = new ListOrders_Request("PENDING_PAYMENT", areas[currentArea][currentTableId].tableID);
-    const res1 = await fetch("/order_list", {
+    const res1 = await fetch("/cashier/order_list", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(request1.toJson())
@@ -559,12 +573,62 @@ document.getElementById('billBtn').addEventListener("click", async function () {
     }
 });
 
-////////////////////////////////////////////Fetch orderlist////////////////////////////////////////////////
-async function fetchOrders() {
+////////////////////////////////////////////Fetch orderlist READY////////////////////////////////////////////////
+async function fetchOrders() { 
+    const request = new ListOrders_Request("READY", areas[currentArea][currentTableId].tableID);
+
+    try {
+        const res = await fetch("/cashier/order_list", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(request.toJson())
+        });
+
+        const result = await res.json();
+
+        if (res.status === 302) {
+            return result.orders;  // Trả về danh sách đơn hàng
+        } else {
+            // Nếu có lỗi thì ném ra exception để xử lý bên ngoài
+            throw new Error(result.error || `Request failed with status ${res.status}`);
+        }
+    } catch (err) {
+        console.error("Fetch orders failed:", err);
+        throw err;
+    }
+}
+
+////////////////////////////////////////////Fetch orderlist PENDING_CONFIRMATION////////////////////////////////////////////////
+async function fetchOrders1() { 
+    const request = new ListOrders_Request("PENDING_CONFIRMATION", areas[currentArea][currentTableId].tableID);
+
+    try {
+        const res = await fetch("/cashier/order_list", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(request.toJson())
+        });
+
+        const result = await res.json();
+
+        if (res.status === 302) {
+            return result.orders;  // Trả về danh sách đơn hàng
+        } else {
+            // Nếu có lỗi thì ném ra exception để xử lý bên ngoài
+            throw new Error(result.error || `Request failed with status ${res.status}`);
+        }
+    } catch (err) {
+        console.error("Fetch orders failed:", err);
+        throw err;
+    }
+}
+
+////////////////////////////////////////////Fetch orderlist PENDING_PAYMENT////////////////////////////////////////////////
+async function fetchOrders2() { 
     const request = new ListOrders_Request("PENDING_PAYMENT", areas[currentArea][currentTableId].tableID);
 
     try {
-        const res = await fetch("/order_list", {
+        const res = await fetch("/cashier/order_list", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(request.toJson())
@@ -605,7 +669,7 @@ class OrderUpdateStatus_Request
 async function payOrder(id, skipReload = false) {
     const token = getCookie("token");
     const req = new OrderUpdateStatus_Request(id, "PAID");
-    const res = await fetch("/update_order_status", {
+    const res = await fetch("/cashier/update_order_status", {
         method: "POST",
         headers: {
             "Authorization": token,
@@ -638,8 +702,9 @@ async function payOrder(id, skipReload = false) {
 ////////////////////////////////////////////Order Complete//////////////////////////////////////////////////
 async function completedOrder(id, skipReload = false) {
     const token = getCookie("token");
+    console.log("FUCK");
     const req = new OrderUpdateStatus_Request(id, "COMPLETED");
-    const res = await fetch("/update_order_status", {
+    const res = await fetch("/cashier/update_order_status", {
         method: "POST",
         headers: {
             "Authorization": token,
@@ -673,7 +738,7 @@ async function completedOrder(id, skipReload = false) {
 async function cancelOrder(id, skipReload = false) {
     const token = getCookie("token");
     const req = new OrderUpdateStatus_Request(id, "CANCELLED");
-    const res = await fetch("/update_order_status", {
+    const res = await fetch("/cashier/update_order_status", {
         method: "POST",
         headers: {
             "Authorization": token,

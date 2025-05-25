@@ -47,7 +47,7 @@ function getTableNameByIdNew(tableId) {
 async function fetchBills() {
     const orderList = document.getElementById("listBills");
     const request1 = new ListOrders_Request("COMPLETED");
-    const res1 = await fetch("/order_list", {
+    const res1 = await fetch("/cashier/order_list", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(request1.toJson())

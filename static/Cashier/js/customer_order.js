@@ -47,7 +47,7 @@ function getTableNameById(tableId) {
 async function fetchOrders() {
     const orderList = document.getElementById("listOrders");
     const request1 = new ListOrders_Request("PENDING_CONFIRMATION");
-    const res1 = await fetch("/order_list", {
+    const res1 = await fetch("/cashier/order_list", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(request1.toJson())
@@ -164,7 +164,7 @@ class OrderUpdateStatus_Request1
 async function takeOrder(id) {
     const token = getCookie("token");
     const req = new OrderUpdateStatus_Request1(id, "PENDING_PAYMENT");
-    const res = await fetch("/update_order_status", {
+    const res = await fetch("/cashier/update_order_status", {
         method: "POST",
         headers: {
             "Authorization": token,
