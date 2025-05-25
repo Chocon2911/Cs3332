@@ -14,10 +14,6 @@ def dashboard():
 def inventory():
     return render_template('StorageManager/Inventory.html')
 
-@storage_ui_bp.route('/inventory2')
-def inventory2():
-    return render_template('StorageManager/Inventory2.html')
-
 @storage_ui_bp.route('/import', endpoint = 'import')
 def import_view():
     return render_template('StorageManager/Import.html')
@@ -44,9 +40,6 @@ def register_storage_manager_routes(app):
     
     from app.routes.Inventory_route import inventory_bp
     app.register_blueprint(inventory_bp, url_prefix='/storage_manager')
-    
-    from app.routes.Inventory2_route import inventory2_bp
-    app.register_blueprint(inventory2_bp, url_prefix='/storage_manager')
     
     from app.routes.Import_route import import_bp
     app.register_blueprint(import_bp, url_prefix='/storage_manager')

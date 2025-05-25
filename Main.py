@@ -21,11 +21,12 @@ host_ip = socket.gethostbyname(socket.gethostname())
 url = f"http://{host_ip}:{port}/manager/login"
 
 #====================== ROUTES =====================
-register_manager_routes(app)
-# register_storage_manager_routes(app)
-register_bartender_routes(app)
-register_cashier_routes(app)
-register_customer_routes(app)
+with app.app_context():
+    register_manager_routes(app)
+    register_storage_manager_routes(app)
+    register_customer_routes(app)
+    register_cashier_routes(app)
+    register_bartender_routes(app)
 
 print(url)
 #====================== QR & BROWSER =====================
@@ -40,4 +41,4 @@ print(url)
 #====================== MAIN =====================
 if __name__ == '__main__':
     # threading.Timer(1.0, open_browser).start()
-    serve(app, host='0.0.0.0', port=port)
+    serve(app, host="0.0.0.0", port=port)

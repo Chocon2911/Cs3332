@@ -98,13 +98,20 @@ window.onload = async () =>
 
     if (res.status == 302)
     {
-        return;
+        
     }
     else if (res.status >= 400 && res.status <= 600)
     {
         if (res.status == 401)
         {
             window.location.href = "/manager/login";
+            return;
+        }
+
+        if (res.status == 500)
+        {
+            ErrorMessage.classList.add("show");
+            ErrorMessage.textContent = "Internal Server Error";
             return;
         }
 
@@ -194,8 +201,38 @@ async function submit()
         ingredients.push(new Ingredient(name, quantity));
     }
 
+    // ===Validate===
+    if (ingredients.length == 0)
+    {
+        document.getElementById("ErrorMessage").classList.add("show");
+        document.getElementById("ErrorMessage").textContent  = "You must add at least one ingredient!";
+        return;
+    }
+
+    if (ItemName.value.trim() == "" || ItemUnit.value.trim() == "" || ItemPrice.value.trim() == "")
+    {
+        document.getElementById("ErrorMessage").classList.add("show");
+        document.getElementById("ErrorMessage").textContent  = "You must fill in all fields!";
+        return;
+    }
+
+    if (isNaN(ItemPrice.value))
+    {
+        document.getElementById("ErrorMessage").classList.add("show");
+        document.getElementById("ErrorMessage").textContent  = "Price must be a number!";
+        return;
+    }
+
+    if (ItemPrice.value <= 0)
+    {
+        document.getElementById("ErrorMessage").classList.add("show");
+        document.getElementById("ErrorMessage").textContent  = "Price must be greater than 0!";
+        return;
+    }
+
+    //===Create Item===
     const token = getCookie("token");
-    const request = new ProductCreate_Request(ItemName.value, ItemUnit.value, ItemPrice.value, ingredients, ExecuteGuide.value);
+    const request = new ProductCreate_Request(ItemName.value, ItemUnit.value, ItemPrice.value, ingredients, "");
     
     console.log(request.toJson());
     
@@ -221,7 +258,12 @@ async function submit()
             window.location.href = "/manager/login";
             return;
         }
-        console.log("Server Error: " + result["error"]);
+        else if (result["error"] == "Internal Server Error")
+        {
+            ErrorMessage.classList.add("show");
+            ErrorMessage.textContent = "Server Error: " + result["error"];
+            return;
+        }
     }
     else
     {

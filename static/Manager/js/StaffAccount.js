@@ -178,6 +178,14 @@ document.getElementById("CreateButton").addEventListener("click", async function
                 window.location.href = "/manager/login";
                 return;
             }
+            else if (res.status == 500)
+            {
+                data = await res.json();
+                ErrorMessage.classList.add("show");
+                ErrorMessage.textContent = "Server Error: " + data["error"];
+                return;
+            }
+
             data = await res.json();
             ErrorMessage.classList.add("show");
             ErrorMessage.textContent = "Server Error: " + data["error"];
@@ -208,6 +216,27 @@ function validateData(data)
     {
         ErrorMessage.classList.add("show");
         ErrorMessage.textContent = "Password must be below 32 characters";
+        return false;
+    }
+
+    else if (data.phone.length < 8)
+    {
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "Your phone number must be at least 8 digits long";
+        return false;
+    }
+
+    else if (data.phone.length > 16)
+    {
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "Your phone number must be at most 16 digits long";
+        return false;
+    }
+
+    else if (data.email.indexOf("@") == -1)
+    {
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "Your email must contain @ symbol";
         return false;
     }
 

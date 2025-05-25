@@ -100,6 +100,13 @@ window.onload = async function ()
             return;
         }
 
+        else if (res.status == 500)
+        {
+            ErrorMessage.classList.add("show");
+            ErrorMessage.textContent = "Internal Server Error";
+            return;
+        }
+
         data = await res.json();
         console.log(data["error"]);
     }
@@ -258,6 +265,13 @@ function validateData(data)
         return false;
     }
 
+    else if (data.email.indexOf("@") == -1)
+    {
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "Your email must contain an @ symbol";
+        return false;
+    }
+
     else 
     {
         ErrorMessage.classList.remove("show");
@@ -266,7 +280,7 @@ function validateData(data)
 
     for (i = 0; i < data.phone.length; i++)
     {
-        if (data.phone[i] < "0" || data.phone[i] > "9" || data.phone[i] == "+")
+        if (data.phone[i] < "0" || data.phone[i] > "9" || data.phone[i] != "+")
         {
             ErrorMessage.classList.add("show");
             ErrorMessage.textContent = "Your phone number must only contain digits";

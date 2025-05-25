@@ -92,7 +92,7 @@ StorageManagerBtn.addEventListener("click", function (event)
 
 BartenderBtn.addEventListener("click", function (event)
 {
-    window.location.href = "...";
+    window.location.href = "/bartender/base";
 });
 
 CustomerBtn.addEventListener("click", function (event)
