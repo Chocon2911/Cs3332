@@ -354,9 +354,7 @@ async function handleComplete() {
 }
 
 async function handleCancel() {
-    const orders = await fetchOrders1();
-    const orders1 = await fetchOrders2();
-    isAlert = false;
+    const orders = await fetchOrders();
 
     if (orders.length > 0) {
         for (const order of orders) {
@@ -365,17 +363,6 @@ async function handleCancel() {
         isAlert = true;
         alert("✔️ Order Cancelled!");
         window.location.reload();
-    }
-
-    if (orders1.length > 0) {
-        for (const order of orders1) {
-            await cancelOrder(order.orderID, true); // Hoàn tất từng đơn hàng
-        }
-        if (!isAlert)
-        { 
-            alert("✔️ Order Cancelled!");
-            window.location.reload();
-        }
     }
 
     if (areas[currentArea] && areas[currentArea][currentTableId]) {
@@ -576,56 +563,6 @@ document.getElementById('billBtn').addEventListener("click", async function () {
 ////////////////////////////////////////////Fetch orderlist READY////////////////////////////////////////////////
 async function fetchOrders() { 
     const request = new ListOrders_Request("READY", areas[currentArea][currentTableId].tableID);
-
-    try {
-        const res = await fetch("/cashier/order_list", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(request.toJson())
-        });
-
-        const result = await res.json();
-
-        if (res.status === 302) {
-            return result.orders;  // Trả về danh sách đơn hàng
-        } else {
-            // Nếu có lỗi thì ném ra exception để xử lý bên ngoài
-            throw new Error(result.error || `Request failed with status ${res.status}`);
-        }
-    } catch (err) {
-        console.error("Fetch orders failed:", err);
-        throw err;
-    }
-}
-
-////////////////////////////////////////////Fetch orderlist PENDING_CONFIRMATION////////////////////////////////////////////////
-async function fetchOrders1() { 
-    const request = new ListOrders_Request("PENDING_CONFIRMATION", areas[currentArea][currentTableId].tableID);
-
-    try {
-        const res = await fetch("/cashier/order_list", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(request.toJson())
-        });
-
-        const result = await res.json();
-
-        if (res.status === 302) {
-            return result.orders;  // Trả về danh sách đơn hàng
-        } else {
-            // Nếu có lỗi thì ném ra exception để xử lý bên ngoài
-            throw new Error(result.error || `Request failed with status ${res.status}`);
-        }
-    } catch (err) {
-        console.error("Fetch orders failed:", err);
-        throw err;
-    }
-}
-
-////////////////////////////////////////////Fetch orderlist PENDING_PAYMENT////////////////////////////////////////////////
-async function fetchOrders2() { 
-    const request = new ListOrders_Request("PENDING_PAYMENT", areas[currentArea][currentTableId].tableID);
 
     try {
         const res = await fetch("/cashier/order_list", {
