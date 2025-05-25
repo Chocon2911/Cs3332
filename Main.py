@@ -41,4 +41,4 @@ print(url)
 #====================== MAIN =====================
 if __name__ == '__main__':
     # threading.Timer(1.0, open_browser).start()
-    serve(app, host='0.0.0.0', port=port)
+    serve(app, host="0.0.0.0", port=port)
