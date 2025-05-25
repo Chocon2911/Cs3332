@@ -151,7 +151,7 @@ window.onload = async function ()
     else 
     {
         const data = await res.json();
-        console.error("Error:", data["error"]);
+        console.error("Error:" + data["error"]);
         return;
     }
 
