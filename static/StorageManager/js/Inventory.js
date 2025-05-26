@@ -125,7 +125,7 @@ window.onload = () => {
   showTable(tabIndex); // ================== error here
 
   document.getElementById('confirm-yes').onclick = () => {
-      window.location.href = 'manager/login';
+      window.location.href = '/manager/login';
   };
 
   document.getElementById('confirm-no').onclick = () => {
