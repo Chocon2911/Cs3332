@@ -31,7 +31,7 @@
       <form method="POST" action="{{ url_for('goto_customer_coffee') }}">
         <button type="submit" class="sidebar-link" data-page="coffee">💖 Shop best-sellers</button>
       </form>
-      <form method="POST" action="{{ url_for('goto_customer_espresso') }}">
+      {% comment %} <form method="POST" action="{{ url_for('goto_customer_espresso') }}">
         <button type="submit" class="sidebar-link" data-page="espresso">☕ Espresso Coffee</button>
       </form>
       <form method="POST" action="{{ url_for('goto_customer_vietnamese_phin') }}">
@@ -39,7 +39,7 @@
       </form>
       <form method="POST" action="{{ url_for('goto_customer_tea') }}">
         <button type="submit" class="sidebar-link" data-page="tea">🍵 Tea</button>
-      </form>
+      </form> {% endcomment %}
       <!-- Nút Back -->
       <form method="POST" action="{{ url_for('goto_cashier_cafetest_from_customer') }}">
         <button type="submit" class="back-button">Back</button>

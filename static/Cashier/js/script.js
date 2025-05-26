@@ -75,7 +75,7 @@ function addNewArea() {
 }
 
 function deleteArea(name) {
-    if (confirm(`Bạn có chắc muốn xóa khu vực "${name}" không?`)) {
+    if (confirm(`Are you sure to delete "${name}" area?`)) {
         delete areas[name];
         const areaNames = Object.keys(areas);
         currentArea = areaNames.length > 0 ? areaNames[0] : "";
@@ -381,15 +381,19 @@ async function handleCancel() {
 
 
 function handleDelete() {
-    if (areas[currentArea]) {
-        areas[currentArea].splice(currentTableId, 1);
-        saveAreasToLocalStorage();
+    if (confirm(`Are you sure to delete this table?`)) {
+        if (areas[currentArea]) 
+        {
+            areas[currentArea].splice(currentTableId, 1);
+            saveAreasToLocalStorage();
+        }
+
+        const overlay = document.getElementById("popupOverlay");
+        const popup = document.getElementById("tablePopup");
+        if (overlay) overlay.style.display = "none";
+        if (popup) popup.style.display = "none";
+        renderTables();
     }
-    const overlay = document.getElementById("popupOverlay");
-    const popup = document.getElementById("tablePopup");
-    if (overlay) overlay.style.display = "none";
-    if (popup) popup.style.display = "none";
-    renderTables();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
