@@ -417,7 +417,7 @@ async function renderOrders(orders) {
             </div>
             <!--Buttons-->
             <div class="OrderButtons">
-                <button type="button" class="ContentButton TakeBtn ${isTaken ? "" : "hide"}" id="TakeBtn_${i+1}" value="${order.orderId}" onclick="takeOrder('${order.orderId}')">Take</button>
+                <button type="button" class="ContentButton TakeBtn ${isTaken ? "hide" : ""}" id="TakeBtn_${i+1}" value="${order.orderId}" onclick="takeOrder('${order.orderId}')">Take</button>
                 <button type="button" class="ContentButton CancelBtn ${isTaken && isValid ? "" : "hide" }" id="CancelBtn_${i+1}" value="${order.orderId}" onclick="cancelOrder('${order.orderId}')">Cancel</button>
                 <button type="button" class="ContentButton ConfirmBtn ${isTaken && isValid ? "" : "hide"}" id="ConfirmBtn_${i+1}" value="${order.orderId}" onclick="completeOrder('${order.orderId}')">Complete</button>
                 <button type="button" class="ContentButton EmptyBtn" ${isTaken && !isValid ? "" : "hide"}>Empty</button>
