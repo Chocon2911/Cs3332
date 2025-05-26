@@ -35,7 +35,7 @@ body {
     position: fixed;
     top: 0;
     width: 100%;
-    height: 12%;
+    height: 80px;
     background-color: white;
     border-bottom: 1px solid black;
     display: flex;
@@ -541,12 +541,13 @@ body {
 #listOrders {
     display: grid;
     display: flex;
-    padding: 200px 0px 90px 0px;
+    padding: 130px 0px 60px 0px;
     background-color: #e3ecf100;
     flex-wrap: wrap;
     justify-content: center;
     align-items: flex-start;
     gap: 80px;
+    overflow-y: auto;
 }
 
 /* Khung của mỗi đơn hàng */
@@ -621,12 +622,13 @@ body {
 #listBills {
     display: grid;
     display: flex;
-    padding: 180px 100px 90px 100px;
+    padding: 130px 100px 50px 100px;
     background-color: #e3ecf100;
     flex-wrap: wrap;
     justify-content: center;
     align-items: flex-start;
     gap: 50px;
+    overflow-y: auto;
 }
 
 .bill-card {
