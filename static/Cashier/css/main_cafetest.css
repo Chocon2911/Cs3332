@@ -541,7 +541,7 @@ body {
     display: grid;
     display: flex;
     padding: 200px 0px 90px 0px;
-    background-color: var(--backgroundcolor);
+    background-color: #e3ecf1;
     flex-wrap: wrap;
     justify-content: center;
     align-items: flex-start;
@@ -621,7 +621,7 @@ body {
     display: grid;
     display: flex;
     padding: 180px 100px 90px 100px;
-    background-color: var(--backgroundcolor);
+    background-color: #e3ecf1;
     flex-wrap: wrap;
     justify-content: center;
     align-items: flex-start;
