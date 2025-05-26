@@ -100,14 +100,9 @@ window.onload = async function ()
             return;
         }
 
-        else if (res.status == 500)
-        {
-            ErrorMessage.classList.add("show");
-            ErrorMessage.textContent = "Internal Server Error";
-            return;
-        }
-
         data = await res.json();
+        ErrorMessage.classList.add("show");
+        ErrorMessage.textContent = "Server Error: " + data["error"];
         console.log(data["error"]);
     }
     else

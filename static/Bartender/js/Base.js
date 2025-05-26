@@ -400,7 +400,9 @@ async function renderOrders(orders) {
         const order = orders[i];
         const orderDiv = document.createElement("div");
         const isTaken = order.status == "PAID";
+        const isValid = order.preparedBy == getCookie("username") ? true : false; 
         orderDiv.className = isTaken ? "Order Untaken" : "Order Taken";
+
 
         orderDiv.innerHTML = `
             <!--Title-->
@@ -416,8 +418,9 @@ async function renderOrders(orders) {
             <!--Buttons-->
             <div class="OrderButtons">
                 <button type="button" class="ContentButton TakeBtn ${isTaken ? "" : "hide"}" id="TakeBtn_${i+1}" value="${order.orderId}" onclick="takeOrder('${order.orderId}')">Take</button>
-                <button type="button" class="ContentButton CancelBtn ${isTaken ? "hide" : ""}" id="CancelBtn_${i+1}" value="${order.orderId}" onclick="cancelOrder('${order.orderId}')">Cancel</button>
-                <button type="button" class="ContentButton ConfirmBtn ${isTaken ? "hide" : ""}" id="ConfirmBtn_${i+1}" value="${order.orderId}" onclick="completeOrder('${order.orderId}')">Complete</button>
+                <button type="button" class="ContentButton CancelBtn ${isTaken && isValid ? "hide" : ""}" id="CancelBtn_${i+1}" value="${order.orderId}" onclick="cancelOrder('${order.orderId}')">Cancel</button>
+                <button type="button" class="ContentButton ConfirmBtn ${isTaken && isValid ? "hide" : ""}" id="ConfirmBtn_${i+1}" value="${order.orderId}" onclick="completeOrder('${order.orderId}')">Complete</button>
+                <button type="button" class="ContentButton EmptyBtn" ${isTaken && !isValid ? "hide" : ""}>Empty</button>
                 <button type="button" class="ToggleDetailBtn" id="ToggleDetailBtn_${i+1}" value="${order.orderId}" onclick="toggleOrderDetail('${i+1}')">
                     <img src= "/static/Manager/Image/PasswordEye.png" width="40" height="30">
                 </button>
