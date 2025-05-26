@@ -215,8 +215,9 @@ document.getElementById("SaveButton").addEventListener("click", async function (
         }
         else if (res.status >= 400 && res.status <= 600)
         {
+            data = await res.json();
             ErrorMessage.classList.add("show");
-            ErrorMessage.textContent = "Server Error: " + res["error"];
+            ErrorMessage.textContent = "Server Error: " + data["error"];
         }
         else
         {
@@ -246,14 +247,14 @@ function validateData(data)
         return false;
     }
     
-    else if (data.phone.length < 8)
+    else if (data.phone.length <= 7)
     {
         ErrorMessage.classList.add("show");
         ErrorMessage.textContent = "Your phone number must be at least 8 digits long";
         return false;
     }
 
-    else if (data.phone.length > 16)
+    else if (data.phone.length >= 15)
     {
         ErrorMessage.classList.add("show");
         ErrorMessage.textContent = "Your phone number must be at most 16 digits long";
