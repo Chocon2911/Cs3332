@@ -338,7 +338,6 @@
   
   .products-scroll-wrapper {
     max-height: 70vh; /* Chiều cao tối đa của vùng sản phẩm */
-    overflow-y: auto;
     padding-right: 10px; /* chừa không gian cho thanh cuộn */
   }
 
