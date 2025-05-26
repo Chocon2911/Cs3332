@@ -401,6 +401,9 @@ async function renderOrders(orders) {
         const orderDiv = document.createElement("div");
         const isNotTaken = order.status == "PAID";
         const isValid = order.preparedBy == getCookie("username") ? true : false; 
+        console.log(isValid);
+        console.log(preparedBy);
+        console.log(getCookie("username"));
         orderDiv.className = isNotTaken ? "Order Untaken" : "Order Taken";
 
 
