@@ -120,16 +120,38 @@ async function loadHistory() {
   const toDate = document.getElementById('toDate').value;
   
   const rawRecords = await fetchHistory();
-  const records = aggregateHistoryRecords(rawRecords);
+  let records = aggregateHistoryRecords(rawRecords);
 
-  let filtered = records;
-  if (fromDate) {
-    filtered = filtered.filter(r => r.date >= fromDate);
+  // Sort records by date in descending order
+  records.sort((a, b) => b.date.localeCompare(a.date));
+
+  if (records.length === 0) {
+    renderTable([], table);
+    return;
   }
-  if (toDate) {
-    filtered = filtered.filter(r => r.date <= toDate);
+
+  const newestDate = new Date(records[0].date);
+  const oldestDate = new Date(records[records.length - 1].date);
+
+  const fromDateObj = fromDate ? new Date(fromDate) : null;
+  const toDateObj = toDate ? new Date(toDate) : null;
+
+  const effectiveFrom = fromDateObj || oldestDate;
+  const effectiveTo = toDateObj || newestDate;
+
+  if (effectiveFrom > newestDate || effectiveTo < oldestDate) {
+    renderTable([], table);
+    return;
   }
-  
+
+  const fromBound = effectiveFrom <= oldestDate ? oldestDate : effectiveFrom;
+  const toBound = effectiveTo > newestDate ? newestDate : effectiveTo;
+
+  const filtered = records.filter(r => {
+    const rd = new Date(r.date);
+    return rd >= fromBound && rd <= toBound;
+  });
+
   renderTable(filtered, table);
 }
 
