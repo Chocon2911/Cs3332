@@ -402,7 +402,7 @@ async function renderOrders(orders) {
         const isNotTaken = order.status == "PAID";
         const isValid = order.preparedBy == getCookie("username") ? true : false; 
         console.log(isValid);
-        console.log(preparedBy);
+        console.log(order.preparedBy);
         console.log(getCookie("username"));
         orderDiv.className = isNotTaken ? "Order Untaken" : "Order Taken";
 
@@ -421,9 +421,9 @@ async function renderOrders(orders) {
             <!--Buttons-->
             <div class="OrderButtons">
                 <button type="button" class="ContentButton TakeBtn ${isNotTaken ? "" : "hide"}" id="TakeBtn_${i+1}" value="${order.orderId}" onclick="takeOrder('${order.orderId}')">Take</button>
-                <button type="button" class="ContentButton CancelBtn ${!isNotTaken && isValid ? "" : "hide" }" id="CancelBtn_${i+1}" value="${order.orderId}" onclick="cancelOrder('${order.orderId}')">Cancel</button>
-                <button type="button" class="ContentButton ConfirmBtn ${!isNotTaken && isValid ? "" : "hide"}" id="ConfirmBtn_${i+1}" value="${order.orderId}" onclick="completeOrder('${order.orderId}')">Complete</button>
-                <button type="button" class="ContentButton EmptyBtn" ${isNotTaken || isValid ? "hide" : ""}>Empty</button>
+                <button type="button" class="ContentButton CancelBtn ${(!isNotTaken && isValid) ? "" : "hide" }" id="CancelBtn_${i+1}" value="${order.orderId}" onclick="cancelOrder('${order.orderId}')">Cancel</button>
+                <button type="button" class="ContentButton ConfirmBtn ${(!isNotTaken && isValid) ? "" : "hide"}" id="ConfirmBtn_${i+1}" value="${order.orderId}" onclick="completeOrder('${order.orderId}')">Complete</button>
+                <button type="button" class="ContentButton EmptyBtn ${(isNotTaken || isValid) ? "hide" : ""}">Empty</button>
                 <button type="button" class="ToggleDetailBtn" id="ToggleDetailBtn_${i+1}" value="${order.orderId}" onclick="toggleOrderDetail('${i+1}')">
                     <img src= "/static/Manager/Image/PasswordEye.png" width="40" height="30">
                 </button>
