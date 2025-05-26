@@ -30,3 +30,15 @@
         height: 40px;
     }
 }
+
+/*=========================================Get Button=========================================*/
+.GetButton
+{
+    width: 300px;
+    height: 60px;
+    border-radius: 50px;
+    border: none;
+    background: linear-gradient(#f8dd8c, #dab019);
+    transition: all 0.2s ease-in-out;
+    font-weight: 700;
+}

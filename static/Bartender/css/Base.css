@@ -145,6 +145,7 @@ main
 .TakeBtn { background: linear-gradient(#76b0f2, #0077ff); }
 .CancelBtn { background: linear-gradient(#f06060, #ff0000); }
 .ConfirmBtn { background: linear-gradient(#85ea85, #00ff00); }
+.EmptyBtn { background: linear-gradient(#e9e9e9, #b3b3b3); }
 
 .ToggleDetailBtn
 {
