@@ -7,7 +7,7 @@ from waitress import serve
 import os
 
 from Manager import register_manager_routes
-# from StorageManager import register_storage_manager_routes
+from StorageManager import register_storage_manager_routes
 from Bartender import register_bartender_routes
 from Cashier import register_cashier_routes
 from Customer import register_customer_routes
@@ -17,7 +17,8 @@ app = Flask(__name__)
 port = 5000
 
 # Lấy IP nội bộ của máy (để dùng cho truy cập LAN)
-host_ip = socket.gethostbyname(socket.gethostname())
+# host_ip = socket.gethostbyname(socket.gethostname())
+host_ip = '127.0.0.1'
 url = f"http://{host_ip}:{port}/manager/login"
 
 #====================== ROUTES =====================

@@ -374,8 +374,10 @@ document.querySelector('.send-cart-btn').addEventListener("click", async functio
         	if (result["error"] == "Unauthorized")
         	{
           	 	window.location.href = "/manager/login";
-            		return;
+            	return;
         	}
+          alert("Out of Stock");
+
         	console.log("Server Error: " + result["error"]);
     	}
     	else

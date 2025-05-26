@@ -2,7 +2,7 @@ from flask import render_template, request, jsonify, url_for, make_response, red
 from datetime import datetime
 import requests
 
-URL = "http://natsu-dev.space:8080"
+URL = "http://localhost:8080"
 
 def forward_response(r):
     response = make_response(r.content, r.status_code)
