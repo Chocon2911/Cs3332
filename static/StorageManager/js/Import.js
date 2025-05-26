@@ -258,7 +258,7 @@ async function handleDone() {
         await fetchInventory();
     } catch (err) {
         console.error('Failed to update item:', err);
-        resultsEl.innerHTML = `<div class="entry error">Failed to update ingredient. Please try again.</div>`;
+        resultsEl.innerHTML = `<div class="entry" style="color:red">Failed to update ingredient. Please try again.</div>`;
     }
 }
 
