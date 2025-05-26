@@ -17,7 +17,8 @@ app = Flask(__name__)
 port = 5000
 
 # Lấy IP nội bộ của máy (để dùng cho truy cập LAN)
-host_ip = socket.gethostbyname(socket.gethostname())
+# host_ip = socket.gethostbyname(socket.gethostname())
+host_ip = '127.0.0.1'
 url = f"http://{host_ip}:{port}/manager/login"
 
 #====================== ROUTES =====================
