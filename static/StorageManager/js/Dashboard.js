@@ -156,7 +156,7 @@ window.onload = async () => {
       document.getElementById('card-running').addEventListener('click', () => navigateTo('running-out'));
       // Xử lý logout modal
       document.getElementById('confirm-yes').onclick = () => {
-          window.location.href = 'manager/login';
+          window.location.href = '/manager/login';
       };
       document.getElementById('confirm-no').onclick = () => {
           document.getElementById('logout-modal').style.display = 'none';
