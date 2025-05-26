@@ -329,6 +329,8 @@ function handleOrder() {
         postRedirect("/customer/goto_coffee");
     }
     localStorage.removeItem("cart");
+    document.getElementById("tablePopup").style.display = "none";
+    document.getElementById("popupOverlay").style.display = "none";
 }
 
 async function handleComplete() {
@@ -707,6 +709,9 @@ document.getElementById("QRBtn").addEventListener("click", () => {
 
         saveAreasToLocalStorage();
         renderTables(); // Cập nhật lại màu bàn
+
+        document.getElementById("tablePopup").style.display = "none";
+        document.getElementById("popupOverlay").style.display = "none";
     }
     const tableID = areas[currentArea][currentTableId].tableID;
     if (!tableID) {
