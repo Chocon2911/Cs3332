@@ -280,7 +280,7 @@ function validateData(data)
 
     for (i = 0; i < data.phone.length; i++)
     {
-        if (data.phone[i] < "0" || data.phone[i] > "9" || data.phone[i] != "+")
+        if (data.phone[i] < "0" || data.phone[i] > "9")
         {
             ErrorMessage.classList.add("show");
             ErrorMessage.textContent = "Your phone number must only contain digits";
