@@ -271,6 +271,16 @@ function validateData(data)
         }
     }
 
+    for (i = 0; i < data.phone.length; i++)
+    {
+        if (data.phone[i] < "0" || data.phone[i] > "9")
+        {
+            ErrorMessage.classList.add("show");
+            ErrorMessage.textContent = "Your phone number cannot contain letters";
+            return false;
+        }
+    }
+
     ErrorMessage.classList.remove("show");
     ErrorMessage.textContent = "";
     return true;
