@@ -215,7 +215,6 @@ document.getElementById("SaveButton").addEventListener("click", async function (
         }
         else if (res.status >= 400 && res.status <= 600)
         {
-            data = await res.json();
             ErrorMessage.classList.add("show");
             ErrorMessage.textContent = "Server Error: " + data["error"];
         }
