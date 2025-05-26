@@ -84,6 +84,13 @@ window.onload = async function ()
     }
     else if (res.status >= 400 && res.status <= 600)
     {
+        if (res.status == 500)
+        {
+            ErrorMessage.classList.add("show");
+            ErrorMessage.textContent = "Internal Server Error";
+            return;
+        }
+
         if (res.status == 401)
         {
             window.location.href = "/manager/login";
