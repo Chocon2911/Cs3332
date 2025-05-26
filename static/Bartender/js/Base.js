@@ -399,9 +399,9 @@ async function renderOrders(orders) {
     for (let i = 0; i < orders.length; i++) {
         const order = orders[i];
         const orderDiv = document.createElement("div");
-        const isTaken = order.status == "PAID";
+        const isNotTaken = order.status == "PAID";
         const isValid = order.preparedBy == getCookie("username") ? true : false; 
-        orderDiv.className = isTaken ? "Order Untaken" : "Order Taken";
+        orderDiv.className = isNotTaken ? "Order Untaken" : "Order Taken";
 
 
         orderDiv.innerHTML = `
@@ -411,16 +411,16 @@ async function renderOrders(orders) {
                     <span class="OrderNumber">Order #${i + 1}: </span>
                     <span class="OrderId">${order.orderId}</span>
                 </div>
-                <div class="RightOrderTitle ${isTaken ? "waiting" : ""}">
-                    <span class="OrderStatus">${isTaken ? "Waiting" : "Preparing"}</span>
+                <div class="RightOrderTitle ${isNotTaken ? "waiting" : ""}">
+                    <span class="OrderStatus">${isNotTaken ? "Waiting" : "Preparing"}</span>
                 </div>
             </div>
             <!--Buttons-->
             <div class="OrderButtons">
-                <button type="button" class="ContentButton TakeBtn ${isTaken ? "hide" : ""}" id="TakeBtn_${i+1}" value="${order.orderId}" onclick="takeOrder('${order.orderId}')">Take</button>
-                <button type="button" class="ContentButton CancelBtn ${isTaken && isValid ? "" : "hide" }" id="CancelBtn_${i+1}" value="${order.orderId}" onclick="cancelOrder('${order.orderId}')">Cancel</button>
-                <button type="button" class="ContentButton ConfirmBtn ${isTaken && isValid ? "" : "hide"}" id="ConfirmBtn_${i+1}" value="${order.orderId}" onclick="completeOrder('${order.orderId}')">Complete</button>
-                <button type="button" class="ContentButton EmptyBtn" ${isTaken && !isValid ? "" : "hide"}>Empty</button>
+                <button type="button" class="ContentButton TakeBtn ${isNotTaken ? "" : "hide"}" id="TakeBtn_${i+1}" value="${order.orderId}" onclick="takeOrder('${order.orderId}')">Take</button>
+                <button type="button" class="ContentButton CancelBtn ${!isNotTaken && isValid ? "" : "hide" }" id="CancelBtn_${i+1}" value="${order.orderId}" onclick="cancelOrder('${order.orderId}')">Cancel</button>
+                <button type="button" class="ContentButton ConfirmBtn ${!isNotTaken && isValid ? "" : "hide"}" id="ConfirmBtn_${i+1}" value="${order.orderId}" onclick="completeOrder('${order.orderId}')">Complete</button>
+                <button type="button" class="ContentButton EmptyBtn" ${!isNotTaken && !isValid ? "" : "hide"}>Empty</button>
                 <button type="button" class="ToggleDetailBtn" id="ToggleDetailBtn_${i+1}" value="${order.orderId}" onclick="toggleOrderDetail('${i+1}')">
                     <img src= "/static/Manager/Image/PasswordEye.png" width="40" height="30">
                 </button>
